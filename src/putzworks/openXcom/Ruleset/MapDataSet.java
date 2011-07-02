@@ -151,8 +151,8 @@ public void load(ResourcePack res)
 	MCD mcd;
 
 	// Load Terrain Data from MCD file
-	Stringstream s;
-	s << res.getFolder() << "TERRAIN/" << _name << ".MCD";
+	StringBuffer s = new StringBuffer();
+	s.append(res.getFolder() + "TERRAIN/" + _name + ".MCD");
 
 	// Load file
 	std.ifstream mapFile (ResourcePack.insensitive(s.str()).c_str(), std.ios.in | std.ios.binary);
@@ -211,11 +211,11 @@ public void load(ResourcePack res)
 	mapFile.close();
 
 	// Load terrain sprites/surfaces/PCK files into a surfaceset
-	Stringstream s1,s2;
-	s1 << res.getFolder() << "TERRAIN/" << _name << ".PCK";
-	s2 << res.getFolder() << "TERRAIN/" << _name << ".TAB";
+	StringBuffer s1 = new StringBuffer(), s2 = new StringBuffer();
+	s1.append(res.getFolder() + "TERRAIN/" + _name + ".PCK");
+	s2.append(res.getFolder() + "TERRAIN/" + _name + ".TAB");
 	_surfaceSet = new SurfaceSet(32, 40);
-	_surfaceSet.loadPck(ResourcePack.insensitive(s1.str()), ResourcePack.insensitive(s2.str()));
+	_surfaceSet.loadPck(ResourcePack.insensitive(s1.toString()), ResourcePack.insensitive(s2.toString()));
 
 }
 
@@ -242,7 +242,7 @@ public void loadLOFTEMPS(final String filename, Vector<Uint16> voxelData)
 	std.ifstream mapFile (filename.c_str(), std.ios.in | std.ios.binary);
 	if (!mapFile)
 	{
-		throw Exception("Failed to load DAT");
+		throw new Exception("Failed to load DAT");
 	}
 
 	int value;
@@ -260,12 +260,12 @@ public void loadLOFTEMPS(final String filename, Vector<Uint16> voxelData)
 	mapFile.close();
 }
 
-public MapData getBlankFloorTile()
+static public MapData getBlankFloorTile()
 {
 	return MapDataSet._blankTile;
 }
 
-public MapData getScourgedEarthTile()
+static public MapData getScourgedEarthTile()
 {
 	return MapDataSet._scourgedTile;
 }

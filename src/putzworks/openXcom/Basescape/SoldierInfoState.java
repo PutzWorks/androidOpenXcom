@@ -152,23 +152,43 @@ public SoldierInfoState(Game game, Base base, int soldier)
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)SoldierInfoState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnPrev.setColor(Palette.blockOffset(15)+9);
-	_btnPrev.setText(L"<<");
-	_btnPrev.onMouseClick((ActionHandler)SoldierInfoState.btnPrevClick);
+	_btnPrev.setText("<<");
+	_btnPrev.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnPrevClick(action);
+		}
+	});
 
 	_btnNext.setColor(Palette.blockOffset(15)+9);
-	_btnNext.setText(L">>");
-	_btnNext.onMouseClick((ActionHandler)SoldierInfoState.btnNextClick);
+	_btnNext.setText(">>");
+	_btnNext.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNextClick(action);
+		}
+	});
 
 	_btnArmor.setColor(Palette.blockOffset(15)+9);
 	_btnArmor.setText(_game.getLanguage().getString("STR_ARMOR"));
-	_btnArmor.onMouseClick((ActionHandler)SoldierInfoState.btnArmorClick);
+	_btnArmor.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnArmorClick(action);
+		}
+	});
 
 	_edtSoldier.setColor(Palette.blockOffset(13)+10);
 	_edtSoldier.setBig();
-	_edtSoldier.onKeyboardPress((ActionHandler)SoldierInfoState.edtSoldierKeyPress);
+	_edtSoldier.onKeyboardPress(new ActionHandler() {
+		public void handle(Action action) {
+			edtSoldierKeyPress(action);
+		}
+	});
 
 	_txtArmor.setColor(Palette.blockOffset(13));
 
@@ -264,7 +284,7 @@ public SoldierInfoState(Game game, Base base, int soldier)
  */
 public void init()
 {
-	Soldier s = _base.getSoldiers().at(_soldier);
+	Soldier s = _base.getSoldiers().get(_soldier);
 	_edtSoldier.setText(s.getName());
 
 	SurfaceSet texture = _game.getResourcePack().getSurfaceSet("BASEBITS.PCK");
@@ -272,75 +292,75 @@ public void init()
 	texture.getFrame(s.getRankSprite()).setY(0);
 	texture.getFrame(s.getRankSprite()).blit(_rank);
 
-	WStringstream ss;
-	ss << s.getTimeUnits();
-	_numTimeUnits.setText(ss.str());		
+	StringBuffer ss = new StringBuffer();
+	ss.append(s.getTimeUnits());
+	_numTimeUnits.setText(ss.toString());		
 	_barTimeUnits.setMax(s.getTimeUnits());
 	_barTimeUnits.setValue(s.getTimeUnits());
 
-	WStringstream ss2;
-	ss2 << s.getStamina();
-	_numStamina.setText(ss2.str());		
+	StringBuffer ss2;
+	ss2.append(s.getStamina());
+	_numStamina.setText(ss2.toString());		
 	_barStamina.setMax(s.getStamina());
 	_barStamina.setValue(s.getStamina());
 
-	WStringstream ss3;
-	ss3 << s.getHealth();
-	_numHealth.setText(ss3.str());		
+	StringBuffer ss3;
+	ss3.append(s.getHealth());
+	_numHealth.setText(ss3.toString());		
 	_barHealth.setMax(s.getHealth());
 	_barHealth.setValue(s.getHealth());
 
-	WStringstream ss4;
-	ss4 << s.getBravery();
-	_numBravery.setText(ss4.str());		
+	StringBuffer ss4;
+	ss4.append(s.getBravery());
+	_numBravery.setText(ss4.toString());		
 	_barBravery.setMax(s.getBravery());
 	_barBravery.setValue(s.getBravery());
 
-	WStringstream ss5;
-	ss5 << s.getReactions();
-	_numReactions.setText(ss5.str());		
+	StringBuffer ss5;
+	ss5.append(s.getReactions());
+	_numReactions.setText(ss5.toString());		
 	_barReactions.setMax(s.getReactions());
 	_barReactions.setValue(s.getReactions());
 
-	WStringstream ss6;
-	ss6 << s.getFiringAccuracy();
-	_numFiring.setText(ss6.str());		
+	StringBuffer ss6;
+	ss6.append(s.getFiringAccuracy());
+	_numFiring.setText(ss6.toString());		
 	_barFiring.setMax(s.getFiringAccuracy());
 	_barFiring.setValue(s.getFiringAccuracy());
 
-	WStringstream ss7;
-	ss7 << s.getThrowingAccuracy();
-	_numThrowing.setText(ss7.str());		
+	StringBuffer ss7;
+	ss7.append(s.getThrowingAccuracy());
+	_numThrowing.setText(ss7.toString());		
 	_barThrowing.setMax(s.getThrowingAccuracy());
 	_barThrowing.setValue(s.getThrowingAccuracy());
 
-	WStringstream ss8;
-	ss8 << s.getStrength();
-	_numStrength.setText(ss8.str());		
+	StringBuffer ss8;
+	ss8.append(s.getStrength());
+	_numStrength.setText(ss8.toString());		
 	_barStrength.setMax(s.getStrength());
 	_barStrength.setValue(s.getStrength());
 
 	_txtArmor.setText(_game.getLanguage().getString("STR_NONE_UC"));
 
-	WStringstream ss9;
-	ss9 << _game.getLanguage().getString("STR_RANK_") << L'\x01' << _game.getLanguage().getString(s.getRankString());
-	_txtRank.setText(ss9.str());
+	StringBuffer ss9;
+	ss9.append(_game.getLanguage().getString("STR_RANK_") + '\x01'.append(_game.getLanguage().getString(s.getRankString()));
+	_txtRank.setText(ss9.toString());
 
-	WStringstream ss10;
-	ss10 << _game.getLanguage().getString("STR_MISSIONS") << L'\x01' << s.getMissions();
-	_txtMissions.setText(ss10.str());
+	StringBuffer ss10;
+	ss10.append(_game.getLanguage().getString("STR_MISSIONS") + '\x01'.append(s.getMissions());
+	_txtMissions.setText(ss10.toString());
 
-	WStringstream ss11;
-	ss11 << _game.getLanguage().getString("STR_KILLS") << L'\x01' << s.getKills();
-	_txtKills.setText(ss11.str());
+	StringBuffer ss11;
+	ss11.append(_game.getLanguage().getString("STR_KILLS") + ('\x01'.append(s.getKills());
+	_txtKills.setText(ss11.toString());
 
-	WStringstream ss12;
-	ss12 << _game.getLanguage().getString("STR_CRAFT_") << L'\x01';
+	StringBuffer ss12;
+	ss12.append(_game.getLanguage().getString("STR_CRAFT_") + '\x01');
 	if (s.getCraft() == 0)
-		ss12 << _game.getLanguage().getString("STR_NONE");
+		ss12.append(_game.getLanguage().getString("STR_NONE"));
 	else
-		ss12 << s.getCraft().getName(_game.getLanguage());
-	_txtCraft.setText(ss12.str());
+		ss12.append(s.getCraft().getName(_game.getLanguage()));
+	_txtCraft.setText(ss12.toString());
 }
 
 /**
@@ -351,7 +371,7 @@ public void edtSoldierKeyPress(Action action)
 {
 	if (action.getDetails().key.keysym.sym == SDLK_RETURN)
 	{
-		_base.getSoldiers().at(_soldier).setName(_edtSoldier.getText());
+		_base.getSoldiers().get(_soldier).setName(_edtSoldier.getText());
 	}
 }
 

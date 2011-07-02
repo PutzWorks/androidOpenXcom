@@ -24,6 +24,7 @@ import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Savegame.Base;
 import putzworks.openXcom.Savegame.Soldier;
 
@@ -70,7 +71,11 @@ public SoldiersState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)SoldiersState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
@@ -92,7 +97,11 @@ public SoldiersState(Game game, Base base)
 	_lstSoldiers.setSelectable(true);
 	_lstSoldiers.setBackground(_window);
 	_lstSoldiers.setMargin(8);
-	_lstSoldiers.onMouseClick((ActionHandler)SoldiersState.lstSoldiersClick);
+	_lstSoldiers.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstSoldiersClick(action);
+		}
+	});
 }
 
 /**
@@ -105,17 +114,17 @@ public void init()
 	_lstSoldiers.clearList();
 	for (Vector<Soldier>.iterator i = _base.getSoldiers().begin(); i != _base.getSoldiers().end(); ++i)
 	{
-		WString s;
-		if ((*i).getCraft() == 0)
+		String s;
+		if ((i).getCraft() == 0)
 		{
 			s = _game.getLanguage().getString("STR_NONE_UC");
 		}
 		else
 		{
-			s = (*i).getCraft().getName(_game.getLanguage());
+			s = (i).getCraft().getName(_game.getLanguage());
 		}
-		_lstSoldiers.addRow(3, (*i).getName().c_str(), _game.getLanguage().getString((*i).getRankString()).c_str(), s.c_str());
-		if ((*i).getCraft() == 0)
+		_lstSoldiers.addRow(3, (i).getName(), _game.getLanguage().getString((i).getRankString()), s);
+		if ((i).getCraft() == 0)
 		{
 			_lstSoldiers.getCell(row, 0).setColor(Palette.blockOffset(15)+6);
 			_lstSoldiers.getCell(row, 1).setColor(Palette.blockOffset(15)+6);

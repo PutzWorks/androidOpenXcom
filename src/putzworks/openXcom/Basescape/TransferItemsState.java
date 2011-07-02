@@ -100,11 +100,19 @@ public TransferItemsState(Game game, Base baseFrom, Base baseTo)
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_TRANSFER"));
-	_btnOk.onMouseClick((ActionHandler)TransferItemsState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(15)+9);
-	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL"));
-	_btnCancel.onMouseClick((ActionHandler)TransferItemsState.btnCancelClick);
+	_btnCancel.setText(_game.getLanguage().getString("STR_CANCE"));
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
@@ -130,62 +138,86 @@ public TransferItemsState(Game game, Base baseFrom, Base baseTo)
 	_lstItems.setSelectable(true);
 	_lstItems.setBackground(_window);
 	_lstItems.setMargin(2);
-	_lstItems.onLeftArrowPress((ActionHandler)TransferItemsState.lstItemsLeftArrowPress);
-	_lstItems.onLeftArrowRelease((ActionHandler)TransferItemsState.lstItemsLeftArrowRelease);
-	_lstItems.onRightArrowPress((ActionHandler)TransferItemsState.lstItemsRightArrowPress);
-	_lstItems.onRightArrowRelease((ActionHandler)TransferItemsState.lstItemsRightArrowRelease);
+	_lstItems.onLeftArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsLeftArrowPress(action);
+		}
+	});
+	_lstItems.onLeftArrowRelease(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsLeftArrowRelease(action);
+		}
+	});
+	_lstItems.onRightArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsRightArrowPress(action);
+		}
+	});
+	_lstItems.onRightArrowRelease(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsRightArrowRelease(action);
+		}
+	});
 
-	for (Vector<Soldier>i = _baseFrom.getSoldiers())
+	for (Soldier i : _baseFrom.getSoldiers())
 	{
-		if ((i).getCraft() == 0)
+		if ((i).getCraft() == null)
 		{
 			_qtys.add(0);
 			_soldiers.add(i);
-			_lstItems.addRow(4, (i).getName().c_str(), L"1", L"0", L"0");
+			_lstItems.addRow(4, (i).getName(), "1", "0", "0");
 		}
 	}
-	for (Vector<Craft>i = _baseFrom.getCrafts())
+	for (Craft i : _baseFrom.getCrafts())
 	{
-		if ((i).getStatus() != "STR_OUT")
+		if (!(i).getStatus().equals("STR_OUT"))
 		{
 			_qtys.add(0);
 			_crafts.add(i);
-			_lstItems.addRow(4, (i).getName(_game.getLanguage()).c_str(), L"1", L"0", L"0");
+			_lstItems.addRow(4, (i).getName(_game.getLanguage()), "1", "0", "0");
 		}
 	}
 	if (_baseFrom.getAvailableScientists() > 0)
 	{
 		_qtys.add(0);
 		_sOffset++;
-		WStringstream ss, ss2;
-		ss << _baseFrom.getAvailableScientists();
-		ss2 << _baseTo.getAvailableScientists();
-		_lstItems.addRow(4, _game.getLanguage().getString("STR_SCIENTIST").c_str(), ss.str().c_str(), L"0", ss2.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+		ss.append(_baseFrom.getAvailableScientists());
+		ss2.append(_baseTo.getAvailableScientists());
+		_lstItems.addRow(4, _game.getLanguage().getString("STR_SCIENTIST"), ss.toString(), "0", ss2.toString());
 	}
 	if (_baseFrom.getAvailableEngineers() > 0)
 	{
 		_qtys.add(0);
 		_eOffset++;
-		WStringstream ss, ss2;
-		ss << _baseFrom.getAvailableEngineers();
-		ss2 << _baseTo.getAvailableEngineers();
-		_lstItems.addRow(4, _game.getLanguage().getString("STR_ENGINEER").c_str(), ss.str().c_str(), L"0", ss2.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+		ss.append(_baseFrom.getAvailableEngineers());
+		ss2.append(_baseTo.getAvailableEngineers());
+		_lstItems.addRow(4, _game.getLanguage().getString("STR_ENGINEER"), ss.toString(), "0", ss2.toString());
 	}
-	for (std.map<std.string, int>.iterator i = _baseFrom.getItems().getContents().begin(); i != _baseFrom.getItems().getContents().end(); ++i)
+	for (Map<String, Integer>.iterator i = _baseFrom.getItems().getContents().begin(); i != _baseFrom.getItems().getContents().end(); ++i)
 	{
 		_qtys.add(0);
 		_items.add(i.first);
-		WStringstream ss, ss2;
-		ss << i.second;
-		ss2 << _baseTo.getItems().getItem(i.first);
-		_lstItems.addRow(4, _game.getLanguage().getString(i.first).c_str(), ss.str().c_str(), L"0", ss2.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+		ss.append(i.second);
+		ss2.append(_baseTo.getItems().getItem(i.first));
+		_lstItems.addRow(4, _game.getLanguage().getString(i.first), ss.toString(), "0", ss2.toString());
 	}
 	_distance = getDistance();
 
 	_timerInc = new Timer(50);
-	_timerInc.onTimer((StateHandler)TransferItemsState.increase);
+	_timerInc.onTimer(new StateHandler() {
+		public void handle(State state) {
+			increase();
+		}
+	});
 	_timerDec = new Timer(50);
-	_timerDec.onTimer((StateHandler)TransferItemsState.decrease);
+	_timerDec.onTimer(new StateHandler() {
+		public void handle(State state) {
+			decrease();
+		}
+	});
 }
 
 /**
@@ -231,14 +263,14 @@ public void completeTransfer()
 	_game.getSavedGame().setFunds(_game.getSavedGame().getFunds() - _total);
 	for (int i = 0; i < _qtys.size(); ++i)
 	{
-		if (_qtys[i] > 0)
+		if (_qtys.get(i) > 0)
 		{
 			// Transfer soldiers
 			if (i < _soldiers.size())
 			{
 				for (Soldier s: _baseFrom.getSoldiers())
 				{
-					if (s == _soldiers[i])
+					if (s == _soldiers.get(i))
 					{
 						_baseFrom.getSoldiers().erase(s);
 						Transfer t = new Transfer(time);
@@ -251,7 +283,7 @@ public void completeTransfer()
 			// Transfer crafts
 			else if (i >= _soldiers.size() && i < _soldiers.size() + _crafts.size())
 			{
-				Craft craft =  _crafts[i - _soldiers.size()];
+				Craft craft =  _crafts.get(i - _soldiers.size());
 
 				// Transfer soldiers inside craft
 				for (Soldier s: _baseFrom.getSoldiers())
@@ -281,25 +313,25 @@ public void completeTransfer()
 			// Transfer scientists
 			else if (_baseFrom.getAvailableScientists() > 0 && i == _soldiers.size() + _crafts.size())
 			{
-				_baseFrom.setScientists(_baseFrom.getScientists() - _qtys[i]);
+				_baseFrom.setScientists(_baseFrom.getScientists() - _qtys.get(i));
 				Transfer t = new Transfer(time);
-				t.setScientists(_qtys[i]);
+				t.setScientists(_qtys.get(i));
 				_baseTo.getTransfers().add(t);
 			}
 			// Transfer engineers
 			else if (_baseFrom.getAvailableEngineers() > 0 && i == _soldiers.size() + _crafts.size() + _sOffset)
 			{
-				_baseFrom.setEngineers(_baseFrom.getEngineers() - _qtys[i]);
+				_baseFrom.setEngineers(_baseFrom.getEngineers() - _qtys.get(i));
 				Transfer t = new Transfer(time);
-				t.setEngineers(_qtys[i]);
+				t.setEngineers(_qtys.get(i));
 				_baseTo.getTransfers().add(t);
 			}
 			// Transfer items
 			else
 			{
-				_baseFrom.getItems().removeItem(_items[i - _soldiers.size() - _crafts.size() - _sOffset - _eOffset], _qtys[i]);
+				_baseFrom.getItems().removeItem(_items.get(i - _soldiers.size() - _crafts.size() - _sOffset - _eOffset), _qtys.get(i));
 				Transfer t = new Transfer(time);
-				t.setItems(_items[i - _soldiers.size() - _crafts.size() - _sOffset - _eOffset], _qtys[i]);
+				t.setItems(_items.get(i - _soldiers.size() - _crafts.size() - _sOffset - _eOffset), _qtys.get(i));
 				_baseTo.getTransfers().add(t);
 			}
 		}
@@ -404,7 +436,7 @@ private int getQuantity()
 	// Item quantity
 	else
 	{
-		return _baseFrom.getItems().getItem(_items[_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset]);
+		return _baseFrom.getItems().getItem(_items.get(_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset));
 	}
 }
 
@@ -420,7 +452,7 @@ public void increase()
 	}
 	else if (_sel >= _soldiers.size() && _sel < _soldiers.size() + _crafts.size())
 	{
-		Craft craft =  _crafts[_sel - _soldiers.size()];
+		Craft craft =  _crafts.get(_sel - _soldiers.size());
 		if (_cQty + 1 > _baseTo.getAvailableHangars() - _baseTo.getUsedHangars())
 		{
 			_timerInc.stop();
@@ -437,7 +469,7 @@ public void increase()
 		_timerInc.stop();
 		_game.pushState(new PurchaseErrorState(_game, "STR_NOT_ENOUGH_STORE_SPACE"));
 	}
-	else if (_qtys[_sel] < getQuantity())
+	else if (_qtys.get(_sel) < getQuantity())
 	{
 		// Personnel count
 		if (_sel < _soldiers.size() || (_sel >= _soldiers.size() + _crafts.size()  && _sel < _soldiers.size() + _crafts.size() + _sOffset + _eOffset))
@@ -447,19 +479,19 @@ public void increase()
 		// Craft count
 		else if (_sel >= _soldiers.size() && _sel < _soldiers.size() + _crafts.size())
 		{
-			Craft craft =  _crafts[_sel - _soldiers.size()];
+			Craft craft =  _crafts.get(_sel - _soldiers.size());
 			_cQty++;
 			_pQty += craft.getNumSoldiers();
 		}
 		// Item count
 		else
 		{
-			_iQty += _game.getRuleset().getItem(_items[_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset]).getSize();
+			_iQty += _game.getRuleset().getItem(_items.get(_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset)).getSize();
 		}
-		_qtys[_sel]++;
-		WStringstream ss;
-		ss << _qtys[_sel];
-		_lstItems.getCell(_sel, 2).setText(ss.str());
+		_qtys.get(_sel)++;
+		StringBuffer ss = new StringBuffer();
+		ss.append(_qtys.get(_sel));
+		_lstItems.getCell(_sel, 2).setText(ss.toString());
 		_lstItems.draw();
 		_total += getCost();
 	}
@@ -470,7 +502,7 @@ public void increase()
  */
 public void decrease()
 {
-	if (_qtys[_sel] > 0)
+	if (_qtys.get(_sel) > 0)
 	{
 		// Personnel count
 		if (_sel < _soldiers.size() || (_sel >= _soldiers.size() + _crafts.size()  && _sel < _soldiers.size() + _crafts.size() + _sOffset + _eOffset))
@@ -480,18 +512,18 @@ public void decrease()
 		// Craft count
 		else if (_sel >= _soldiers.size() && _sel < _soldiers.size() + _crafts.size())
 		{
-			Craft craft =  _crafts[_sel - _soldiers.size()];
+			Craft craft =  _crafts.get(_sel - _soldiers.size());
 			_cQty--;
 			_pQty -= craft.getNumSoldiers();
 		}
 		// Item count
 		else
 		{
-			_iQty -= _game.getRuleset().getItem(_items[_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset]).getSize();
+			_iQty -= _game.getRuleset().getItem(_items.get(_sel - _soldiers.size() - _crafts.size() - _sOffset - _eOffset)).getSize();
 		}
-		_qtys[_sel]--;
-		WStringstream ss;
-		ss << _qtys[_sel];
+		_qtys.get(_sel)--;
+		StringBuffer ss = new StringBuffer();
+		ss.append(_qtys.get(_sel));
 		_lstItems.getCell(_sel, 2).setText(ss.str());
 		_lstItems.draw();
 		_total -= getCost();

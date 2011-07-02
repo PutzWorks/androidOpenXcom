@@ -69,7 +69,11 @@ public FundingState(Game game)
 
 	_btnOk.setColor(Palette.blockOffset(15)+2);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)FundingState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setBig();
@@ -82,7 +86,7 @@ public FundingState(Game game)
 	_txtFunding.setColor(Palette.blockOffset(15)-1);
 	_txtFunding.setBig();
 	_txtFunding.setText(_game.getLanguage().getString("STR_FUNDING"));
-	if (_game.getLanguage().getName() == L"ITALIANO")
+	if (_game.getLanguage().getName() == "ITALIANO")
 	{
 		_txtFunding.setX(125);
 	}
@@ -97,9 +101,10 @@ public FundingState(Game game)
 	_lstCountries.setDot(true);
 	for (Country i: _game.getSavedGame().getCountries())
 	{
-		WStringstream ss, ss2;
-		ss << L'\x01' << Text.formatFunding((i).getFunding()) << L'\x01';
-		ss2 << (*i).getChange();
+		StringBuffer ss = new StringBuffer();
+		StringBuffer ss2 = new StringBuffer();
+		ss.append('\x01' << Text.formatFunding((i).getFunding()) + '\x01');
+		ss2.append(i.getChange()_;
 		_lstCountries.addRow(3, _game.getLanguage().getString((i).getRules().getType()).c_str(), ss.str().c_str(), ss2.str().c_str());
 	}
 	_lstCountries.addRow(2, _game.getLanguage().getString("STR_TOTAL_UC").c_str(), Text.formatFunding(_game.getSavedGame().getCountryFunding()).c_str());

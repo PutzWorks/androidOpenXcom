@@ -18,10 +18,12 @@
  */
 package putzworks.openXcom.Interface;
 
+import android.graphics.Rectangle;
 import putzworks.openXcom.Engine.RNG;
 import putzworks.openXcom.Engine.Sound;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.Timer;
 
 public class Window extends Surface
@@ -59,7 +61,11 @@ public Window(State state, int width, int height, int x, int y, WindowPopup popu
 	_state = state;
 
 	_timer = new Timer(10);
-	_timer.onTimer((SurfaceHandler)Window.popup);
+	_timer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			popup();
+		}
+	});
 
 	if (_popup == Window.WindowPopup.POPUP_NONE)
 	{
@@ -177,7 +183,7 @@ public void popup()
  */
 public void draw()
 {
-	Rect square;
+	Rectangle square = new Rectangle();
 	short color = _color;
 
 	clear();
@@ -185,50 +191,50 @@ public void draw()
 	if (_popup == WindowPopup.POPUP_HORIZONTAL || _popup == WindowPopup.POPUP_BOTH)
 	{
 		square.x = (int)((getWidth() - getWidth() * _popupStep) / 2);
-		square.w = (int)(getWidth() * _popupStep);
+		square.right = square.x + (int)(getWidth() * _popupStep);
 	}
 	else
 	{
 		square.x = 0;
-		square.w = getWidth();
+		square.right = getWidth();
 	}
-	if (_popup == WindowPopup.POPUP_VERTICAL || _popup == WindowPopup.OPUP_BOTH)
+	if (_popup == WindowPopup.POPUP_VERTICAL || _popup == WindowPopup.POPUP_BOTH)
 	{
 		square.y = (int)((getHeight() - getHeight() * _popupStep) / 2);
-		square.h = (int)(getHeight() * _popupStep);
+		square.bottom = square.y + (int)(getHeight() * _popupStep);
 	}
 	else
 	{
 		square.y = 0;
-		square.h = getHeight();
+		square.bottom = getHeight();
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		drawRect(square, color);
+		drawRectangle(square, color);
 		if (i < 2)
 			color--;
 		else
 			color++;
 		square.x++;
 		square.y++;
-		if (square.w >= 2)
-			square.w -= 2;
+		if (square.right - square.x >= 2)
+			square.right -= 2;
 		else
-			square.w = 1;
+			square.right = square.x + 1;
 
-		if (square.h >= 2)
-			square.h -= 2;
+		if (square.bottom - square.y >= 2)
+			square.bottom -= 2;
 		else
-			square.h = 1;
+			square.bottom = square.y + 1;
 	}
 
 	if (_bg != null)
 	{
 		_bg.getCrop().x = getX() + square.x;
 		_bg.getCrop().y = getY() + square.y;
-		_bg.getCrop().w = square.w;
-		_bg.getCrop().h = square.h;
+		_bg.getCrop().w = square.right;
+		_bg.getCrop().h = square.bottom;
 		_bg.setX(square.x);
 		_bg.setY(square.y);
 		_bg.blit(this);

@@ -82,7 +82,11 @@ public CraftWeaponsState(Game game, Base base, int craft, int weapon)
 
 	_btnCancel.setColor(Palette.blockOffset(15)+9);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)CraftWeaponsState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+6);
 	_txtTitle.setBig();
@@ -108,8 +112,8 @@ public CraftWeaponsState(Game game, Base base, int craft, int weapon)
 	_lstWeapons.setBackground(_window);
 	_lstWeapons.setMargin(8);
 
-	_lstWeapons.addRow(1, _game.getLanguage().getString("STR_NONE_UC").c_str());
-	_weapons.add(0);
+	_lstWeapons.addRow(1, _game.getLanguage().getString("STR_NONE_UC"));
+	_weapons.add(null);
 
 	String[] s = new String[]{"STR_STINGRAY", "STR_AVALANCHE", "STR_CANNON_UC"};
 
@@ -119,13 +123,17 @@ public CraftWeaponsState(Game game, Base base, int craft, int weapon)
 		if (_base.getItems().getItem(w.getLauncherItem()) > 0)
 		{
 			_weapons.add(w);
-			WStringstream ss, ss2;
-			ss << _base.getItems().getItem(w.getLauncherItem());
-			ss2 << _base.getItems().getItem(w.getClipItem());
-			_lstWeapons.addRow(3, _game.getLanguage().getString(w.getType()).c_str(), ss.str().c_str(), ss2.str().c_str());
+			StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+			ss.append(_base.getItems().getItem(w.getLauncherItem()));
+			ss2.append(_base.getItems().getItem(w.getClipItem()));
+			_lstWeapons.addRow(3, _game.getLanguage().getString(w.getType())), ss.toString(), ss2.toString());
 		}
 	}
-	_lstWeapons.onMouseClick((ActionHandler)CraftWeaponsState.lstWeaponsClick);
+	_lstWeapons.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstWeaponsClick(action);
+		}
+	});
 }
 
 /**
@@ -148,21 +156,21 @@ public void lstWeaponsClick(Action action)
 	if (current != null)
 	{
 		_base.getItems().addItem(current.getRules().getLauncherItem());
-		_base.getItems().addItem(current.getRules().getClipItem(), (int)floor((double)current.getAmmo() / current.getRules().getRearmRate()));
+		_base.getItems().addItem(current.getRules().getClipItem(), (int)Math.floor((double)current.getAmmo() / current.getRules().getRearmRate()));
 		current = null;
-		_base.getCrafts().at(_craft).getWeapons().at(_weapon) = 0;
+		_base.getCrafts().get(_craft).getWeapons().set(_weapon, null);
 	}
 
 	// Equip new weapon
-	if (_weapons[_lstWeapons.getSelectedRow()] != 0)
+	if (_weapons.get(_lstWeapons.getSelectedRow()) != null)
 	{
-		CraftWeapon sel = new CraftWeapon(_weapons[_lstWeapons.getSelectedRow()], 0);
+		CraftWeapon sel = new CraftWeapon(_weapons.get(_lstWeapons.getSelectedRow()), 0);
 		sel.setRearming(true);
 		_base.getItems().removeItem(sel.getRules().getLauncherItem());
-		_base.getCrafts().at(_craft).getWeapons().at(_weapon) = sel;
-		if (_base.getCrafts().at(_craft).getStatus() == "STR_READY")
+		_base.getCrafts().get(_craft).getWeapons().set(_weapon, sel);
+		if (_base.getCrafts().get(_craft).getStatus().equals("STR_READY"))
 		{
-			_base.getCrafts().at(_craft).setStatus("STR_REARMING");
+			_base.getCrafts().get(_craft).setStatus("STR_REARMING");
 		}
 	}
 

@@ -24,8 +24,8 @@ import putzworks.openXcom.Battlescape.Position;
 import putzworks.openXcom.Engine.RNG;
 import putzworks.openXcom.Engine.Surface;
 import putzworks.openXcom.Ruleset.MapData;
-import putzworks.openXcom.Ruleset.MapData.MovementType;
 import putzworks.openXcom.Ruleset.MapDataSet;
+import putzworks.openXcom.Ruleset.MapData.MovementType;
 
 public class Tile
 {
@@ -83,12 +83,13 @@ public void clearTile()
  * Get the MapData pointer of a part of the tile.
  * @param part the part 0-3.
  * @return pointer to mapdata
+ * @throws Exception 
  */
 public MapData getMapData(int part)
 {
 	if (part < 0 || part > 3)
 	{
-		throw Exception("unkown MapDataID part");
+		throw new Exception("unkown MapDataID part");
 	}
 	return _objects[part];
 }
@@ -367,14 +368,14 @@ public void destroy(int part)
 	{
 		MapData originalPart = _objects[part];
 		setMapData(null, part);
-		if (originalPart.getDieMCD())
+		if (originalPart.getDieMCD() != 0)
 		{
 			MapData dead = originalPart.getDataset().getObjects().get(originalPart.getDieMCD());
 			setMapData(dead, dead.getObjectType());
 		}
 	}
 	/* check if the floor on the lowest level is gone */
-	if (part == MapData.O_FLOOR && getPosition().z == 0 && _objects[MapData.O_FLOOR] == 0)
+	if (part == MapData.O_FLOOR && getPosition().z == 0 && _objects[MapData.O_FLOOR] == null)
 	{
 		/* replace with scourched earth */
 		setMapData(MapDataSet.getScourgedEarthTile(), MapData.O_FLOOR);
@@ -399,7 +400,7 @@ public void damage(int part, int power)
  */
 public void setExplosive(int power)
 {
-	if (_explosive)
+	if (_explosive != 0)
 	{
 		_explosive = (_explosive + power) / 2;
 	}
@@ -419,7 +420,7 @@ public void detonate()
 {
 	int decrease;
 
-	if (_explosive)
+	if (_explosive != 0)
 	{
 		// explosions create smoke which only stays 1 or 2 turns
 		addSmoke(1);

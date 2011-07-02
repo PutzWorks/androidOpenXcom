@@ -79,7 +79,11 @@ public BuildFacilitiesState(Game game, Base base, State state)
 
 	_btnOk.setColor(Palette.blockOffset(13)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)BuildFacilitiesState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13));
 	_txtTitle.setBig();
@@ -92,7 +96,11 @@ public BuildFacilitiesState(Game game, Base base, State state)
 	_lstFacilities.setSelectable(true);
 	_lstFacilities.setBackground(_window);
 	_lstFacilities.setMargin(2);
-	_lstFacilities.onMouseClick((ActionHandler)BuildFacilitiesState.lstFacilitiesClick);
+	_lstFacilities.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstFacilitiesClick(action);
+		}
+	});
 
 	_facilities.add(_game.getRuleset().getBaseFacility("STR_LIVING_QUARTERS"));
 	_facilities.add(_game.getRuleset().getBaseFacility("STR_LABORATORY"));
@@ -106,7 +114,7 @@ public BuildFacilitiesState(Game game, Base base, State state)
 
 	for (RuleBaseFacility i: _facilities)
 	{
-		_lstFacilities.addRow(1, _game.getLanguage().getString((i).getType()).c_str());
+		_lstFacilities.addRow(1, _game.getLanguage().getString((i).getType()));
 	}
 }
 
@@ -134,7 +142,7 @@ public void btnOkClick(Action action)
  */
 public void lstFacilitiesClick(Action action)
 {
-	_game.pushState(new PlaceFacilityState(_game, _base, _facilities[_lstFacilities.getSelectedRow()]));
+	_game.pushState(new PlaceFacilityState(_game, _base, _facilities.get(_lstFacilities.getSelectedRow())));
 }
 
 }

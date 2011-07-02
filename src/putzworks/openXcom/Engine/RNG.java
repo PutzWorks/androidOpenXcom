@@ -18,28 +18,32 @@
  */
 package putzworks.openXcom.Engine;
 
+import java.util.Random;
+
 public class RNG
 {
 	private static int _seed;
-	private RNG();
-	private ~RNG();
+	static double y2;
+	static int use_last = 0;
+	static Random generator = new Random();
+	static final int RAND_MAX = 2147483640;
 
 /**
  * Seeds the random generator with a new number.
  * Defaults to the current time if none is set.
  * @param seed New seed.
  */
-public void init(int seed)
+public static void init(int seed)
 {
 	if (seed == -1)
 	{
-		_seed = (int)time(null);
+		_seed = (int)System.currentTimeMillis();
 	}
 	else
 	{
 		_seed = seed;
 	}
-	srand(_seed);
+	generator = new Random(_seed);
 }
 
 /**
@@ -59,7 +63,7 @@ public int getSeed()
  */
 public static int generate(int min, int max)
 {
-	_seed = rand();
+	_seed = generator.nextInt();
 	return (_seed % (max - min + 1) + min);
 }
 
@@ -71,7 +75,7 @@ public static int generate(int min, int max)
  */
 public static double generate(double min, double max)
 {
-	_seed = rand();
+	_seed = generator.nextInt();
 	return (_seed * (max - min) / RAND_MAX + min);
 }
 
@@ -84,10 +88,8 @@ public static double generate(double min, double max)
 public static double boxMuller(double m, double s)	
 {
 	double x1, x2, w, y1;
-	static double y2;
-	static int use_last = 0;
 
-	if (use_last)		        /* use value from previous call */
+	if (use_last != 0)		        /* use value from previous call */
 	{
 		y1 = y2;
 		use_last = 0;
@@ -100,7 +102,7 @@ public static double boxMuller(double m, double s)
 			w = x1 * x1 + x2 * x2;
 		} while ( w >= 1.0 );
 
-		w = sqrt( (-2.0 * log( w ) ) / w );
+		w = Math.sqrt( (-2.0 * Math.log( w ) ) / w );
 		y1 = x1 * w;
 		y2 = x2 * w;
 		use_last = 1;

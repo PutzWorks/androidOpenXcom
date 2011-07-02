@@ -109,27 +109,51 @@ public CraftInfoState(Game game, Base base, int craft)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftInfoState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnW1.setColor(Palette.blockOffset(13)+13);
-	_btnW1.setText(L"1");
-	_btnW1.onMouseClick((ActionHandler)CraftInfoState.btnW1Click);
+	_btnW1.setText("1");
+	_btnW1.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnW1Click(action);
+		}
+	});
 
 	_btnW2.setColor(Palette.blockOffset(13)+13);
-	_btnW2.setText(L"2");
-	_btnW2.onMouseClick((ActionHandler)CraftInfoState.btnW2Click);
+	_btnW2.setText("2");
+	_btnW2.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnW2Click(action);
+		}
+	});
 
 	_btnCrew.setColor(Palette.blockOffset(13)+13);
 	_btnCrew.setText(_game.getLanguage().getString("STR_CREW"));
-	_btnCrew.onMouseClick((ActionHandler)CraftInfoState.btnCrewClick);
+	_btnCrew.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCrewClick(action);
+		}
+	});
 
 	_btnEquip.setColor(Palette.blockOffset(13)+13);
 	_btnEquip.setText(_game.getLanguage().getString("STR_EQUIPMENT_UC"));
-	_btnEquip.onMouseClick((ActionHandler)CraftInfoState.btnEquipClick);
+	_btnEquip.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnEquipClick(action);
+		}
+	});
 
 	_btnArmor.setColor(Palette.blockOffset(13)+13);
 	_btnArmor.setText(_game.getLanguage().getString("STR_ARMOR"));
-	_btnArmor.onMouseClick((ActionHandler)CraftInfoState.btnArmorClick);
+	_btnArmor.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnArmorClick(action);
+		}
+	});
 
 	_txtCraft.setColor(Palette.blockOffset(13)+10);
 	_txtCraft.setBig();
@@ -167,7 +191,7 @@ public void init()
 	// Set palette
 	_game.setPalette(_game.getResourcePack().getPalette("BACKPALS.DAT").getColors(Palette.blockOffset(3)), Palette.backPos, 16);
 
-	Craft c = _base.getCrafts().at(_craft);
+	Craft c = _base.getCrafts().get(_craft);
 
 	_txtCraft.setText(c.getName(_game.getLanguage()));
 
@@ -176,12 +200,12 @@ public void init()
 	texture.getFrame(c.getRules().getSprite() + 33).setY(0);
 	texture.getFrame(c.getRules().getSprite() + 33).blit(_sprite);
 
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_DAMAGE_UC_") << L'\x01' << c.getDamagePercentage() << "%";
-	_txtDamage.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_DAMAGE_UC_") + '\x01' + c.getDamagePercentage() + "%");
+	_txtDamage.setText(ss.toString());
 
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_FUEL") << L'\x01' << c.getFuelPercentage() << "%";
+	StringBuffer ss2 = new StringBuffer;
+	ss2.append(_game.getLanguage().getString("STR_FUE") + '\x01' + c.getFuelPercentage() + "%");
 	_txtFuel.setText(ss2.str());
 
 	if (c.getRules().getSoldiers() > 0)
@@ -227,20 +251,20 @@ public void init()
 
 			_txtW1Name.setText(_game.getLanguage().getString(w1.getRules().getType()));
 
-			WStringstream ss3;
-			ss3 << _game.getLanguage().getString("STR_AMMO_") << L'\x01' << w1.getAmmo();
-			_txtW1Ammo.setText(ss3.str());
+			StringBuffer ss3 = new StringBuffer();
+			ss3.append(_game.getLanguage().getString("STR_AMMO_") + '\x01' + w1.getAmmo());
+			_txtW1Ammo.setText(ss3.toString());
 
-			WStringstream ss4;
-			ss4 << _game.getLanguage().getString("STR_MAX") << L'\x01' << w1.getRules().getAmmoMax();
-			_txtW1Max.setText(ss4.str());
+			StringBuffer ss4 = new StringBuffer();
+			ss4.append(_game.getLanguage().getString("STR_MAX") + '\x01' + w1.getRules().getAmmoMax());
+			_txtW1Max.setText(ss4.toString());
 		}
 		else
 		{
 			_weapon1.clear();
-			_txtW1Name.setText(L"");
-			_txtW1Ammo.setText(L"");
-			_txtW1Max.setText(L"");
+			_txtW1Name.setText("");
+			_txtW1Ammo.setText("");
+			_txtW1Max.setText("");
 		}
 	}
 	else
@@ -254,7 +278,7 @@ public void init()
 
 	if (c.getRules().getWeapons() > 1)
 	{
-		CraftWeapon w2 = c.getWeapons().at(1);
+		CraftWeapon w2 = c.getWeapons().get(1);
 
 		if (w2 != 0)
 		{
@@ -265,20 +289,20 @@ public void init()
 
 			_txtW2Name.setText(_game.getLanguage().getString(w2.getRules().getType()));
 
-			WStringstream ss5;
-			ss5 << _game.getLanguage().getString("STR_AMMO_") << L'\x01' << w2.getAmmo();
-			_txtW2Ammo.setText(ss5.str());
+			StringBuffer ss5 = new StringBuffer();
+			ss5.append(_game.getLanguage().getString("STR_AMMO_") + '\x01' + w2.getAmmo());
+			_txtW2Ammo.setText(ss5.toString());
 
-			WStringstream ss6;
-			ss6 << _game.getLanguage().getString("STR_MAX") << L'\x01' << w2.getRules().getAmmoMax();
-			_txtW2Max.setText(ss6.str());
+			StringBuffer ss6 = new StringBuffer();
+			ss6.append(_game.getLanguage().getString("STR_MAX") + '\x01' + w2.getRules().getAmmoMax());
+			_txtW2Max.setText(ss6.toString());
 		}
 		else
 		{
 			_weapon2.clear();
-			_txtW2Name.setText(L"");
-			_txtW2Ammo.setText(L"");
-			_txtW2Max.setText(L"");
+			_txtW2Name.setText("");
+			_txtW2Ammo.setText("");
+			_txtW2Max.setText("");
 		}
 	}
 	else

@@ -44,8 +44,6 @@ public class Position
 		z = pos.z;
 	}
 
-	//TODO reimplement these operators...
-	
 	public Position set(final Position pos) { x = pos.x; y = pos.y; z = pos.z; return this;}
 	//Position& operator=(const Position& pos) { x = pos.x; y = pos.y; z = pos.z; return *this; }
 

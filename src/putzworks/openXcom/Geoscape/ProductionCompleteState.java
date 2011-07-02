@@ -39,7 +39,7 @@ public class ProductionCompleteState extends State
  * @param item Item that finished producing.
  * @param base Base the item belongs to.
  */
-public ProductionCompleteState(Game game, final WString item, final WString base)
+public ProductionCompleteState(Game game, final String item, final String base)
 {
 	super(game);
 	_screen = false;
@@ -62,14 +62,18 @@ public ProductionCompleteState(Game game, final WString item, final WString base
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ProductionCompleteState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtMessage.setColor(Palette.blockOffset(15)-1);
 	_txtMessage.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtMessage.setVerticalAlign(TextVAlign.ALIGN_MIDDLE);
 	_txtMessage.setBig();
 	_txtMessage.setWordWrap(true);
-	WString s = _game.getLanguage().getString("STR_PRODUCTION_OF");
+	String s = _game.getLanguage().getString("STR_PRODUCTION_OF");
 	s += item;
 	s += _game.getLanguage().getString("STR__AT__");
 	s += base;

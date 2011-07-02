@@ -24,6 +24,7 @@ import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Savegame.Base;
 
 public class ResearchState extends State
@@ -80,7 +81,11 @@ public ResearchState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ResearchState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
@@ -89,15 +94,15 @@ public ResearchState(Game game, Base base)
 
 	_txtAvailable.setColor(Palette.blockOffset(13)+10);
 	_txtAvailable.setSecondaryColor(Palette.blockOffset(13));
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_SCIENTISTS_AVAILABLE") << L'\x01' << _base.getAvailableScientists();
-	_txtAvailable.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_SCIENTISTS_AVAILABLE") + '\x01' + _base.getAvailableScientists()_;
+	_txtAvailable.setText(ss.toString());
 
 	_txtAllocated.setColor(Palette.blockOffset(13)+10);
 	_txtAllocated.setSecondaryColor(Palette.blockOffset(13));
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_SCIENTISTS_ALLOCATED") << L'\x01' << (_base.getTotalScientists() - _base.getAvailableScientists());
-	_txtAllocated.setText(ss2.str());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_game.getLanguage().getString("STR_SCIENTISTS_ALLOCATED") + '\x01' + (_base.getTotalScientists() - _base.getAvailableScientists()));
+	_txtAllocated.setText(ss2.toString());
 
 	_txtSpace.setColor(Palette.blockOffset(13)+10);
 	_txtSpace.setSecondaryColor(Palette.blockOffset(13));

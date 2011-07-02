@@ -52,6 +52,11 @@ public void setColor(short color)
 	_color = color;
 }
 
+public void setColor(int color)
+{
+	_color = (short)color;
+}
+
 /**
  * Returns the color for the image button.
  * @return Color value.

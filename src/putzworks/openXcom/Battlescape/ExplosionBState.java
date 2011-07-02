@@ -90,7 +90,7 @@ public void think()
 		++inext;
 		if(!(i).animate())
 		{
-			_parent.getMap().getExplosions().remove((i));
+			_parent.getMap().getExplosions().erase((i));
 			if (_parent.getMap().getExplosions().isEmpty())
 			{
 				SavedBattleGame save = _parent.getGame().getSavedGame().getBattleGame();

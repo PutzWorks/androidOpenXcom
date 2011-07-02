@@ -133,7 +133,7 @@ public void unpress(State state)
  */
 public final Text getCell(int row, int col)
 {
-	return _texts[row][col];
+	return _texts.get(row).get(col);
 }
 
 /**
@@ -142,7 +142,7 @@ public final Text getCell(int row, int col)
  * @param cols Number of columns.
  * @param ... Text for each cell in the new row.
  */
-public void addRow(int cols)//, ...)
+public void addRow(int cols, ...)
 {
 	va_list args;
 	va_start(args, cols);
@@ -152,7 +152,7 @@ public void addRow(int cols)//, ...)
 	for (int i = 0; i < cols; i++)
 	{
 		// Place text
-		Text txt = new Text(_columns[i], _font.getHeight(), _margin + rowX, getY());
+		Text txt = new Text(_columns.get(i), _font.getHeight(), _margin + rowX, getY());
 		txt.setPalette(this.getPalette());
 		txt.setFonts(_big, _small);
 		txt.setColor(_color);
@@ -171,9 +171,9 @@ public void addRow(int cols)//, ...)
 		// Places dots between text
 		if (_dot && i < cols - 1)
 		{
-			WString buf = txt.getText();
+			String buf = txt.getText();
 			int w = txt.getTextWidth();
-			while (w < _columns[i])
+			while (w < _columns.get(i))
 			{
 				w += _font.getChar('.').getCrop().w + _font.getSpacing();
 				buf += '.';
@@ -188,7 +188,7 @@ public void addRow(int cols)//, ...)
 		}
 		else
 		{
-			rowX += _columns[i];
+			rowX += _columns.get(i);
 		}
 	}
 	_texts.add(temp);
@@ -258,9 +258,9 @@ public void setColumns(int cols, ...)
 public void setPalette(SDL_Color colors, int firstcolor, int ncolors)
 {
 	super.setPalette(colors, firstcolor, ncolors);
-	for (Vector< Vector<Text> >.iterator u = _texts.begin(); u < _texts.end(); ++u)
+	for (Vector<Text> u: _texts)
 	{
-		for (Vector<Text>.iterator v = u.begin(); v < u.end(); ++v)
+		for (Text v: u)
 		{
 			(v).setPalette(colors, firstcolor, ncolors);
 		}
@@ -566,11 +566,11 @@ public void onRightArrowRelease(ActionHandler handler)
  */
 public void clearList()
 {
-	for (Vector< Vector<Text*> >.iterator u = _texts.begin(); u < _texts.end(); ++u)
+	for (Vector<Text> u: _texts)
 	{
-		for (Vector<Text*>.iterator v = u.begin(); v < u.end(); ++v)
+		for (Text v: u)
 		{
-			delete (*v);
+			v = null;
 		}
 		u.clear();
 	}
@@ -621,7 +621,7 @@ public void draw()
 	clear();
 	for (int i = _scroll; i < _texts.size() && i < _scroll + _visibleRows; i++)
 	{
-		for (Text j: _texts[i])
+		for (Text j: _texts.get(i))
 		{
 			(j).setY((i - _scroll) * (_font.getHeight() + _font.getSpacing()));
             (j).blit(this);
@@ -648,10 +648,10 @@ public void blit(Surface surface)
 		{
 			for (int i = _scroll; i < _texts.size() && i < _scroll + _visibleRows; i++)
 			{
-				_arrowLeft[i].setY(getY() + (i - _scroll) * (_font.getHeight() + _font.getSpacing()));
-				_arrowLeft[i].blit(surface);
-				_arrowRight[i].setY(getY() + (i - _scroll) * (_font.getHeight() + _font.getSpacing()));
-				_arrowRight[i].blit(surface);
+				_arrowLeft.get(i).setY(getY() + (i - _scroll) * (_font.getHeight() + _font.getSpacing()));
+				_arrowLeft.get(i).blit(surface);
+				_arrowRight.get(i).setY(getY() + (i - _scroll) * (_font.getHeight() + _font.getSpacing()));
+				_arrowRight.get(i).blit(surface);
 			}
 		}
 	}
@@ -671,8 +671,8 @@ public void handle(Action action, State state)
 	{
 		for (int i = _scroll; i < _texts.size() && i < _scroll + _visibleRows; i++)
 		{
-			_arrowLeft[i].handle(action, state);
-			_arrowRight[i].handle(action, state);
+			_arrowLeft.get(i).handle(action, state);
+			_arrowRight.get(i).handle(action, state);
 		}
 	}
 }
@@ -762,7 +762,7 @@ public void mouseOver(Action action, State state)
 	{
 		int h = _font.getHeight() + _font.getSpacing();
 		double y = action.getYMouse() - getY() * action.getYScale();
-		_selRow = _scroll + (int)floor(y / (h * action.getYScale()));
+		_selRow = _scroll + (int)Math.floor(y / (h * action.getYScale()));
 
 		if (_selRow < _texts.size())
 		{

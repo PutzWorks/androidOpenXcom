@@ -77,7 +77,11 @@ public BaseNameState(Game game, Base base, Globe globe, boolean first)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)BaseNameState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+5);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
@@ -87,7 +91,11 @@ public BaseNameState(Game game, Base base, Globe globe, boolean first)
 	_edtName.setColor(Palette.blockOffset(8)+5);
 	_edtName.setBig();
 	_edtName.focus();
-	_edtName.onKeyboardPress((ActionHandler)BaseNameState.edtNameKeyPress);
+	_edtName.onKeyboardPress(new ActionHandler() {
+		public void handle(Action action) {
+			edtNameKeyPress(action);
+		}
+	});
 }
 
 /**

@@ -33,7 +33,7 @@ public class RuleUfo
 public RuleUfo(String type)
 {
 	_type = type;
-	_size = "STR_VERY_SMALL";
+	_size = "STR_VERY_SMAL";
 	_sprite = -1;
 	_damageMax = 0;
 	_speedMax = 0;
@@ -80,11 +80,11 @@ public void setSize(String size)
  */
 public final int getRadius()
 {
-	if (_size == "STR_VERY_SMALL")
+	if (_size == "STR_VERY_SMAL")
 	{
 		return 2;
 	}
-	else if (_size == "STR_SMALL")
+	else if (_size == "STR_SMAL")
 	{
 		return 3;
 	}

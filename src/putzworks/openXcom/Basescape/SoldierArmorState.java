@@ -20,7 +20,9 @@ package putzworks.openXcom.Basescape;
 
 import putzworks.openXcom.Engine.*;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Savegame.Base;
+import putzworks.openXcom.Savegame.Soldier;
 
 public class SoldierArmorState extends State
 {
@@ -72,7 +74,11 @@ public SoldierArmorState(Game game, Base base, int soldier)
 
 	_btnCancel.setColor(Palette.blockOffset(13)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)SoldierArmorState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+5);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
@@ -80,7 +86,7 @@ public SoldierArmorState(Game game, Base base, int soldier)
 
 	_txtSoldier.setColor(Palette.blockOffset(13)+5);
 	_txtSoldier.setAlign(TextHAlign.ALIGN_CENTER);
-	Soldier *s = _base.getSoldiers().at(_soldier);
+	Soldier s = _base.getSoldiers().get(_soldier);
 	_txtSoldier.setText(s.getName());
 
 	_txtType.setColor(Palette.blockOffset(13)+5);
@@ -95,9 +101,13 @@ public SoldierArmorState(Game game, Base base, int soldier)
 	_lstArmor.setSelectable(true);
 	_lstArmor.setBackground(_window);
 	_lstArmor.setMargin(8);
-	_lstArmor.onMouseClick((ActionHandler)SoldierArmorState.lstArmorClick);
+	_lstArmor.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstArmorClick(action);
+		}
+	});
 
-	_lstArmor.addRow(1, _game.getLanguage().getString("STR_NONE_UC").c_str());
+	_lstArmor.addRow(1, _game.getLanguage().getString("STR_NONE_UC"));
 }
 
 /**

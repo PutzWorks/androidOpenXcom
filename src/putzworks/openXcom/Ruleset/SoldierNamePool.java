@@ -18,21 +18,23 @@
  */
 package putzworks.openXcom.Ruleset;
 
+import java.util.Vector;
+
 import putzworks.openXcom.Engine.RNG;
 
 public class SoldierNamePool
 {
-	Vector<WString> _maleFirst, _femaleFirst, _maleLast, _femaleLast;
+	Vector<String> _maleFirst, _femaleFirst, _maleLast, _femaleLast;
 
 /**
  * Initializes a new pool with blank lists of names.
  */
 public SoldierNamePool()
 {
-	_maleFirst = new Vector<WString>();
-	_femaleFirst = new Vector<WString>();
-	_maleLast = new Vector<WString>();
-	_femaleLast = new Vector<WString>();
+	_maleFirst = new Vector<String>();
+	_femaleFirst = new Vector<String>();
+	_maleLast = new Vector<String>();
+	_femaleLast = new Vector<String>();
 
 }
 
@@ -48,7 +50,7 @@ public void load(final String filename)
 	std.ifstream fin(s.c_str());
 	if (!fin)
 	{
-		throw Exception("Failed to load name pool");
+		throw new Exception("Failed to load name pool");
 	}
     YAML.Parser parser(fin);
 	YAML.Node doc;
@@ -95,25 +97,25 @@ public void load(final String filename)
  * @param gender Returned gender of the name.
  * @return Soldier name.
  */
-public final WString genName(int gender)
+public final String genName(int gender)
 {
-	WStringstream name;
+	StringBuffer name = new StringBuffer();
 	int first = RNG.generate(1, _maleFirst.size() + _femaleFirst.size());
 	if (first <= _maleFirst.size())
 	{
 		gender = 0;
-		name << _maleFirst[first - 1];
+		name.append(_maleFirst.get(first - 1));
 		int last = RNG.generate(1, _maleLast.size());
-		name << " " << _maleLast[last - 1];
+		name.append(" " + _maleLast.get(last - 1));
 	}
 	else
 	{
 		gender = 1;
-		name << _femaleFirst[first - _maleFirst.size() - 1];
+		name.append(_femaleFirst.get(first - _maleFirst.size() - 1));
 		int last = RNG.generate(1, _femaleLast.size());
-		name << " " << _femaleLast[last - 1];
+		name.append(" " + _femaleLast.get(last - 1));
 	}
-	return name.str();
+	return name.toString();
 }
 
 }

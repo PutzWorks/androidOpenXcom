@@ -20,7 +20,7 @@ package putzworks.openXcom.Engine;
 
 public class Action
 {
-	private SDL_Event _ev;
+	private Object _ev;//SDL_Event _ev;
 	private double _scaleX, _scaleY;
 	private int _mouseX, _mouseY;
 	private InteractiveSurface _sender;
@@ -31,7 +31,7 @@ public class Action
  * @param scaleY Screen's Y scaling factor.
  * @param ev Pointer to SDL_event.
  */
-public Action(SDL_Event ev, double scaleX, double scaleY)
+public Action(Object ev, double scaleX, double scaleY)
 {
 		_ev = ev; 
 		_scaleX = scaleX;
@@ -127,7 +127,7 @@ public void setSender(InteractiveSurface sender)
  * Returns the details about this action.
  * @return Pointer to SDL_event.
  */
-public final SDL_Event getDetails()
+public final Object getDetails()
 {
 	return _ev;
 }

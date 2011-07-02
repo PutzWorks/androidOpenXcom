@@ -18,13 +18,11 @@
  */
 package putzworks.openXcom.Engine;
 
-import android.graphics.Rect;
-
 public class Surface
 {
 	protected SDL_Surface _surface;
 	protected int _x, _y;
-	protected Rect _crop;
+	protected Rectangle _crop;
 	protected boolean _visible, _hidden;
 
 /**
@@ -53,10 +51,10 @@ public Surface(int width, int height, int x, int y)
 
 	SDL_SetColorKey(_surface, SDL_SRCCOLORKEY, 0);
 
-	_crop.left = 0;
-	_crop.top = 0;
-	_crop.right = 0;
-	_crop.bottom = 0;
+	_crop.x = 0;
+	_crop.y = 0;
+	_crop.w = 0;
+	_crop.h = 0;
 }
 
 /**
@@ -67,10 +65,10 @@ public Surface(final Surface other)
 {
 	_x = other._x;
 	_y = other._y;
-	_crop.top = other._crop.top;
-	_crop.left = other._crop.left;
-	_crop.bottom = other._crop.bottom;
-	_crop.right = other._crop.right;
+	_crop.y = other._crop.y;
+	_crop.x = other._crop.x;
+	_crop.w = other._crop.w;
+	_crop.h = other._crop.h;
 	_visible = other._visible;
 	_hidden = other._hidden;
 	_surface = SDL_ConvertSurface(other._surface, other._surface.format, other._surface.flags);
@@ -95,7 +93,7 @@ public void loadScr(final String filename)
 {
 	// Load file and put pixels in surface
 	std.ifstream imgFile (filename.c_str(), std.ios.in | std.ios.binary);
-	if (imgFile == null)
+	if (!imgFile)
 	{
 		throw Exception("Failed to load SCR");
 	}
@@ -178,12 +176,12 @@ public void loadSpk(final String filename)
  */
 public void clear()
 {
-	Rect square;
-	square.left = 0;
-	square.top = 0;
-	square.right = getWidth();
-	square.bottom = getHeight();
-	SDL_FillRect(_surface, square, 0);
+	Rectangle square;
+	square.x = 0;
+	square.y = 0;
+	square.w = getWidth();
+	square.h = getHeight();
+	SDL_FillRectangle(_surface, square, 0);
 }
 
 /**
@@ -306,7 +304,7 @@ public void setShade(int shade)
 	for (int x = 0, y = 0; x < _surface.w && y < _surface.h;)
 	{
 		short pixel = getPixel(x, y);
-		if (pixel != null)
+		if (pixel != 0)
 		{
 			int baseColor = pixel/16;
 			int originalShade = pixel%16;
@@ -363,9 +361,9 @@ public void blit(Surface surface)
 {
 	if (_visible && !_hidden)
 	{
-		Rect cropper;
-		Rect target;
-		if (_crop.right - _crop.left == 0 && _crop.bottom - _crop.top == 0)
+		Rectangle cropper;
+		Rectangle target;
+		if (_crop.w == 0 && _crop.h == 0)
 		{
 			cropper = null;
 		}
@@ -373,8 +371,8 @@ public void blit(Surface surface)
 		{
 			cropper = _crop;
 		}
-		target.left = getX();
-		target.top = getY();
+		target.x = getX();
+		target.y = getY();
 		SDL_BlitSurface(_surface, cropper, surface.getSurface(), target);
 	}
 }
@@ -388,11 +386,11 @@ public void blit(Surface surface)
  */
 public void copy(Surface surface)
 {
-	Rect from;
-	from.left = getX() - surface.getX();
-	from.top = getY() - surface.getY();
-	from.right = from.left + getWidth();
-	from.bottom = from.top + getHeight();
+	Rectangle from;
+	from.x = getX() - surface.getX();
+	from.y = getY() - surface.getY();
+	from.w = getWidth();
+	from.h = getHeight();
 	SDL_BlitSurface(surface.getSurface(), from, _surface, 0);
 }
 
@@ -430,12 +428,17 @@ public void maskedCopy(Surface surface, short mask)
 
 /**
  * Draws a filled rectangle on the surface.
- * @param rect Pointer to Rect.
+ * @param rect Pointer to Rectangle.
  * @param color Color of the rectangle.
  */
-public void drawRect(Rect rect, short color)
+public void drawRectangle(Rectangle rect, short color)
 {
-    SDL_FillRect(_surface, rect, color);
+    SDL_FillRectangle(_surface, rect, color);
+}
+
+public void drawRectangle(Rectangle rect, int color)
+{
+    SDL_FillRectangle(_surface, rect, (short)color);
 }
 
 /**
@@ -466,6 +469,11 @@ public void drawLine(int x1, int y1, int x2, int y2, int color)
 public void drawCircle(int x, int y, int r, short color)
 {
     filledCircleColor(_surface, x, y, r, Palette.getRGBA(getPalette(), color));
+}
+
+public void drawCircle(int x, int y, int r, int color)
+{
+    filledCircleColor(_surface, x, y, r, Palette.getRGBA(getPalette(), (short)color));
 }
 
 /**
@@ -548,17 +556,17 @@ public final int getY()
  */
 public void resetCrop()
 {
-	_crop.top = 0;
-	_crop.bottom = 0;
-	_crop.left = 0;
-	_crop.right = 0;
+	_crop.y = 0;
+	_crop.h = 0;
+	_crop.x = 0;
+	_crop.w = 0;
 }
 
 /**
  * Returns the cropping rectangle for this surface.
  * @return Pointer to the cropping rectangle.
  */
-public Rect getCrop()
+public Rectangle getCrop()
 {
 	return _crop;
 }

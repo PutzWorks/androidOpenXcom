@@ -82,19 +82,35 @@ public class UfopaediaStartState extends State
 		
 		_btnOk.setColor(Palette.blockOffset(8)+8);
 		_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-		_btnOk.onMouseClick((ActionHandler)UfopaediaStartState.btnOkClick);
+		_btnOk.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnOkClick(action);
+			}
+		});
 		
 		_btnCraftArmament.setColor(Palette.blockOffset(8)+8);
 		_btnCraftArmament.setText(_game.getLanguage().getString("STR_XCOM_CRAFT_ARMAMENT"));
-		_btnCraftArmament.onMouseClick((ActionHandler)UfopaediaStartState.btnCraftArmamentClick);
+		_btnCraftArmament.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnCraftArmamentClick(action);
+			}
+		});
 
 		_btnAlienLifeforms.setColor(Palette.blockOffset(8)+8);
 		_btnAlienLifeforms.setText(_game.getLanguage().getString("STR_ALIEN_LIFE_FORMS"));
-		_btnAlienLifeforms.onMouseClick((ActionHandler)UfopaediaStartState.btnAlienLifeformsClick);
+		_btnAlienLifeforms.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnAlienLifeformsClick(action);
+			}
+		});
 		
 		_btnAlienResearch.setColor(Palette.blockOffset(8)+8);
 		_btnAlienResearch.setText(_game.getLanguage().getString("STR_ALIEN_RESEARCH_UC"));
-		_btnAlienResearch.onMouseClick((ActionHandler)UfopaediaStartState.btnAlienResearchClick);
+		_btnAlienResearch.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnAlienResearchClick(action);
+			}
+		});
 	}
 	
 	/**

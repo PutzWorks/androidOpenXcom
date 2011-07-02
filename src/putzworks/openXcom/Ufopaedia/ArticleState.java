@@ -61,11 +61,23 @@ public class ArticleState extends State
 		add(_btnNext);
 		
 		_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-		_btnOk.onMouseClick((ActionHandler)ArticleState.btnOkClick);
-		_btnPrev.setText(L"<<");
-		_btnPrev.onMouseClick((ActionHandler)ArticleState.btnPrevClick);
-		_btnNext.setText(L">>");
-		_btnNext.onMouseClick((ActionHandler)ArticleState.btnNextClick);
+		_btnOk.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnOkClick(action);
+			}
+		});
+		_btnPrev.setText("<<");
+		_btnPrev.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnPrevClick(action);
+			}
+		});
+		_btnNext.setText(">>");
+		_btnNext.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnNextClick(action);
+			}
+		});
 	}
 	
 	/**

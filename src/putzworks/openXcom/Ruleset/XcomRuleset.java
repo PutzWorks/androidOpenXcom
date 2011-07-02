@@ -24,6 +24,7 @@ import putzworks.openXcom.Savegame.Base;
 import putzworks.openXcom.Savegame.BaseFacility;
 import putzworks.openXcom.Savegame.Country;
 import putzworks.openXcom.Savegame.Craft;
+import putzworks.openXcom.Savegame.CraftWeapon;
 import putzworks.openXcom.Savegame.Region;
 import putzworks.openXcom.Savegame.SavedGame;
 import putzworks.openXcom.Savegame.SavedGame.GameDifficulty;
@@ -127,7 +128,7 @@ public XcomRuleset()
 	india.setLabelLongitude(1.39626);
 	india.setLabelLatitude(-0.418879);
 
-	RuleCountry brazil = new RuleCountry("STR_BRAZIL");
+	RuleCountry brazil = new RuleCountry("STR_BRAZI");
 	brazil.setMinFunding(300);
 	brazil.setMaxFunding(600);
 	brazil.setLabelLongitude(5.32325);
@@ -174,7 +175,7 @@ public XcomRuleset()
 	_countries.put("STR_CHINA", (RuleCountry)china);
 	_countries.put("STR_JAPAN", (RuleCountry)japan);
 	_countries.put("STR_INDIA", (RuleCountry)india);
-	_countries.put("STR_BRAZIL", (RuleCountry)brazil);
+	_countries.put("STR_BRAZI", (RuleCountry)brazil);
 	_countries.put("STR_AUSTRALIA", (RuleCountry)australia);
 	_countries.put("STR_NIGERIA", (RuleCountry)nigeria);
 	_countries.put("STR_SOUTH_AFRICA", (RuleCountry)africa);
@@ -190,7 +191,7 @@ public XcomRuleset()
 	namerica.getCities().add(new City("STR_NEW_YORK", 4.99382, -0.711222));
 	namerica.getCities().add(new City("STR_WASHINGTON", 4.9371, -0.676315));
 	namerica.getCities().add(new City("STR_LOS_ANGELES", 4.21933, -0.595594));
-	namerica.getCities().add(new City("STR_MONTREAL", 4.9611, -0.794125));
+	namerica.getCities().add(new City("STR_MONTREA", 4.9611, -0.794125));
 	namerica.getCities().add(new City("STR_HAVANA", 4.84547, -0.392699));
 	namerica.getCities().add(new City("STR_MEXICO_CITY", 4.55313, -0.338158));
 	namerica.getCities().add(new City("STR_CHICAGO", 4.75384, -0.730857));
@@ -266,7 +267,7 @@ public XcomRuleset()
 	seasia.getCities().add(new City("STR_BEIJING", 2.03113, -0.69595));
 	seasia.getCities().add(new City("STR_BANGKOK", 1.75624, -0.237801));
 	seasia.getCities().add(new City("STR_MANILA", 2.11185, -0.255254));
-	seasia.getCities().add(new City("STR_SEOUL", 2.21657, -0.654498));
+	seasia.getCities().add(new City("STR_SEOU", 2.21657, -0.654498));
 	seasia.getCities().add(new City("STR_SINGAPORE", 1.81296, -0.0239983));
 	seasia.getCities().add(new City("STR_JAKARTA", 1.86314, 0.109083));
 	seasia.getCities().add(new City("STR_SHANGHAI", 2.12058, -0.545415));
@@ -602,7 +603,7 @@ public XcomRuleset()
 	fusion.setAggressiveReload(16);
 	fusion.setAmmoMax(2);
 	fusion.setLauncherItem("STR_FUSION_BALL_LAUNCHER");
-	fusion.setClipItem("STR_FUSION_BALL");
+	fusion.setClipItem("STR_FUSION_BAL");
 
 	_craftWeapons.put("STR_STINGRAY", (RuleCraftWeapon)stingray);
 	_craftWeapons.put("STR_AVALANCHE", (RuleCraftWeapon)avalanche);
@@ -642,7 +643,7 @@ public XcomRuleset()
 	crounds.setCost(1240);
 	crounds.setTransferTime(96);
 
-	RuleItem pistol = new RuleItem("STR_PISTOL");
+	RuleItem pistol = new RuleItem("STR_PISTO");
 	pistol.setSize(0.1f);
 	pistol.setCost(800);
 	pistol.setBigSprite(3);
@@ -888,7 +889,7 @@ public XcomRuleset()
 	_items.put("STR_STINGRAY_MISSILES", smissile);
 	_items.put("STR_AVALANCHE_MISSILES", amissile);
 	_items.put("STR_CANNON_ROUNDS_X50", crounds);
-	_items.put("STR_PISTOL", pistol);
+	_items.put("STR_PISTO", pistol);
 	_items.put("STR_PISTOL_CLIP", pclip);
 	_items.put("STR_RIFLE", rifle);
 	_items.put("STR_RIFLE_CLIP", rclip);
@@ -907,7 +908,7 @@ public XcomRuleset()
 
 	// Add UFOs
 	RuleUfo sscout = new RuleUfo("STR_SMALL_SCOUT");
-	sscout.setSize("STR_VERY_SMALL");
+	sscout.setSize("STR_VERY_SMAL");
 	sscout.setSprite(0);
 	sscout.setMaxSpeed(2200);
 	sscout.setAcceleration(12);
@@ -920,7 +921,7 @@ public XcomRuleset()
 	ruleTerrain.getMapBlocks().add(new MapBlock(ruleTerrain,"UFO1A",10,10,true));
 
 	RuleUfo mscout = new RuleUfo("STR_MEDIUM_SCOUT");
-	mscout.setSize("STR_SMALL");
+	mscout.setSize("STR_SMAL");
 	mscout.setSprite(1);
 	mscout.setMaxSpeed(2400);
 	mscout.setAcceleration(9);
@@ -940,7 +941,7 @@ public XcomRuleset()
 	ruleTerrain.getMapBlocks().add(new MapBlock(ruleTerrain,"UFO_110",10,10,true));
 
 	RuleUfo lscout = new RuleUfo("STR_LARGE_SCOUT");
-	lscout.setSize("STR_SMALL");
+	lscout.setSize("STR_SMAL");
 	lscout.setSprite(2);
 	lscout.setMaxSpeed(2700);
 	lscout.setAcceleration(9);
@@ -1242,7 +1243,7 @@ public XcomRuleset()
 	article_craft.rect_stats.set(160, 5, 140, 60);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles.put(article_craft.id, new ArticleDefinitionCraft(article_craft));
+	_ufopaediaArticles.put(article_craft.id,  new ArticleDefinitionCraft(article_craft));
 	
 	article_craft.id = "STR_LIGHTNING";
 	article_craft.title = "STR_LIGHTNING";
@@ -1253,7 +1254,7 @@ public XcomRuleset()
 	article_craft.rect_stats.set(5, 132, 140, 60);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft.id] = new ArticleDefinitionCraft(article_craft);
+	_ufopaediaArticles.put(article_craft.id, new ArticleDefinitionCraft(article_craft));
 	
 	article_craft.id = "STR_AVENGER";
 	article_craft.title = "STR_AVENGER";
@@ -1264,7 +1265,7 @@ public XcomRuleset()
 	article_craft.rect_stats.set(160, 5, 140, 60);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft.id] = new ArticleDefinitionCraft(article_craft);
+	_ufopaediaArticles.put(article_craft.id, new ArticleDefinitionCraft(article_craft));
 
 	article_craft.id = "STR_INTERCEPTOR";
 	article_craft.title = "STR_INTERCEPTOR";
@@ -1275,7 +1276,7 @@ public XcomRuleset()
 	article_craft.rect_stats.set(5, 110, 140, 60);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft.id] = new ArticleDefinitionCraft(article_craft);
+	_ufopaediaArticles.put(article_craft.id, new ArticleDefinitionCraft(article_craft));
 	
 	article_craft.id = "STR_FIRESTORM";
 	article_craft.title = "STR_FIRESTORM";
@@ -1286,7 +1287,7 @@ public XcomRuleset()
 	article_craft.rect_stats.set(160, 5, 140, 60);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft.id] = new ArticleDefinitionCraft(article_craft);
+	_ufopaediaArticles.put(article_craft.id, new ArticleDefinitionCraft(article_craft));
 	
 	
 	ArticleDefinitionCraftWeapon article_craft_weapon;
@@ -1298,15 +1299,15 @@ public XcomRuleset()
 	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	article_craft_weapon.id = "STR_AVALANCHE";
 	article_craft_weapon.title = "STR_AVALANCHE";
 	article_craft_weapon.image_id = "UP007.SPK";
-	article_craft_weapon.weapon = _craftWeapons[article_craft_weapon.id];
+	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	article_craft_weapon.id = "STR_CANNON_UC";
 	article_craft_weapon.title = "STR_CANNON_UC";
@@ -1314,7 +1315,7 @@ public XcomRuleset()
 	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	article_craft_weapon.id = "STR_FUSION_BALL_UC";
 	article_craft_weapon.title = "STR_FUSION_BALL_UC";
@@ -1322,7 +1323,7 @@ public XcomRuleset()
 	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	article_craft_weapon.id = "STR_LASER_CANNON_UC";
 	article_craft_weapon.title = "STR_LASER_CANNON_UC";
@@ -1330,7 +1331,7 @@ public XcomRuleset()
 	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	article_craft_weapon.id = "STR_PLASMA_BEAM_UC";
 	article_craft_weapon.title = "STR_PLASMA_BEAM_UC";
@@ -1338,7 +1339,7 @@ public XcomRuleset()
 	article_craft_weapon.weapon = _craftWeapons.get(article_craft_weapon.id);
 	article_craft.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_craft_weapon.id] = new ArticleDefinitionCraftWeapon(article_craft_weapon);
+	_ufopaediaArticles.put(article_craft_weapon.id, new ArticleDefinitionCraftWeapon(article_craft_weapon));
 	
 	
 	// ALIEN LIFE FORMS
@@ -1352,7 +1353,7 @@ public XcomRuleset()
 	article_textimage.text = "STR_SECTOID_UFOPEDIA";
 	article_textimage.sort_key = sort_key++;
 
-	_ufopaediaArticles[article_textimage.id] = new ArticleDefinitionTextImage(article_textimage);
+	_ufopaediaArticles.put(article_textimage.id, new ArticleDefinitionTextImage(article_textimage));
 	
 	article_textimage.id = "STR_SNAKEMAN";
 	article_textimage.title = "STR_SNAKEMAN";
@@ -1360,7 +1361,7 @@ public XcomRuleset()
 	article_textimage.text = "STR_SNAKEMAN_UFOPEDIA";
 	article_textimage.sort_key = sort_key++;
 
-	_ufopaediaArticles[article_textimage.id] = new ArticleDefinitionTextImage(article_textimage);
+	_ufopaediaArticles.put(article_textimage.id, new ArticleDefinitionTextImage(article_textimage));
 
 	// ALIEN RESEARCH
 	ArticleDefinitionText article_text;
@@ -1371,7 +1372,7 @@ public XcomRuleset()
 	article_text.text = "STR_ALIEN_ORIGINS_UFOPEDIA";
 	article_text.sort_key = sort_key++;
 	
-	_ufopaediaArticles[article_text.id] = new ArticleDefinitionText(article_text);
+	_ufopaediaArticles.put(article_text.id, new ArticleDefinitionText(article_text));
 
 	_costSoldier = 20000;
 	_costEngineer = 25000;
@@ -1390,22 +1391,22 @@ public SavedGame newSave(GameDifficulty diff)
 	SavedGame save = new SavedGame(diff);
 
 	// Add countries
-	save.getCountries().add(new Country(getCountry("STR_USA"),true));
-	save.getCountries().add(new Country(getCountry("STR_RUSSIA"),true));
-	save.getCountries().add(new Country(getCountry("STR_UK"),true));
-	save.getCountries().add(new Country(getCountry("STR_FRANCE"),true));
-	save.getCountries().add(new Country(getCountry("STR_GERMANY"),true));
-	save.getCountries().add(new Country(getCountry("STR_ITALY"),true));
-	save.getCountries().add(new Country(getCountry("STR_SPAIN"),true));
-	save.getCountries().add(new Country(getCountry("STR_CHINA"),true));
-	save.getCountries().add(new Country(getCountry("STR_JAPAN"),true));
-	save.getCountries().add(new Country(getCountry("STR_INDIA"),true));
-	save.getCountries().add(new Country(getCountry("STR_BRAZIL"),true));
-	save.getCountries().add(new Country(getCountry("STR_AUSTRALIA"),true));
-	save.getCountries().add(new Country(getCountry("STR_NIGERIA"),true));
-	save.getCountries().add(new Country(getCountry("STR_SOUTH_AFRICA"),true));
-	save.getCountries().add(new Country(getCountry("STR_EGYPT"),true));
-	save.getCountries().add(new Country(getCountry("STR_CANADA"),true));
+	save.getCountries().add(new Country(getCountry("STR_USA")));
+	save.getCountries().add(new Country(getCountry("STR_RUSSIA")));
+	save.getCountries().add(new Country(getCountry("STR_UK")));
+	save.getCountries().add(new Country(getCountry("STR_FRANCE")));
+	save.getCountries().add(new Country(getCountry("STR_GERMANY")));
+	save.getCountries().add(new Country(getCountry("STR_ITALY")));
+	save.getCountries().add(new Country(getCountry("STR_SPAIN")));
+	save.getCountries().add(new Country(getCountry("STR_CHINA")));
+	save.getCountries().add(new Country(getCountry("STR_JAPAN")));
+	save.getCountries().add(new Country(getCountry("STR_INDIA")));
+	save.getCountries().add(new Country(getCountry("STR_BRAZI")));
+	save.getCountries().add(new Country(getCountry("STR_AUSTRALIA")));
+	save.getCountries().add(new Country(getCountry("STR_NIGERIA")));
+	save.getCountries().add(new Country(getCountry("STR_SOUTH_AFRICA")));
+	save.getCountries().add(new Country(getCountry("STR_EGYPT")));
+	save.getCountries().add(new Country(getCountry("STR_CANADA")));
 	save.setFunds(save.getCountryFunding());
 
 	// Add regions
@@ -1455,7 +1456,7 @@ public SavedGame newSave(GameDifficulty diff)
 	base.getItems().addItem("STR_STINGRAY_MISSILES", 25);
 	base.getItems().addItem("STR_AVALANCHE_MISSILES", 10);
 	base.getItems().addItem("STR_CANNON_ROUNDS_X50", 1);
-	base.getItems().addItem("STR_PISTOL", 2);
+	base.getItems().addItem("STR_PISTO", 2);
 	base.getItems().addItem("STR_PISTOL_CLIP", 8);
 	base.getItems().addItem("STR_RIFLE", 2);
 	base.getItems().addItem("STR_RIFLE_CLIP", 8);
@@ -1471,7 +1472,7 @@ public SavedGame newSave(GameDifficulty diff)
 	// Add crafts
 	Craft skyranger = new Craft(getCraft("STR_SKYRANGER"), base, save.getCraftIds());
 	skyranger.setFuel(skyranger.getRules().getMaxFuel());
-	skyranger.getItems().addItem("STR_PISTOL", 3);
+	skyranger.getItems().addItem("STR_PISTO", 3);
 	skyranger.getItems().addItem("STR_PISTOL_CLIP", 5);
 	skyranger.getItems().addItem("STR_RIFLE", 6);
 	skyranger.getItems().addItem("STR_RIFLE_CLIP", 12);
@@ -1485,8 +1486,8 @@ public SavedGame newSave(GameDifficulty diff)
 	{
 		Craft interceptor = new Craft(getCraft("STR_INTERCEPTOR"), base, save.getCraftIds());
 		interceptor.setFuel(interceptor.getRules().getMaxFuel());
-		interceptor.getWeapons().get(0) = new CraftWeapon(getCraftWeapon("STR_STINGRAY"), getCraftWeapon("STR_STINGRAY").getAmmoMax());
-		interceptor.getWeapons().get(1) = new CraftWeapon(getCraftWeapon("STR_CANNON_UC"), getCraftWeapon("STR_CANNON_UC").getAmmoMax());
+		interceptor.getWeapons().set(0, new CraftWeapon(getCraftWeapon("STR_STINGRAY"), getCraftWeapon("STR_STINGRAY").getAmmoMax()));
+		interceptor.getWeapons().set(1, new CraftWeapon(getCraftWeapon("STR_CANNON_UC"), getCraftWeapon("STR_CANNON_UC").getAmmoMax()));
 		base.getCrafts().add(interceptor);
 	}
 

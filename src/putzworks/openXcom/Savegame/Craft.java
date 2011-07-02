@@ -21,8 +21,10 @@ package putzworks.openXcom.Savegame;
 import java.util.HashMap;
 import java.util.Vector;
 
+import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Ruleset.RuleCraft;
 import putzworks.openXcom.Ruleset.Ruleset;
+import putzworks.openXcom.Savegame.CraftWeapon;
 
 public class Craft extends MovingTarget
 {
@@ -58,12 +60,12 @@ public Craft(RuleCraft rules, Base base, HashMap<String, Integer> ids)
 	_items = new ItemContainer();
 	if (ids != null)
 	{
-		_id = (ids)[_rules.getType()];
+		_id = (ids).get(_rules.getType());
 		(ids)[_rules.getType()]++;
 	}
 	for (int i = 0; i < _rules.getWeapons(); ++i)
 	{
-		_weapons.add(0);
+		_weapons.add(null);
 	}
 }
 
@@ -100,9 +102,9 @@ public void load(final YAML.Node node, Ruleset rule)
 		node["weapons"][i]["type"] >> type;
 		if (type != "0")
 		{
-			CraftWeapon *w = new CraftWeapon(rule.getCraftWeapon(type), 0);
+			CraftWeapon w = new CraftWeapon(rule.getCraftWeapon(type), 0);
 			w.load(node["weapons"][i]);
-			_weapons[i] = w;
+			_weapons.set(i, w);
 		}
 	}
 
@@ -125,11 +127,11 @@ public final void save(YAML.Emitter out)
 	out << YAML.Key << "damage" << YAML.Value << _damage;
 	out << YAML.Key << "weapons" << YAML.Value;
 	out << YAML.BeginSeq;
-	for (Vector<CraftWeapon*>.const_iterator i = _weapons.begin(); i != _weapons.end(); ++i)
+	for (Vector<CraftWeapon>.const_iterator i = _weapons.begin(); i != _weapons.end(); ++i)
 	{
-		if (*i != 0)
+		if (i != null)
 		{
-			(*i).save(out);
+			(i).save(out);
 		}
 		else
 		{
@@ -183,11 +185,11 @@ public final int getId()
  * @param lang Language to get strings from.
  * @return Full name.
  */
-public final WString getName(Language lang)
+public final String getName(Language lang)
 {
-	WStringstream name;
-	name << lang.getString(_rules.getType()) << "-" << _id;
-	return name.str();
+	StringBuffer name = new StringBuffer();
+	name.append(lang.getString(_rules.getType()) + "-" + _id);
+	return name.toString();
 }
 
 /**
@@ -356,7 +358,7 @@ public void setFuel(int fuel)
  */
 public final int getFuelPercentage()
 {
-	return (int)floor((double)_fuel / _rules.getMaxFuel() * 100.0);
+	return (int)Math.floor((double)_fuel / _rules.getMaxFuel() * 100.0);
 }
 
 /**
@@ -389,7 +391,7 @@ public void setDamage(int damage)
  */
 public final int getDamagePercentage()
 {
-	return (int)floor((double)_damage / _rules.getMaxDamage() * 100);
+	return (int)Math.floor((double)_damage / _rules.getMaxDamage() * 100);
 }
 
 /**
@@ -417,9 +419,9 @@ public void setLowFuel(boolean low)
  * and the base it belongs to.
  * @return Distance in radian.
  */
-public final ouble getDistanceFromBase()
+public final double getDistanceFromBase()
 {
-	double dLon, dLat;
+	double dLon = 0, dLat = 0;
 	return getDistance(_base, dLon, dLat);
 }
 
@@ -430,7 +432,7 @@ public final ouble getDistanceFromBase()
  */
 public final int getFuelConsumption()
 {
-	return (int)floor(_speed / 100.0);
+	return (int)Math.floor(_speed / 100.0);
 }
 
 /**
@@ -440,7 +442,7 @@ public final int getFuelConsumption()
  */
 public final int getFuelLimit()
 {
-	return (int)floor(getFuelConsumption() * getDistanceFromBase() / (getRadianSpeed() * 120));
+	return (int)Math.floor(getFuelConsumption() * getDistanceFromBase() / (getRadianSpeed() * 120));
 }
 
 /**
@@ -456,13 +458,13 @@ public void returnToBase()
  */
 public void think()
 {
-	if (_dest != 0)
+	if (_dest != null)
 	{
 		calculateSpeed();
 	}
 	setLongitude(_lon + _speedLon);
 	setLatitude(_lat + _speedLat);
-	if (_dest != 0 && finishedRoute())
+	if (_dest != null && finishedRoute())
 	{
 		_lon = _dest.getLongitude();
 		_lat = _dest.getLatitude();
@@ -472,7 +474,7 @@ public void think()
 			int available = 0, full = 0;
 			for (CraftWeapon i: _weapons)
 			{
-				if ((i) == 0)
+				if ((i) == null)
 					continue;
 				available++;
 				if ((i).getAmmo() >= (i).getRules().getAmmoMax())
@@ -494,7 +496,7 @@ public void think()
 				_status = "STR_REFUELLING";
 			}
 			setSpeed(0);
-			setDestination(0);
+			setDestination(null);
 			_lowFuel = false;
 		}
 	}
@@ -509,8 +511,8 @@ public void think()
 public final boolean insideRadarRange(Target target)
 {
 	boolean inside = false;
-	double newrange = _rules.getRadarRange() * (1 / 60.0) * (M_PI / 180);
-	for (double lon = target.getLongitude() - 2*M_PI; lon <= target.getLongitude() + 2*M_PI; lon += 2*M_PI)
+	double newrange = _rules.getRadarRange() * (1 / 60.0) * (Math.PI / 180);
+	for (double lon = target.getLongitude() - 2*Math.PI; lon <= target.getLongitude() + 2*Math.PI; lon += 2*Math.PI)
 	{
 		double dLon = lon - _lon;
 		double dLat = target.getLatitude() - _lat;
@@ -563,12 +565,12 @@ public String rearm()
 	String ammo = "";
 	for (CraftWeapon i: _weapons)
 	{
-		if (i == _weapons.end())
+		if (i == _weapons.get(_weapons.size() - 1))
 		{
 			_status = "STR_REFUELLING";
 			break;
 		}
-		if (i != 0 && (i).isRearming())
+		if (i != null && (i).isRearming())
 		{
 			if (_base.getItems().getItem((i).getRules().getClipItem()) > 0)
 			{

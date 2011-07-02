@@ -134,18 +134,18 @@ public void setId(int id)
  * @param lang Language to get strings from.
  * @return Full name.
  */
-public final WString getName(Language lang)
+public final String getName(Language lang)
 {
-	WStringstream name;
+	StringBuffer name = new StringBuffer();
 	if (!isCrashed())
 	{
-		name << lang.getString("STR_UFO_") << _id;
+		name.append(lang.getString("STR_UFO_") + _id);
 	}
 	else
 	{
-		name << lang.getString("STR_CRASH_SITE_") << _id;
+		name.append(lang.getString("STR_CRASH_SITE_") + _id);
 	}
-	return name.str();
+	return name.toString();
 }
 
 /**

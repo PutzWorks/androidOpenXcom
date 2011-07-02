@@ -25,8 +25,6 @@ public class Timer
 	private StateHandler _state;
 	private SurfaceHandler _surface;
 
-	//unknown typedef State &(State::*StateHandler)();
-	//unknown typedef Surface &(Surface::*SurfaceHandler)();
 
 /**
  * Initializes a new timer with a set interval.

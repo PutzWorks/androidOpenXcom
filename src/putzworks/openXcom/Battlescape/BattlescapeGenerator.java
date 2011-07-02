@@ -221,7 +221,7 @@ public void run()
 		addItem(_game.getRuleset().getItem("STR_SMALL_ROCKET"));
 		addItem(_game.getRuleset().getItem("STR_GRENADE"));
 		addItem(_game.getRuleset().getItem("STR_SMOKE_GRENADE"));
-		addItem(_game.getRuleset().getItem("STR_PISTOL"));
+		addItem(_game.getRuleset().getItem("STR_PISTO"));
 		addItem(_game.getRuleset().getItem("STR_PISTOL_CLIP"));
 	}
 
@@ -260,7 +260,7 @@ private void addSoldier(Soldier soldier)
 	BattleUnit unit = new BattleUnit(soldier, BattleUnit.UnitFaction.FACTION_PLAYER);
 	unit.setId(_unitCount++);
 
-	Position pos = new Position();
+	Position pos;
 	int x = 0, y = 0, z = 0;
 
 	for (int i = _height * _length * _width - 1; i >= 0; i--)
@@ -269,7 +269,7 @@ private void addSoldier(Soldier soldier)
 		if (_save.getTiles()[i] != null && _save.getTiles()[i].getMapData(MapData.O_FLOOR) != null && _save.getTiles()[i].getMapData(MapData.O_FLOOR).getSpecialType() == SpecialTileType.START_POINT && _save.getTiles()[i].getMapData(MapData.O_OBJECT) == null)
 		{
 			_save.getTileCoords(i, x, y, z);
-			pos.set(new Position(x, y, z));
+			pos = new Position(x, y, z);
 			if (_save.selectUnit(pos) == null)
 			{
 				unit.setPosition(pos);
@@ -408,9 +408,9 @@ private void generateMap()
 	/* create tile objects */
 	for (int i = 0; i < _height * _length * _width; ++i)
 	{
-		Position pos;
+		Position pos = new Position();
 		_save.getTileCoords(i, pos.x, pos.y, pos.z);
-		_save.getTiles().get(i) = new Tile(pos);
+		_save.getTiles()[i] = new Tile(pos);
 	}
 
 	/* Determine UFO landingzone (do this first because ufo is generally bigger) */
@@ -463,7 +463,7 @@ private void generateMap()
 	}
 
 	/* Random map generation for crash/landing sites */
-	while (blocksToDo != null)
+	while (blocksToDo != 0)
 	{
 		if (blocks[x][y] == null)
 		{
@@ -605,16 +605,16 @@ private int loadMAP(MapBlock mapblock, int xoff, int yoff, RuleTerrain terrain, 
 			terrainObjectID = (int)((char)value[part]);
 			if (terrainObjectID>0)
 			{
-				_save.getTile(Position(x, y, z)).setMapData(terrain.getMapData(terrainObjectID),part);
+				_save.getTile(new Position(x, y, z)).setMapData(terrain.getMapData(terrainObjectID),part);
 			}
 			// if the part is empty and it's not a floor, remove it
 			// it prevents growing grass in UFOs
 			if (terrainObjectID == 0 && part > 0)
 			{
-				_save.getTile(Position(x, y, z)).setMapData(0,part);
+				_save.getTile(new Position(x, y, z)).setMapData(0,part);
 			}
 		}
-		_save.getTile(Position(x, y, z)).setDiscovered(discovered);
+		_save.getTile(new Position(x, y, z)).setDiscovered(discovered);
 
 		x++;
 

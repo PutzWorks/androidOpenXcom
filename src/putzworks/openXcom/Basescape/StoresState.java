@@ -20,6 +20,8 @@ package putzworks.openXcom.Basescape;
 
 import putzworks.openXcom.Engine.*;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
+import putzworks.openXcom.Ruleset.RuleItem;
 import putzworks.openXcom.Savegame.Base;
 
 public class StoresState extends State
@@ -66,7 +68,11 @@ public StoresState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)StoresState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
@@ -89,13 +95,13 @@ public StoresState(Game game, Base base)
 	_lstStores.setBackground(_window);
 	_lstStores.setMargin(2);
 
-	for (std.map<std.string, int>.iterator i = _base.getItems().getContents().begin(); i != _base.getItems().getContents().end(); ++i)
+	for (Map<String, Integer>.iterator i = _base.getItems().getContents().begin(); i != _base.getItems().getContents().end(); ++i)
 	{
 		RuleItem rule = _game.getRuleset().getItem(i.first);
-		WStringstream ss, ss2;
-		ss << i.second;
-		ss2 << i.second * rule.getSize();
-		_lstStores.addRow(3, _game.getLanguage().getString(i.first).c_str(), ss.str().c_str(), ss2.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+		ss.append(i.second);
+		ss2.append(i.second * rule.getSize());
+		_lstStores.addRow(3, _game.getLanguage().getString(i.first), ss.toString(), ss2.toString());
 	}
 }
 

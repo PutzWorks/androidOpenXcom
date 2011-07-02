@@ -21,12 +21,16 @@ package putzworks.openXcom.Engine;
 
 // trying to translate this line into Java
 
-// typedef State (State::*ActionHandler)(Action*);
+// typedef State &(State::*ActionHandler)(Action*);
+// Note: typedef is just way of using another name for a class, so I think this is trying to
+// say that ActionHandler is just another way of saying "a method on the State class"
 
 
-public interface ActionHandler
-{
-
-public void handle(Action action);
+public interface ActionHandler {
+	/**
+	 * Action handling method.
+	 * @param action
+	 */
+	public void handle(Action action);
 
 }

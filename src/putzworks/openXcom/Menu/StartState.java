@@ -81,7 +81,8 @@ public void think()
 		}
 		catch (Exception e)
 		{
-			std.cerr << e.what() << std.endl;
+			//TODO Log to error
+//			std.cerr << e.what() << std.endl;
 			_load = LOADING_FAILED;
 			_surface.clear();
 			_surface.drawString(0, 0, e.what(), 1);

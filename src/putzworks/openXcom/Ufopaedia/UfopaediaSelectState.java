@@ -77,7 +77,11 @@ public class UfopaediaSelectState extends State
 
 		_btnOk.setColor(Palette.blockOffset(15)+2);
 		_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-		_btnOk.onMouseClick((ActionHandler)UfopaediaSelectState.btnOkClick);
+		_btnOk.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnOkClick(action);
+			}
+		});
 
 		_lstSelection.setColor(Palette.blockOffset(8)+5);
 		_lstSelection.setArrowColor(Palette.blockOffset(15)+2);
@@ -86,7 +90,11 @@ public class UfopaediaSelectState extends State
 		_lstSelection.setBackground(_window);
 		_lstSelection.setMargin(18);
 		_lstSelection.setAlign(TextHAlign.ALIGN_CENTER);
-		_lstSelection.onMouseClick((ActionHandler)UfopaediaSelectState.lstSelectionClick);
+		_lstSelection.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				lstSelectionClick(action);
+			}
+		});
 
 		loadSelectionList();
 	}
@@ -116,7 +124,7 @@ public class UfopaediaSelectState extends State
 		_game.getSavedGame().getUfopaedia().getSectionList(_section, _article_list);
 		for(ArticleDefinition it:  _article_list)
 		{
-			_lstSelection.addRow(1, Ufopaedia.buildText(_game, (it).title).c_str());
+			_lstSelection.addRow(1, Ufopaedia.buildText(_game, (it).title));
 		}
 	}
 

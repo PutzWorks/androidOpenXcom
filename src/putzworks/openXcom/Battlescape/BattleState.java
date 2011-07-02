@@ -18,7 +18,7 @@
  */
 package putzworks.openXcom.Battlescape;
 
-public class BattleState
+public abstract class BattleState
 {
 	protected BattlescapeState _parent;
 	protected String _result;

@@ -19,6 +19,7 @@
 package putzworks.openXcom.Menu;
 
 import putzworks.openXcom.Engine.Action;
+import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
@@ -61,20 +62,32 @@ public MainMenuState(Game game)
 
 	_btnNew.setColor(Palette.blockOffset(8)+8);
 	_btnNew.setText(_game.getLanguage().getString("STR_NEW_GAME"));
-	_btnNew.onMouseClick((ActionHandler)MainMenuState.btnNewClick);
+	_btnNew.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNewClick(action);
+		}
+	});
 
 	_btnLoad.setColor(Palette.blockOffset(8)+8);
 	_btnLoad.setText(_game.getLanguage().getString("STR_LOAD_SAVED_GAME"));
-	_btnLoad.onMouseClick((ActionHandler)MainMenuState.btnLoadClick);
+	_btnLoad.onMouseClick((new ActionHandler() {
+		public void handle(Action action) {
+			btnLoadClick(action);
+		}
+	});
 
 	_btnQuit.setColor(Palette.blockOffset(8)+8);
 	_btnQuit.setText(_game.getLanguage().getString("STR_QUIT"));
-	_btnQuit.onMouseClick((ActionHandler)MainMenuState.btnQuitClick);
+	_btnQuit.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnQuitClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+10);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtTitle.setBig();
-	_txtTitle.setText(L"OpenXcom\x02v0.2");
+	_txtTitle.setText("OpenXcom\x02v0.2");
 
 	// Set music
 	_game.getResourcePack().getMusic("GMSTORY").play();

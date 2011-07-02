@@ -101,13 +101,13 @@ public void clearProjectile()
  */
 public boolean calculateTrajectory(double accuracy)
 {
-	Position originVoxel = new Position(), targetVoxel = new Position();
+	Position originVoxel, targetVoxel;
 	int direction;
 	int dirYshift[] = {1, 1, 8, 15, 15, 15, 8, 1 };
 	int dirXshift[] = {8, 14, 15, 15, 8, 1, 1, 1 };
 	// large units : x2
 
-	originVoxel.equals(new Position(_origin.x*16, _origin.y*16, _origin.z*24));
+	originVoxel = new Position(_origin.x*16, _origin.y*16, _origin.z*24);
 	originVoxel.z += -_save.getTile(_origin).getTerrainLevel();
 	BattleUnit bu = _save.getTile(_origin).getUnit();
 	originVoxel.z += bu.isKneeled()?bu.getUnit().getKneelHeight():bu.getUnit().getStandHeight();
@@ -130,18 +130,18 @@ public boolean calculateTrajectory(double accuracy)
 		if (_origin == _target)
 		{
 			// don't shoot at yourself but shoot at the floor
-			targetVoxel.set(new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24));
+			targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24);
 		}
 		else
 		{
 			// first try is at half the unit height 
-			targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + tile.getUnit().getUnit().getStandHeight()/2));
+			targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + tile.getUnit().getUnit().getStandHeight()/2);
 			int test = _save.getTerrainModifier().calculateLine(originVoxel, targetVoxel, false, _trajectory, bu);
 			_trajectory.clear();
 			if (test != 4)
 			{
 				// did not hit a unit, try at different heights
-				targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + (tile.getUnit().getUnit().getStandHeight()*3)/4));
+				targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + (tile.getUnit().getUnit().getStandHeight()*3)/4);
 				test = _save.getTerrainModifier().calculateLine(originVoxel, targetVoxel, false, _trajectory, bu);
 				_trajectory.clear();
 			}
@@ -149,19 +149,19 @@ public boolean calculateTrajectory(double accuracy)
 	}
 	else if (tile.getMapData(MapData.O_OBJECT) != null)
 	{
-		targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + 10));
+		targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + 10);
 	}
 	else if (tile.getMapData(MapData.O_NORTHWALL) != null)
 	{
-		targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 16, _target.z*24 + 10));
+		targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 16, _target.z*24 + 10);
 	}
 	else if (tile.getMapData(MapData.O_WESTWALL) != null)
 	{
-		targetVoxel.set( new Position(_target.x*16, _target.y*16 + 8, _target.z*24 + 10));
+		targetVoxel = new Position(_target.x*16, _target.y*16 + 8, _target.z*24 + 10);
 	}
 	else if (tile.getMapData(MapData.O_FLOOR) != null)
 	{
-		targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24));
+		targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24);
 	}
 	else
 	{
@@ -184,10 +184,10 @@ public boolean calculateTrajectory(double accuracy)
  */
 public boolean calculateThrow(double accuracy)
 {
-	Position originVoxel = new Position(), targetVoxel = new Position();
+	Position originVoxel, targetVoxel;
 	boolean foundCurve = false;
 
-	originVoxel.set( new Position(_origin.x*16 + 8, _origin.y*16 + 8, _origin.z*24));
+	originVoxel = new Position(_origin.x*16 + 8, _origin.y*16 + 8, _origin.z*24);
 	originVoxel.z += -_save.getTile(_origin).getTerrainLevel();
 	BattleUnit bu = _save.getTile(_origin).getUnit();
 	originVoxel.z += bu.isKneeled()?bu.getUnit().getKneelHeight():bu.getUnit().getStandHeight();
@@ -199,7 +199,7 @@ public boolean calculateThrow(double accuracy)
 
 	// determine the target voxel.
 	// aim at the center of the floor
-	targetVoxel.set( new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + 2));
+	targetVoxel = new Position(_target.x*16 + 8, _target.y*16 + 8, _target.z*24 + 2);
 
 	// we try 4 different curvatures to try and reach our goal.
 	double curvature = 1.0;
@@ -310,6 +310,11 @@ public Position getPosition(int offset)
 		return _trajectory.get(_position + offset);
 	else
 		return _trajectory.get(_position);
+}
+
+public Position getPosition()
+{
+	return _trajectory.get(_position);
 }
 
 /**

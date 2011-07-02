@@ -20,6 +20,7 @@ package putzworks.openXcom.Geoscape;
 
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.ActionHandler;
+import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.Text;
@@ -73,19 +74,27 @@ public CraftPatrolState(Game game, Craft craft, Globe globe)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftPatrolState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnRedirect.setColor(Palette.blockOffset(8)+8);
 	_btnRedirect.setText(_game.getLanguage().getString("STR_REDIRECT_CRAFT"));
-	_btnRedirect.onMouseClick((ActionHandler)CraftPatrolState.btnRedirectClick);
+	_btnRedirect.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnRedirectClick(action);
+		}
+	});
 
 	_txtDestination.setColor(Palette.blockOffset(15)-1);
 	_txtDestination.setBig();
 	_txtDestination.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtDestination.setWordWrap(true);
-	WString s = _craft.getName(_game.getLanguage()) + L'\n';
-	s += _game.getLanguage().getString("STR_HAS_REACHED") + L'\n';
-	s += _game.getLanguage().getString("STR_DESTINATION") + L'\n';
+	String s = _craft.getName(_game.getLanguage()) + '\n';
+	s += _game.getLanguage().getString("STR_HAS_REACHED") + '\n';
+	s += _game.getLanguage().getString("STR_DESTINATION") + '\n';
 	s += _craft.getDestination().getName(_game.getLanguage());
 	_txtDestination.setText(s);
 

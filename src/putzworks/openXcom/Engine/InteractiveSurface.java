@@ -27,7 +27,6 @@ public class InteractiveSurface extends Surface
 	private boolean _isHovered, _isFocused;
 	protected int _validButton;
 
-	//unknown typedef State &(State::*ActionHandler)(Action*);
 
 /**
  * Sets up a blank interactive surface with the specified size and position.
@@ -186,7 +185,6 @@ public void mousePress(Action action, State state)
 {
 	if (_press !=  null)
 	{
-		//(state._press)(action);
 		_press.handle(action);
 	}
 }
@@ -202,7 +200,6 @@ public void mouseRelease(Action action, State state)
 {
 	if (_release != null)
 	{
-		//(state._release)(action);
 		_release.handle(action);
 	}
 }
@@ -218,7 +215,6 @@ public void mouseClick(Action action, State state)
 {
 	if (_click != null)
 	{
-		//(state._click)(action);
 		_click.handle(action);
 	}
 }
@@ -234,7 +230,6 @@ public void mouseIn(Action action, State state)
 {
 	if (_in != null)
 	{
-		//(state._in)(action);
 		_in.handle(action);
 	}
 }
@@ -250,7 +245,6 @@ public void mouseOver(Action action, State state)
 {
 	if (_over != null)
 	{
-		//(state._over)(action);
 		_over.handle(action);
 	}
 }
@@ -266,7 +260,6 @@ public void mouseOut(Action action, State state)
 {
 	if (_out != null)
 	{
-		//(state._out)(action);
 		_out.handle(action);
 	}
 }
@@ -282,7 +275,6 @@ public void keyboardPress(Action action, State state)
 {
 	if (_keyPress != null)
 	{
-		//(state._keyPress)(action);
 		_keyPress.handle(action);
 	}
 }
@@ -298,7 +290,6 @@ public void keyboardRelease(Action action, State state)
 {
 	if (_keyRelease != null)
 	{
-		//(state._keyRelease)(action);
 		_keyRelease.handle(action);
 	}
 }

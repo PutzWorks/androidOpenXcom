@@ -59,7 +59,11 @@ public PurchaseErrorState(Game game, String str)
 
 	_btnOk.setColor(Palette.blockOffset(15)+4);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)PurchaseErrorState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtError.setColor(Palette.blockOffset(15)+1);
 	_txtError.setAlign(TextHAlign.ALIGN_CENTER);

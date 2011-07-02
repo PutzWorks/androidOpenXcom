@@ -82,8 +82,12 @@ public InterceptState(Game game, Globe globe, Base base)
 	_window.setBackground(_game.getResourcePack().getSurface("BACK12.SCR"));
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
-	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL"));
-	_btnCancel.onMouseClick((ActionHandler)InterceptState.btnCancelClick);
+	_btnCancel.setText(_game.getLanguage().getString("STR_CANCE"));
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
@@ -109,7 +113,11 @@ public InterceptState(Game game, Globe globe, Base base)
 	_lstCrafts.setSelectable(true);
 	_lstCrafts.setBackground(_window);
 	_lstCrafts.setMargin(6);
-	_lstCrafts.onMouseClick((ActionHandler)InterceptState.lstCraftsClick);
+	_lstCrafts.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstCraftsClick(action);
+		}
+	});
 
 	int row = 0;
 	for (Base i: _game.getSavedGame().getBases())
@@ -118,36 +126,36 @@ public InterceptState(Game game, Globe globe, Base base)
 			continue;
 		for (Craft j: (i).getCrafts())
 		{
-			WStringstream ss;
+			StringBuffer ss = new StringBuffer();
 			if ((j).getNumWeapons() > 0)
 			{
-				ss << L'\x01' << (j).getNumWeapons() << L'\x01';
+				ss.append('\x01' + (j).getNumWeapons() + '\x01');
 			}
 			else
 			{
-				ss << (j).getNumWeapons();
+				ss.append((j).getNumWeapons());
 			}
-			ss << "/";
+			ss.append("/");
 			if ((j).getNumSoldiers() > 0)
 			{
-				ss << L'\x01' << (j).getNumSoldiers() << L'\x01';
+				ss.append('\x01' + (j).getNumSoldiers() + '\x01');
 			}
 			else
 			{
-				ss << (j).getNumSoldiers();
+				ss.append((j).getNumSoldiers());
 			}
-			ss << "/";
+			ss.append("/");
 			if ((j).getNumHWPs() > 0)
 			{
-				ss << L'\x01' << (j).getNumWeapons() << L'\x01';
+				ss.append('\x01' + (j).getNumWeapons() + '\x01');
 			}
 			else
 			{
-				ss << (j).getNumHWPs();
+				ss.append((j).getNumHWPs());
 			}
 			_crafts.add(j);
 			_lstCrafts.addRow(4, (j).getName(_game.getLanguage()).c_str(), _game.getLanguage().getString((*j).getStatus()).c_str(), (*i).getName().c_str(), ss.str().c_str());
-			if ((j).getStatus() == "STR_READY")
+			if ((j).getStatus().equals("STR_READY"))
 			{
 				_lstCrafts.getCell(row, 1).setColor(Palette.blockOffset(8)+10);
 			}
@@ -172,7 +180,7 @@ public void btnCancelClick(Action action)
  */
 public void lstCraftsClick(Action action)
 {
-	Craft c = _crafts[_lstCrafts.getSelectedRow()];
+	Craft c = _crafts.get(_lstCrafts.getSelectedRow());
 	if (c.getStatus() == "STR_READY")
 	{
 		_game.popState();

@@ -69,28 +69,48 @@ public NewGameState(Game game)
 
 	_btnBeginner.setColor(Palette.blockOffset(8)+8);
 	_btnBeginner.setText(_game.getLanguage().getString("STR_1_BEGINNER"));
-	_btnBeginner.onMouseClick((ActionHandler)NewGameState.btnBeginnerClick);
+	_btnBeginner.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnBeginnerClick(action);
+		}
+	});
 
 	_btnExperienced.setColor(Palette.blockOffset(8)+8);
 	_btnExperienced.setText(_game.getLanguage().getString("STR_2_EXPERIENCED"));
-	_btnExperienced.onMouseClick((ActionHandler)NewGameState.btnExperiencedClick);
+	_btnExperienced.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnExperiencedClick(action);
+		}
+	});
 
 	_btnVeteran.setColor(Palette.blockOffset(8)+8);
 	_btnVeteran.setText(_game.getLanguage().getString("STR_3_VETERAN"));
-	_btnVeteran.onMouseClick((ActionHandler)NewGameState.btnVeteranClick);
+	_btnVeteran.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			.btnVeteranClick(action);
+		}
+	});
 
 	_btnGenius.setColor(Palette.blockOffset(8)+8);
 	_btnGenius.setText(_game.getLanguage().getString("STR_4_GENIUS"));
-	_btnGenius.onMouseClick((ActionHandler)NewGameState.btnGeniusClick);
+	_btnGenius.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnGeniusClick(action);
+		}
+	});
 
 	_btnSuperhuman.setColor(Palette.blockOffset(8)+8);
 	_btnSuperhuman.setText(_game.getLanguage().getString("STR_5_SUPERHUMAN"));
-	_btnSuperhuman.onMouseClick((ActionHandler)NewGameState.btnSuperhumanClick);
+	_btnSuperhuman.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnSuperhumanClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+10);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtTitle.setSmall();
-	_txtTitle.setText(_game.getLanguage().getString("STR_SELECT_DIFFICULTY_LEVEL"));
+	_txtTitle.setText(_game.getLanguage().getString("STR_SELECT_DIFFICULTY_LEVE"));
 }
 
 /**

@@ -26,7 +26,6 @@ import putzworks.openXcom.Engine.Surface;
 import putzworks.openXcom.Interface.Bar;
 import putzworks.openXcom.Interface.Text;
 import putzworks.openXcom.Interface.Text.TextHAlign;
-import putzworks.openXcom.Savegame.BattleItem;
 import putzworks.openXcom.Savegame.BattleUnit;
 import putzworks.openXcom.Savegame.Soldier;
 
@@ -321,105 +320,105 @@ public UnitInfoState(Game game, BattleUnit unit)
 public void init()
 {
 	Soldier soldier = (Soldier)(_unit.getUnit());
-
-	WStringstream ss;
-	ss << _unit.getTimeUnits();
-	_numTimeUnits.setText(ss.str());		
+	
+	StringBuffer ss = new StringBuffer();
+	ss.append(_unit.getTimeUnits());
+	_numTimeUnits.setText(ss.toString());		
 	_barTimeUnits.setMax(_unit.getUnit().getTimeUnits());
 	_barTimeUnits.setValue(_unit.getTimeUnits());
 
-	ss.str(L"");
+	ss.delete(0, ss.length());
 	if (soldier != null)
 	{
-		ss << _game.getLanguage().getString(soldier.getRankString());
-		ss << " ";
+		ss.append(_game.getLanguage().getString(soldier.getRankString()));
+		ss.append(" ");
 	}
-	ss << _unit.getUnit().getName();
-	_txtName.setText(ss.str());
+	ss.append(_unit.getUnit().getName());
+	_txtName.setText(ss.toString());
 
-	ss.str(L"");
-	ss << _unit.getEnergy();
-	_numEnergy.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getEnergy());
+	_numEnergy.setText(ss.toString());		
 	_barEnergy.setMax(_unit.getUnit().getStamina());
 	_barEnergy.setValue(_unit.getEnergy());
 
-	ss.str(L"");
-	ss << _unit.getHealth();
-	_numHealth.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getHealth());
+	_numHealth.setText(ss.toString());		
 	_barHealth.setMax(_unit.getUnit().getHealth());
 	_barHealth.setValue(_unit.getHealth());
 
-	ss.str(L"");
-	ss << _unit.getFatalWounds();
-	_numFatalWounds.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getFatalWounds());
+	_numFatalWounds.setText(ss.toString());		
 	_barFatalWounds.setMax(_unit.getFatalWounds());
 	_barFatalWounds.setValue(_unit.getFatalWounds());
 
-	ss.str(L"");
-	ss << _unit.getUnit().getBravery();
-	_numBravery.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getUnit().getBravery());
+	_numBravery.setText(ss.toString());		
 	_barBravery.setMax(_unit.getUnit().getBravery());
 	_barBravery.setValue(_unit.getUnit().getBravery());
 
-	ss.str(L"");
-	ss << _unit.getMorale();
-	_numMorale.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getMorale());
+	_numMorale.setText(ss.toString());		
 	_barMorale.setMax(100);
 	_barMorale.setValue(_unit.getMorale());
 
-	ss.str(L"");
-	ss << _unit.getUnit().getReactions();
-	_numReactions.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getUnit().getReactions());
+	_numReactions.setText(ss.toString());		
 	_barReactions.setMax(_unit.getUnit().getReactions());
 	_barReactions.setValue(_unit.getUnit().getReactions());
 
-	ss.str(L"");
-	ss << _unit.getUnit().getFiringAccuracy();
-	_numFiring.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getUnit().getFiringAccuracy());
+	_numFiring.setText(ss.toString());		
 	_barFiring.setMax(_unit.getUnit().getFiringAccuracy());
 	_barFiring.setValue(_unit.getUnit().getFiringAccuracy());
 
-	ss.str(L"");
-	ss << _unit.getUnit().getThrowingAccuracy();
-	_numThrowing.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getUnit().getThrowingAccuracy());
+	_numThrowing.setText(ss.toString());		
 	_barThrowing.setMax(_unit.getUnit().getThrowingAccuracy());
 	_barThrowing.setValue(_unit.getUnit().getThrowingAccuracy());
 
-	ss.str(L"");
-	ss << _unit.getUnit().getStrength();
-	_numStrength.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getUnit().getStrength());
+	_numStrength.setText(ss.toString());		
 	_barStrength.setMax(_unit.getUnit().getStrength());
 	_barStrength.setValue(_unit.getUnit().getStrength());
 
-	ss.str(L"");
-	ss << _unit.getArmor(BattleUnit.UnitSide.SIDE_FRONT);
-	_numFrontArmour.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getArmor(SIDE_FRONT));
+	_numFrontArmour.setText(ss.toString());		
 	_barFrontArmour.setMax(_unit.getUnit().getArmor().getFrontArmor());
-	_barFrontArmour.setValue(_unit.getArmor(BattleUnit.UnitSide.SIDE_FRONT));
+	_barFrontArmour.setValue(_unit.getArmor(SIDE_FRONT));
 
-	ss.str(L"");
-	ss << _unit.getArmor(BattleUnit.UnitSide.SIDE_LEFT);
-	_numLeftArmour.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getArmor(SIDE_LEFT));
+	_numLeftArmour.setText(ss.toString());		
 	_barLeftArmour.setMax(_unit.getUnit().getArmor().getSideArmor());
-	_barLeftArmour.setValue(_unit.getArmor(BattleUnit.UnitSide.SIDE_LEFT));
+	_barLeftArmour.setValue(_unit.getArmor(SIDE_LEFT));
 
-	ss.str(L"");
-	ss << _unit.getArmor(BattleUnit.UnitSide.SIDE_RIGHT);
-	_numRightArmour.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getArmor(SIDE_RIGHT));
+	_numRightArmour.setText(ss.toString());		
 	_barRightArmour.setMax(_unit.getUnit().getArmor().getSideArmor());
-	_barRightArmour.setValue(_unit.getArmor(BattleUnit.UnitSide.SIDE_RIGHT));
+	_barRightArmour.setValue(_unit.getArmor(SIDE_RIGHT));
 
-	ss.str(L"");
-	ss << _unit.getArmor(BattleUnit.UnitSide.SIDE_REAR);
-	_numRearArmour.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getArmor(SIDE_REAR));
+	_numRearArmour.setText(ss.toString());		
 	_barRearArmour.setMax(_unit.getUnit().getArmor().getRearArmor());
-	_barRearArmour.setValue(_unit.getArmor(BattleUnit.UnitSide.SIDE_REAR));
+	_barRearArmour.setValue(_unit.getArmor(SIDE_REAR));
 
-	ss.str(L"");
-	ss << _unit.getArmor(BattleUnit.UnitSide.SIDE_UNDER);
-	_numUnderArmour.setText(ss.str());		
+	ss.delete(0, ss.length());
+	ss.append(_unit.getArmor(SIDE_UNDER));
+	_numUnderArmour.setText(ss.toString());		
 	_barUnderArmour.setMax(_unit.getUnit().getArmor().getUnderArmor());
-	_barUnderArmour.setValue(_unit.getArmor(BattleUnit.UnitSide.SIDE_UNDER));
+	_barUnderArmour.setValue(_unit.getArmor(SIDE_UNDER));
 }
 
 

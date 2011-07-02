@@ -18,7 +18,7 @@
  */
 package putzworks.openXcom.Interface;
 
-import android.graphics.Rect;
+import android.graphics.Rectangle;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.Font;
 import putzworks.openXcom.Engine.InteractiveSurface;
@@ -26,6 +26,7 @@ import putzworks.openXcom.Engine.Sound;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Interface.Text.TextVAlign;
+import putzworks.openXcom.SDL.SDL_Color;
 
 public class TextButton extends InteractiveSurface
 {
@@ -93,7 +94,7 @@ public void setFonts(Font big, Font small)
  * Changes the text of the button label.
  * @param text Text string.
  */
-public void setText(final WString text)
+public void setText(final String text)
 {
 	_text.setText(text);
 	draw();
@@ -103,7 +104,7 @@ public void setText(final WString text)
  * Returns the text of the button label.
  * @return Text string.
  */
-public final WString getText()
+public final String getText()
 {
 	return _text.getText();
 }
@@ -137,38 +138,41 @@ public void setPalette(SDL_Color colors, int firstcolor, int ncolors)
  */
 public void draw()
 {
-	Rect square;
+	Rectangle square = new Rectangle();
 	int color = _color - 2;
 
-	square.left = 0;
-	square.top = 0;
-	square.right = square.left + getWidth();
-	square.bottom = square.top + getHeight();
+	square.x = 0;
+	square.y = 0;
+	square.right = square.x + getWidth();
+	square.bottom = square.y + getHeight();
 
 	for (int i = 0; i < 5; i++)
 	{
-		drawRect(square, color);
+		drawRectangle(square, color);
 		
+	
+		int tempWidth = square.right - square.x;
+		int tempHeight = square.bottom - square.y;
 		if (i % 2 == 0)
 		{
 			square.x++;
 			square.y++;
 		}
-		square.w--;
-		square.h--;
+		square.right = square.x + tempWidth - 1;
+		square.bottom = square.y + tempHeight - 1;
 
 		switch (i)
 		{
 		case 0:
 			color = _color + 2;
-			setPixel(square.w, 0, color);
+			setPixel(square.right, 0, color);
 			break;
 		case 1:
 			color = _color - 1;
 			break;
 		case 2:
 			color = _color + 1;
-			setPixel(square.w+1, 1, color);
+			setPixel(square.right+1, 1, color);
 			break;
 		case 3:
 			color = _color;

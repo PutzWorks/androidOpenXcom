@@ -18,15 +18,16 @@
  */
 package putzworks.openXcom.Engine;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import android.graphics.Rect;
+import android.graphics.Rectangle;
 
 public class Font
 {
 	private Surface _surface;
 	private int _width, _height, _nchar;
-	private Map<Character, Rect> _chars;
+	private Map<Character, Rectangle> _chars;
 	// For some reason the X-Com small font is smooshed together by one pixel...
 	private int _spacing;
 
@@ -46,9 +47,9 @@ public Font(int width, int height, int nchar, int spacing)
 	_width = width;
 	_height = height;
 	_nchar = nchar;
-	_chars = new HashMap<Character, Rect>;
+	_chars = new HashMap<Character, Rectangle>();
 	_spacing = spacing;
-	_surface = new Surface(width, height*nchar);
+	_surface = new Surface(width, height, nchar, spacing);
 }
 
 /**
@@ -61,7 +62,7 @@ public void clearFont()
 
 /**
  * Calculates the real size and position of each character in
- * the surface and stores them in SDL_Rect's for future use
+ * the surface and stores them in SDL_Rectangle's for future use
  * by other classes.
  */
 public void load()
@@ -69,7 +70,7 @@ public void load()
 	_surface.lock();
 	for (char i = FIRST_CHAR; i < FIRST_CHAR + _nchar; ++i)
 	{
-		Rect rect;
+		Rectangle rect = new Rectangle();
 		int left = -1, right = -1;
 		for (int x = 0; x < _width; x++)
 		{
@@ -93,12 +94,12 @@ public void load()
 				}
 			}
 		}
-		rect.left = left;
-		rect.top = (i - FIRST_CHAR) * _height;
-		rect.right = rect.left + right - left + 1;
-		rect.bottom = rect.top + _height;
+		rect.x = left;
+		rect.y = (i - FIRST_CHAR) * _height;
+		rect.w = right - left + 1;
+		rect.h = _height;
 
-		_chars[i] = rect;
+		_chars.put(i, rect);
 	}
 	_surface.unlock();
 }
@@ -111,14 +112,15 @@ public void load()
  */
 public Surface getChar(char c)
 {
-	if (_chars.find(c) == _chars.end())
+	if (_chars.get(c) == _chars.end())
 	{
 		c = '?';
 	}
-	_surface.getCrop().left = _chars[c].left;
-	_surface.getCrop().top = _chars[c].top;
-	_surface.getCrop().right = _chars[c].right;
-	_surface.getCrop().bottom = _chars[c].bottom;
+	Rectangle r = _chars.get(c);
+	_surface.getCrop().x = r.x;
+	_surface.getCrop().y = r.y;
+	_surface.getCrop().w = r.w;
+	_surface.getCrop().h = r.h;
 	return _surface;
 }
 /**

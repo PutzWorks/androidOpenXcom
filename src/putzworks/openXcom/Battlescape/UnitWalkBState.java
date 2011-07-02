@@ -56,7 +56,7 @@ public void think()
 		if (_unit.getWalkingPhase() == 3)
 		{
 			Tile tile = _parent.getGame().getSavedGame().getBattleGame().getTile(_unit.getPosition());
-			if (tile.getFootstepSound() != null)
+			if (tile.getFootstepSound() != 0)
 			{
 				_parent.getGame().getResourcePack().getSoundSet("BATTLE.CAT").getSound(22 + (tile.getFootstepSound()*2)).play();
 			}
@@ -65,7 +65,7 @@ public void think()
 		if (_unit.getWalkingPhase() == 7)
 		{
 			Tile tile = _parent.getGame().getSavedGame().getBattleGame().getTile(_unit.getPosition());
-			if (tile.getFootstepSound() != null)
+			if (tile.getFootstepSound() != 0)
 			{
 				_parent.getGame().getResourcePack().getSoundSet("BATTLE.CAT").getSound(23 + (tile.getFootstepSound()*2)).play();
 			}
@@ -101,7 +101,7 @@ public void think()
 		int dir = _pf.getStartDirection();
 		if (dir != -1)
 		{
-			Position destination;
+			Position destination = new Position();
 			int tu = _pf.getTUCost(_unit.getPosition(), dir, destination, _unit);
 
 			if (tu > _unit.getTimeUnits())

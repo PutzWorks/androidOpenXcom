@@ -49,7 +49,7 @@ public class Ufopaedia
 	 * @param article Article definition to create from.
 	 * @returns Article state object if created, 0 otherwise.
 	 */
-	protected ArticleState createArticleState(Game game, ArticleDefinition article)
+	protected static ArticleState createArticleState(Game game, ArticleDefinition article)
 	{
 		switch(article.getType())
 		{
@@ -70,7 +70,7 @@ public class Ufopaedia
 	 * @param game Pointer to actual game.
 	 * @param article Article definition of the article to open.
 	 */
-	public void openArticle(Game game, ArticleDefinition article)
+	public static void openArticle(Game game, ArticleDefinition article)
 	{
 		game.getSavedGame().getUfopaedia().setCurrentArticle(article);
 		game.pushState(createArticleState(game, article));
@@ -91,7 +91,7 @@ public class Ufopaedia
 	 * Open Ufopaedia start state, presenting the section selection buttons.
 	 * @param game Pointer to actual game.
 	 */
-	public void open(Game game)
+	public static void open(Game game)
 	{
 		game.pushState(new UfopaediaStartState(game));
 	}
@@ -100,7 +100,7 @@ public class Ufopaedia
 	 * Open the next article in the list. Loops to the first.
 	 * @param game Pointer to actual game.
 	 */
-	public void next(Game game)
+	public static void next(Game game)
 	{
 		ArticleDefinition article = game.getSavedGame().getUfopaedia().goNextArticle();
 		if (article != null)
@@ -114,7 +114,7 @@ public class Ufopaedia
 	 * Open the previous article in the list. Loops to the last.
 	 * @param game Pointer to actual game.
 	 */
-	public void prev(Game game)
+	public static void prev(Game game)
 	{
 		ArticleDefinition article = game.getSavedGame().getUfopaedia().goPrevArticle();
 		if (article != null)
@@ -131,7 +131,7 @@ public class Ufopaedia
 	 * @param str_template String containing the text constants
 	 * @returns The string built using the text constant(s).
 	 */
-	public WString buildText(Game game, String str_template)
+	public static String buildText(Game game, String str_template)
 	{
 		// TODO: actually parse the template string.
 		return game.getLanguage().getString(str_template);
@@ -144,10 +144,10 @@ public class Ufopaedia
 	public void runStandalone(Game game)
 	{
 		// set game language
-		Stringstream ss;
-		ss << game.getResourcePack().getFolder() << "Language/English.lng";
+		StringBuffer ss = new StringBuffer();
+		ss.append(game.getResourcePack().getFolder() + "Language/English.lng");
 		Language l = new Language();
-		l.loadLng(ss.str());
+		l.loadLng(ss.toString());
 		game.setLanguage(l);
 		
 		// init game

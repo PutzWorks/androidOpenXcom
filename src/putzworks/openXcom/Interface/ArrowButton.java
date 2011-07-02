@@ -20,6 +20,8 @@ package putzworks.openXcom.Interface;
 
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.Timer;
 
 public class ArrowButton extends ImageButton
@@ -48,7 +50,11 @@ public ArrowButton(ArrowShape shape, int width, int height, int x, int y)
 	_validButton = SDL_BUTTON_LEFT;
 
 	_timer = new Timer(50);
-	_timer.onTimer((SurfaceHandler)ArrowButton.scroll);
+	_timer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			scroll();
+		}
+	});
 }
 
 /**
@@ -87,27 +93,27 @@ public void draw()
 	lock();
 
 	// Draw button
-	Rect square;
+	Rectangle square;
 	int color = _color - 1;
 
-	square.left = 0;
-	square.top = 0;
-	square.right = square.left + getWidth() - 1;
-	square.bottom = square.top + getHeight() - 1;
+	square.x = 0;
+	square.y = 0;
+	square.right = square.x + getWidth() - 1;
+	square.bottom = square.y + getHeight() - 1;
 
-	drawRect(square, color);
+	drawRectangle(square, color);
 
 	square.x++;
 	square.y++;
 	color = _color + 2;
 
-	drawRect(square, color);
+	drawRectangle(square, color);
 
 	square.w--;
 	square.h--;
 	color = _color + 1;
 
-	drawRect(square, color);
+	drawRectangle(square, color);
 
 	setPixel(0, 0, (short)(_color - 2));
 	setPixel(0, getHeight() - 1, (short)(_color + 1));
@@ -123,7 +129,7 @@ public void draw()
 		square.w = 3;
 		square.h = 3;
 
-		drawRect(square, color);
+		drawRectangle(square, color);
 
 		// Draw arrow triangle
 		square.x = 2;
@@ -133,11 +139,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x++;
 			square.y--;
 		}
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 	else if (_shape == ArrowShape.ARROW_BIG_DOWN)
 	{
@@ -147,7 +153,7 @@ public void draw()
 		square.w = 3;
 		square.h = 3;
 
-		drawRect(square, color);
+		drawRectangle(square, color);
 
 		// Draw arrow triangle
 		square.x = 2;
@@ -157,11 +163,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x++;
 			square.y++;
 		}
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 	else if (_shape == ArrowShape.ARROW_SMALL_UP)
 	{
@@ -173,11 +179,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color + 2);
+			drawRectangle(square, color + 2);
 			square.x++;
 			square.y--;
 		}
-		drawRect(square, color + 2);
+		drawRectangle(square, color + 2);
 
 		// Draw arrow triangle 2
 		square.x = 2;
@@ -187,11 +193,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x++;
 			square.y--;
 		}
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 	else if (_shape == ArrowShape.ARROW_SMALL_DOWN)
 	{
@@ -203,11 +209,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color + 2);
+			drawRectangle(square, color + 2);
 			square.x++;
 			square.y++;
 		}
-		drawRect(square, color + 2);
+		drawRectangle(square, color + 2);
 
 		// Draw arrow triangle 2
 		square.x = 2;
@@ -217,11 +223,11 @@ public void draw()
 
 		for (; square.w > 1; square.w -= 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x++;
 			square.y++;
 		}
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 	else if (_shape == ArrowShape.ARROW_SMALL_LEFT)
 	{
@@ -233,12 +239,12 @@ public void draw()
 
 		for (; square.h < 5; square.h += 2)
 		{
-			drawRect(square, color + 2);
+			drawRectangle(square, color + 2);
 			square.x += 2;
 			square.y--;
 		}
 		square.w = 1;
-		drawRect(square, color + 2);
+		drawRectangle(square, color + 2);
 
 		// Draw arrow triangle 2
 		square.x = 3;
@@ -248,12 +254,12 @@ public void draw()
 
 		for (; square.h < 5; square.h += 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x += 2;
 			square.y--;
 		}
 		square.w = 1;
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 	else if (_shape == ArrowShape.ARROW_SMALL_RIGHT)
 	{
@@ -265,13 +271,13 @@ public void draw()
 
 		for (; square.h < 5; square.h += 2)
 		{
-			drawRect(square, color + 2);
+			drawRectangle(square, color + 2);
 			square.x -= 2;
 			square.y--;
 		}
 		square.x++;
 		square.w = 1;
-		drawRect(square, color + 2);
+		drawRectangle(square, color + 2);
 
 		// Draw arrow triangle 2
 		square.x = 6;
@@ -281,13 +287,13 @@ public void draw()
 
 		for (; square.h < 5; square.h += 2)
 		{
-			drawRect(square, color);
+			drawRectangle(square, color);
 			square.x -= 2;
 			square.y--;
 		}
 		square.x++;
 		square.w = 1;
-		drawRect(square, color);
+		drawRectangle(square, color);
 	}
 
 	unlock();

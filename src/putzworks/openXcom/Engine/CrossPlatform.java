@@ -38,12 +38,12 @@ private void CrossPlatform.showError(final String error)
  * Displays a message box with an error message.
  * @param error Error message.
  */
-private void CrossPlatform.showError(final WString error)
+private void CrossPlatform.showError(final String error)
 {
 #ifdef _WIN32
-	MessageBoxW(NULL, error.c_str(), L"OpenXcom Error", MB_ICONERROR | MB_OK);
+	MessageBoxW(NULL, error.c_str(), "OpenXcom Error", MB_ICONERROR | MB_OK);
 #else
-	std.wcerr << L"ERROR: " << error << std.endl;
+	std.wcerr << "ERROR: " << error << std.endl;
 #endif
 }
 

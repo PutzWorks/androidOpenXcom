@@ -27,6 +27,7 @@ import putzworks.openXcom.Engine.InteractiveSurface;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Resource.ResourcePack;
 import putzworks.openXcom.Ruleset.MapData;
@@ -86,7 +87,6 @@ public class Map extends InteractiveSurface
 	private BulletSprite[] _bulletShadow = new BulletSprite[36];
 	private Projectile _projectile;
 	private Set<Explosion> _explosions;
-	private int lastX = 0, lastY = 0;
 
 
 /**
@@ -109,7 +109,11 @@ public Map(int width, int height, int x, int y)
 	_RMBDragging = false;
 
 	_scrollTimer = new Timer(50);
-	_scrollTimer.onTimer((SurfaceHandler)Map.scroll);
+	_scrollTimer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			scroll();
+		}
+	});
 }
 
 /**
@@ -122,10 +126,11 @@ public void clearMap()
 	_tileFloorCache = null;
 	_tileWallsCache = null;
 
-	for (Surface i: _unitCache)
-	{
-		i = null;
-	}
+	_unitCache.clear();
+//	for (Surface i: _unitCache)
+//	{
+//		i = null;
+//	}
 
 	_arrow = null;
 	_buffer = null;
@@ -168,7 +173,7 @@ public void setSavedGame(SavedBattleGame save, Game game)
 	}
 	for (BattleUnit i: _save.getUnits())
 	{
-		_unitCache.add(0);
+		_unitCache.add(null);
 	}
 
 	for (MapDataSet i: _save.getMapDataSets())
@@ -235,6 +240,7 @@ public void think()
  */
 public void draw(boolean forceRedraw)
 {
+	int lastX = 0, lastY = 0;
 
 	if (((_mapOffsetX - lastX) < -_spriteWidth*2 ||
 		(_mapOffsetX - lastX) > _spriteWidth*2 ||
@@ -312,7 +318,7 @@ public void drawTerrain(Surface surface)
 		{
             for (int itY = endY; itY >= beginY; itY--)
 			{
-				mapPosition.equals(new Position(itX, itY, itZ));
+				mapPosition = new Position(itX, itY, itZ);
 				convertMapToScreen(mapPosition, screenPosition);
 				screenPosition.x += _mapOffsetX - _bufOffsetX;
 				screenPosition.y += _mapOffsetY - _bufOffsetY;
@@ -515,7 +521,7 @@ public void drawTerrain(Surface surface)
 						{
 							Position voxelPos = (i).getPosition();
 							convertVoxelToScreen(voxelPos, bulletPositionScreen);
-							frame = _res.getSurfaceSet("SMOKE.PCK").getFrame(*i).getCurrentFrame());
+							frame = _res.getSurfaceSet("SMOKE.PCK").getFrame(i).getCurrentFrame());
 							frame.setX(bulletPositionScreen.x - 15);
 							frame.setY(bulletPositionScreen.y - 15);
 							frame.blit(surface);
@@ -561,7 +567,7 @@ public void drawTerrain(Surface surface)
 
 					tile = _save.getTile(mapPosition);
 					// Draw smoke/fire
-					if (tile.getFire() != null && tile.isDiscovered())
+					if (tile.getFire() != 0 && tile.isDiscovered())
 					{
 						frameNumber = 0; // see http://www.ufopaedia.org/images/c/cb/Smoke.gif
 						if ((_animFrame / 2) + tile.getAnimationOffset() > 3)
@@ -577,7 +583,7 @@ public void drawTerrain(Surface surface)
 						frame.setY(screenPosition.y);
 						frame.blit(surface);
 					}
-					if (tile.getSmoke() != null && tile.isDiscovered())
+					if (tile.getSmoke() != 0 && tile.isDiscovered())
 					{
 						frameNumber = 8 + (int)(Math.floor((tile.getSmoke() / 5.0) - 0.1)); // see http://www.ufopaedia.org/images/c/cb/Smoke.gif
 						if ((_animFrame / 2) + tile.getAnimationOffset() > 3)
@@ -692,7 +698,7 @@ public void mouseOver(Action action, State state)
 				_scrollY = -SCROLL_AMOUNT;
 			}
 		}
-		else if (posX != null)
+		else if (posX != 0)
 		{
 			_scrollX = 0;
 		}
@@ -723,17 +729,17 @@ public void mouseOver(Action action, State state)
 				_scrollX = -SCROLL_AMOUNT;
 			}
 		}
-		else if (posY != null && _scrollX == 0)
+		else if (posY != 0 && _scrollX == 0)
 		{
 			_scrollY = 0;
 		}
 	}
 
-	if ((_scrollX || _scrollY) && !_scrollTimer.isRunning())
+	if ((_scrollX != 0 || _scrollY != 0) && !_scrollTimer.isRunning())
 	{
 		_scrollTimer.start();
 	}
-	else if ((!_scrollX && !_scrollY) && _scrollTimer.isRunning())
+	else if ((_scrollX == 0&& _scrollY == 0) && _scrollTimer.isRunning())
 	{
 		_scrollTimer.stop();
 	}
@@ -769,7 +775,7 @@ public void setSelectorPosition(int mx, int my)
 {
 	int oldX = _selectorX, oldY = _selectorY;
 
-	if (!mx && !my) return; // cursor is offscreen
+	if (mx == 0 && my == 0) return; // cursor is offscreen
 	convertScreenToMap(mx, my, _selectorX, _selectorY);
 	minMaxInt(_selectorX, 0, _save.getWidth() - 1);
 	minMaxInt(_selectorY, 0, _save.getLength() - 1);
@@ -1205,7 +1211,7 @@ public void cacheUnits()
 		{
 			if (_unitCache.get((i).getId()) == null)
 			{
-				_unitCache.set(((i).getId()),new Surface(_spriteWidth, _spriteHeight));
+				_unitCache.get((i).getId()) = new Surface(_spriteWidth, _spriteHeight);
 				_unitCache.get((i).getId()).setPalette(this.getPalette());
 			}
 			else
@@ -1231,7 +1237,7 @@ public void cacheUnits()
 			(i).setCached(true);
 		}
 	}
-	unitSprite = null;
+//	delete unitSprite;
 }
 
 /**

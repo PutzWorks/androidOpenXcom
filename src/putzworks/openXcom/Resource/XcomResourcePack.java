@@ -18,6 +18,13 @@
  */
 package putzworks.openXcom.Resource;
 
+import putzworks.openXcom.Engine.Font;
+import putzworks.openXcom.Engine.Palette;
+import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Geoscape.Globe;
+import putzworks.openXcom.Geoscape.Polyline;
+import putzworks.openXcom.Ruleset.MapDataSet;
+
 public class XcomResourcePack extends ResourcePack
 {
 
@@ -32,18 +39,18 @@ public XcomResourcePack(final String folder)
 	// Load palettes
 	for (int i = 0; i < 5; i++)
 	{
-		Stringstream s1, s2;
-		s1 << folder << "GEODATA/PALETTES.DAT";
-		s2 << "PALETTES.DAT_" << i;
-		_palettes[s2.str()] = new Palette();
-		_palettes[s2.str()].loadDat(insensitive(s1.str()), 256, Palette.palOffset(i));
+		StringBuffer s1 = new StringBuffer(), s2 = new StringBuffer();
+		s1.append(folder + "GEODATA/PALETTES.DAT");
+		s2.append("PALETTES.DAT_" + i);
+		_palettes.put(s2.toString(), new Palette());
+		_palettes.get(s2.toString()).loadDat(insensitive(s1.toString()), 256, Palette.palOffset(i));
 	}
 
-	Stringstream s1, s2;
-	s1 << folder << "GEODATA/BACKPALS.DAT";
-	s2 << "BACKPALS.DAT";
-	_palettes[s2.str()] = new Palette();
-	_palettes[s2.str()].loadDat(insensitive(s1.str()), 128);
+	StringBuffer s1 = new StringBuffer(), s2 = new StringBuffer();
+	s1.append(folder + "GEODATA/BACKPALS.DAT");
+	s2.append("BACKPALS.DAT");
+	_palettes.put(s2.toString(), new Palette());
+	_palettes.get(s2.toString()).loadDat(insensitive(s1.toString()), 128);
 	
 	// Load fonts
 	String font[] = {"BIGLETS.DAT",
@@ -51,14 +58,14 @@ public XcomResourcePack(final String folder)
 	
 	for (int i = 0; i < 2; i++)
 	{
-		Stringstream s;
-		s << folder << "GEODATA/" << font[i];
+		StringBuffer s = new StringBuffer();
+		s.append(folder + "GEODATA/" + font[i]);
 		if (font[i] == "BIGLETS.DAT")
-			_fonts[font[i]] = new Font(16, 16, 173);
+			_fonts.put(font[i], new Font(16, 16, 173));
 		else if (font[i] == "SMALLSET.DAT")
-			_fonts[font[i]] = new Font(8, 9, 173, -1);
-		_fonts[font[i]].getSurface().loadScr(insensitive(s.str()));
-		_fonts[font[i]].load();
+			_fonts.put(font[i], new Font(8, 9, 173, -1));
+		_fonts.get(font[i]).getSurface().loadScr(insensitive(s.toString()));
+		_fonts.get(font[i]).load();
 	}
 		
 	// Load language graphics
@@ -70,19 +77,19 @@ public XcomResourcePack(final String folder)
 
 	for (int i = 1; i < 5; i++)
 	{
-		Stringstream s1, s2;
-		s1 << folder << "Language/" << lang[i] << ".geo";
-		s2 << lang[i] << ".geo";
-		_surfaces[s2.str()] = new Surface(64, 154);
-		_surfaces[s2.str()].loadScr(insensitive(s1.str()));
+		StringBuffer s3 = new StringBuffer(), s4 = new StringBuffer();
+		s3.append(folder + "Language/" + lang[i] + ".geo");
+		s4.append(lang[i] + ".geo");
+		_surfaces.put(s4.toString(), new Surface(64, 154));
+		_surfaces.get(s4.toString()).loadScr(insensitive(s3.toString()));
 	}
 
 	// Load surfaces
 	{
-		Stringstream s;
-		s << folder << "GEODATA/" << "INTERWIN.DAT";
-		_surfaces["INTERWIN.DAT"] = new Surface(160, 556);
-		_surfaces["INTERWIN.DAT"].loadScr(insensitive(s.str()));
+		StringBuffer s = new StringBuffer();
+		s.append(folder + "GEODATA/" + "INTERWIN.DAT");
+		_surfaces.put("INTERWIN.DAT", new Surface(160, 556));
+		_surfaces.get("INTERWIN.DAT").loadScr(insensitive(s.toString()));
 	}
 
 	String scrs[] = {"BACK01.SCR",
@@ -107,10 +114,10 @@ public XcomResourcePack(final String folder)
 
 	for (int i = 0; i < 19; i++)
 	{
-		Stringstream s;
+		StringBuffer s = new StringBuffer();
 		s << folder << "GEOGRAPH/" << scrs[i];
 		_surfaces[scrs[i]] = new Surface(320, 200);
-		_surfaces[scrs[i]].loadScr(insensitive(s.str()));
+		_surfaces[scrs[i]].loadScr(insensitive(s.toString()));
 	}
 
 	String spks[] = {"UP001.SPK",
@@ -159,10 +166,10 @@ public XcomResourcePack(final String folder)
 
 	for (int i = 0; i < 43; i++)
 	{
-		Stringstream s;
-		s << folder << "GEOGRAPH/" << spks[i];
-		_surfaces[spks[i]] = new Surface(320, 200);
-		_surfaces[spks[i]].loadSpk(insensitive(s.str()));
+		StringBuffer s;
+		s.append(folder + "GEOGRAPH/" + spks[i]);
+		_surfaces.put(spks[i], new Surface(320, 200));
+		_surfaces.get(spks[i]).loadSpk(insensitive(s.toString()));
 	}
 
 	// Load surface sets
@@ -172,29 +179,29 @@ public XcomResourcePack(final String folder)
 
 	for (int i = 0; i < 3; i++)
 	{
-		Stringstream s;
-		s << folder << "GEOGRAPH/" << sets[i];
+		StringBuffer s;
+		s.append(folder + "GEOGRAPH/" << sets[i]);
 
 		String ext = sets[i].substr(sets[i].length()-3, sets[i].length());
 		if (ext == "PCK")
 		{
 			String tab = sets[i].substr(0, sets[i].length()-4) + ".TAB";
-			Stringstream s2;
-			s2 << folder << "GEOGRAPH/" << tab;
-			_sets[sets[i]] = new SurfaceSet(32, 40);
-			_sets[sets[i]].loadPck(insensitive(s.str()), insensitive(s2.str()));
+			StringBuffer s2 = new StringBuffer();
+			s2.append(folder + "GEOGRAPH/" + tab);
+			_sets.put(sets[i], new SurfaceSet(32, 40));
+			_sets.get(sets[i]).loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 		}
 		else
 		{
-			_sets[sets[i]] = new SurfaceSet(32, 32);
-			_sets[sets[i]].loadDat(insensitive(s.str()));
+			_sets.put(sets[i], new SurfaceSet(32, 32));
+			_sets.get(sets[i]).loadDat(insensitive(s.toString()));
 		}
 	}
 
 	// Load polygons
-	Stringstream s;
-	s << folder << "GEODATA/" << "WORLD.DAT";
-	Globe.loadDat(insensitive(s.str()), &_polygons);
+	StringBuffer s = new StringBuffer();
+	s.append(folder + "GEODATA/" + "WORLD.DAT");
+	Globe.loadDat(insensitive(s.toString()), _polygons);
 
 	// Load polylines (extracted from game)
 	// -10 = Start of line
@@ -229,13 +236,13 @@ public XcomResourcePack(final String folder)
 					  1.4399, -0.78758, 1.44644, -0.824668, 1.49662, -0.822486, 1.50753, -0.857393, 1.53589, -0.857393, 1.5817, -0.789761, 1.67988, -0.746128,
 					  1.8326, -0.724312, 1.95477, -0.7614, 1.95695, -0.785398, 2.09221, -0.815941, 2.02022, -0.833395, 2.03767, -0.870483, -20};
 
-	Polyline *l = 0;
+	Polyline l = null;
 	int start = 0;
 	for (int i = 0; lines[i] > -19.999; i++)
 	{
 		if (lines[i] < -9.999 && lines[i] > -10.001)
 		{
-			if (l != 0)
+			if (l != null)
 			{
 				_polylines.add(l);
 			}
@@ -282,15 +289,15 @@ public XcomResourcePack(final String folder)
 
 	// Check which music version is available
 	boolean cat = true;
-	GMCatFile *gmcat = 0;
+	GMCatFile gmcat = 0;
 
-	Stringstream musDos;
-	musDos << folder << "SOUND/GM.CAT";
+	StringBuffer musDos = new StringBuffer();
+	musDos.append(folder + "SOUND/GM.CAT");
 	struct stat musInfo;
-	if (stat(insensitive(musDos.str()).c_str(), &musInfo) == 0)
+	if (stat(insensitive(musDos.toString()), musInfo) == 0)
 	{
 		cat = true;
-		gmcat = new GMCatFile(insensitive(musDos.str()).c_str());
+		gmcat = new GMCatFile(insensitive(musDos.toString()));
 	}
 	else
 	{
@@ -308,12 +315,12 @@ public XcomResourcePack(final String folder)
 			_musics[mus[i]] = new Music();
 			for (int j = 0; j < 3; j++)
 			{
-				Stringstream s;
-				s << folder << "SOUND/" << mus[i] << "." << exts[j];
+				StringBuffer s = new StringBuffer();
+				s.append(folder + "SOUND/" + mus[i] + "." + exts[j]);
 				struct stat info;
-				if (stat(insensitive(s.str()).c_str(), &info) == 0) 
+				if (stat(insensitive(s.toString()), info) == 0) 
 				{
-					_musics[mus[i]].load(insensitive(s.str()));
+					_musics[mus[i]].load(insensitive(s.toString()));
 					break;
 				}
 			}
@@ -333,19 +340,19 @@ public XcomResourcePack(final String folder)
 							 "SAMPLE3.CAT"};
 
 	// Check which sound version is available
-	String *cats = 0;
+	String cats = 0;
 	boolean wav = true;
 
-	Stringstream win, dos;
-	win << folder << "SOUND/" << catsWin[0];
-	dos << folder << "SOUND/" << catsDos[0];
+	StringBuffer win = new StringBuffer(), dos = new StringBuffer();
+	win.append(folder + "SOUND/" + catsWin[0]);
+	dos.append(folder + "SOUND/" + catsDos[0]);
 	struct stat sndInfo;
-	if (stat(insensitive(win.str()).c_str(), &sndInfo) == 0)
+	if (stat(insensitive(win.toString()), sndInfo) == 0)
 	{
 		cats = catsWin;
 		wav = true;
 	}
-	else if (stat(insensitive(dos.str()).c_str(), &sndInfo) == 0)
+	else if (stat(insensitive(dos.toString()), sndInfo) == 0)
 	{
 		cats = catsDos;
 		wav = false;
@@ -359,10 +366,10 @@ public XcomResourcePack(final String folder)
 		}
 		else
 		{
-			Stringstream s;
+			StringBuffer s;
 			s << folder << "SOUND/" << cats[i];
 			_sounds[catsId[i]] = new SoundSet();
-			_sounds[catsId[i]].loadCat(insensitive(s.str()), wav);
+			_sounds[catsId[i]].loadCat(insensitive(s.toString()), wav);
 		}
 	}
 
@@ -378,36 +385,36 @@ public XcomResourcePack(final String folder)
 public void loadBattlescapeResources()
 {
 	// Load Battlescape ICONS
-	Stringstream s;
-	s << _folder << "UFOGRAPH/" << "ICONS.PCK";
-	_surfaces["ICONS.PCK"] = new Surface(320, 200);
-	_surfaces["ICONS.PCK"].loadSpk(insensitive(s.str()));
+	StringBuffer s = new StringBuffer();
+	s.append(_folder + "UFOGRAPH/" + "ICONS.PCK");
+	_surfaces.put("ICONS.PCK", new Surface(320, 200));
+	_surfaces.get("ICONS.PCK").loadSpk(insensitive(s.toString()));
 
-	s.str("");
-	Stringstream s2;
-	s << _folder << "UFOGRAPH/" << "CURSOR.PCK";
-	s2 << _folder << "UFOGRAPH/" << "CURSOR.TAB";
-	_sets["CURSOR.PCK"] = new SurfaceSet(32, 40);
-	_sets["CURSOR.PCK"].loadPck(insensitive(s.str()), insensitive(s2.str()));
+	s.delete(0, s.length());
+	StringBuffer s2 = new StringBuffer();
+	s.append(_folder + "UFOGRAPH/" + "CURSOR.PCK");
+	s2.append(_folder + "UFOGRAPH/" + "CURSOR.TAB");
+	_sets.put("CURSOR.PCK", new SurfaceSet(32, 40));
+	_sets.get("CURSOR.PCK").loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 
-	s.str("");
-	s2.str("");
-	s << _folder << "UFOGRAPH/" << "SMOKE.PCK";
-	s2 << _folder << "UFOGRAPH/" << "SMOKE.TAB";
-	_sets["SMOKE.PCK"] = new SurfaceSet(32, 40);
-	_sets["SMOKE.PCK"].loadPck(insensitive(s.str()), insensitive(s2.str()));
+	s.delete(0, s.length());
+	s2.delete(0, s2.length());
+	s.append(_folder + "UFOGRAPH/" + "SMOKE.PCK");
+	s2.append(_folder + "UFOGRAPH/" + "SMOKE.TAB");
+	_sets.put("SMOKE.PCK", new SurfaceSet(32, 40));
+	_sets.get("SMOKE.PCK").loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 
-	s.str("");
-	s2.str("");
-	s << _folder << "UFOGRAPH/" << "X1.PCK";
-	s2 << _folder << "UFOGRAPH/" << "X1.TAB";
-	_sets["X1.PCK"] = new SurfaceSet(128, 64);
-	_sets["X1.PCK"].loadPck(insensitive(s.str()), insensitive(s2.str()));
+	s.delete(0, s.length());
+	s2.delete(0, s2.length());
+	s.append(_folder + "UFOGRAPH/" + "X1.PCK");
+	s2.append(_folder + "UFOGRAPH/" + "X1.TAB");
+	_sets.put("X1.PCK", new SurfaceSet(128, 64));
+	_sets.get("X1.PCK").loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 
-	s.str("");
-	s << _folder << "UFOGRAPH/" << "UNIBORD.PCK";
-	_surfaces["UNIBORD.PCK"] = new Surface(320, 200);
-	_surfaces["UNIBORD.PCK"].loadSpk(insensitive(s.str()));
+	s.delete(0, s.length());
+	s.append(_folder + "UFOGRAPH/" + "UNIBORD.PCK");
+	_surfaces.put("UNIBORD.PCK", new Surface(320, 200));
+	_surfaces.get("UNIBORD.PCK").loadSpk(insensitive(s.toString()));
 
 
 	// Load Battlescape Terrain (only blacks are loaded, others are loaded just in time)
@@ -415,13 +422,13 @@ public void loadBattlescapeResources()
 
 	for (int i = 0; i < 1; i++)
 	{
-		Stringstream s;
-		s << _folder << "TERRAIN/" << bsets[i];
+		StringBuffer s = new StringBuffer();
+		s.append(_folder + "TERRAIN/" + bsets[i]);
 		String tab = bsets[i].substr(0, bsets[i].length()-4) + ".TAB";
-		Stringstream s2;
-		s2 << _folder << "TERRAIN/" << tab;
-		_sets[bsets[i]] = new SurfaceSet(32, 40);
-		_sets[bsets[i]].loadPck(insensitive(s.str()), insensitive(s2.str()));
+		StringBuffer s2 = new StringBuffer();
+		s2.append(_folder + "TERRAIN/" + tab);
+		_sets.put(bsets[i], new SurfaceSet(32, 40));
+		_sets.get(bsets[i]).loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 	}
 
 	// Load Battlescape units
@@ -449,24 +456,24 @@ public void loadBattlescapeResources()
 
 	for (int i = 0; i < 20; i++)
 	{
-		Stringstream s;
-		s << _folder << "UNITS/" << usets[i];
+		StringBuffer s = new StringBuffer();
+		s.append(_folder + "UNITS/" + usets[i]);
 		String tab = usets[i].substr(0, usets[i].length()-4) + ".TAB";
-		Stringstream s2;
-		s2 << _folder << "UNITS/" << tab;
-		_sets[usets[i]] = new SurfaceSet(32, 40);
-		_sets[usets[i]].loadPck(insensitive(s.str()), insensitive(s2.str()));
+		StringBuffer s2 = new StringBuffer();
+		s2.append(_folder + "UNITS/" + tab);
+		_sets.put(usets[i], new SurfaceSet(32, 40));
+		_sets.get(usets[i]).loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 	}
-	s.str("");
-	s << _folder << "UNITS/" << "BIGOBS.PCK";
-	s2.str("");
-	s2 << _folder << "UNITS/" << "BIGOBS.TAB";
-	_sets["BIGOBS.PCK"] = new SurfaceSet(32, 48);
-	_sets["BIGOBS.PCK"].loadPck(insensitive(s.str()), insensitive(s2.str()));
+	s.delete(0, s.length());
+	s.append(_folder + "UNITS/" + "BIGOBS.PCK");
+	s2.delete(0, s2.length());
+	s2.append(_folder + "UNITS/" + "BIGOBS.TAB");
+	_sets.put("BIGOBS.PCK", new SurfaceSet(32, 48));
+	_sets.get("BIGOBS.PCK").loadPck(insensitive(s.toString()), insensitive(s2.toString()));
 
-	s.str("");
-	s << _folder << "GEODATA/" << "LOFTEMPS.DAT";
-	MapDataSet.loadLOFTEMPS(insensitive(s.str()), &_voxelData);
+	s.delete(0, s.length());
+	s.append(_folder + "GEODATA/" + "LOFTEMPS.DAT");
+	MapDataSet.loadLOFTEMPS(insensitive(s.toString()), _voxelData);
 }
 
 }

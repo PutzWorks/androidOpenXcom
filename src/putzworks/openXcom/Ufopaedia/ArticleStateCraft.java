@@ -69,45 +69,45 @@ public class ArticleStateCraft extends ArticleState
 		_lstInfo = new TextList(defs.rect_stats.width, defs.rect_stats.height, defs.rect_stats.x, defs.rect_stats.y);
 		add(_lstInfo);
 		
-		WStringstream ss;
+		StringBuffer ss = new StringBuffer();
 		_lstInfo.setColor(Palette.blockOffset(14)+15);
 		_lstInfo.setColumns(2, 82, 40);
 		_lstInfo.setCondensed(true);
 
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getMaxSpeed();
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getMaxSpeed());
 		
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_MAXIMUM_SPEED_UC").c_str(), ss.str().c_str());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_MAXIMUM_SPEED_UC"), ss.toString());
 		_lstInfo.getCell(0, 1).setColor(Palette.blockOffset(15)+4);
 
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getAcceleration();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_ACCELERATION").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getAcceleration());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_ACCELERATION"), ss.toString());
 		_lstInfo.getCell(1, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getMaxFuel();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_FUEL_CAPACITY").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getMaxFuel());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_FUEL_CAPACITY"), ss.toString());
 		_lstInfo.getCell(2, 1).setColor(Palette.blockOffset(15)+4);
 
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getWeapons();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_WEAPON_PODS").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getWeapons());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_WEAPON_PODS"), ss.toString());
 		_lstInfo.getCell(3, 1).setColor(Palette.blockOffset(15)+4);
 
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getMaxDamage();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_DAMAGE_CAPACITY_UC").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getMaxDamage());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_DAMAGE_CAPACITY_UC"), ss.toString());
 		_lstInfo.getCell(4, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getSoldiers();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_CARGO_SPACE").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getSoldiers());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_CARGO_SPACE"), ss.toString());
 		_lstInfo.getCell(5, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.craft.getHWPs();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_HWP_CAPACITY").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.craft.getHWPs());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_HWP_CAPACITY"), ss.toString());
 		_lstInfo.getCell(6, 1).setColor(Palette.blockOffset(15)+4);
 
 		_lstInfo.draw();

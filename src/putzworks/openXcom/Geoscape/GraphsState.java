@@ -50,7 +50,11 @@ public GraphsState(Game game)
 	// Set up objects
 	_game.getResourcePack().getSurface("GRAPHS.SPK").blit(_bg);
 
-	_btnGeoscape.onMouseClick((ActionHandler)GraphsState.btnGeoscapeClick);
+	_btnGeoscape.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnGeoscapeClick(action);
+		}
+	});
 }
 
 /**

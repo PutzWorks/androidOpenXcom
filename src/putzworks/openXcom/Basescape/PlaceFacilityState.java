@@ -85,11 +85,19 @@ public PlaceFacilityState(Game game, Base base, RuleBaseFacility rule)
 	_view.setTexture(_game.getResourcePack().getSurfaceSet("BASEBITS.PCK"));
 	_view.setBase(_base);
 	_view.setSelectable(rule.getSize());
-	_view.onMouseClick((ActionHandler)PlaceFacilityState.viewClick);
+	_view.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			viewClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(13)+13);
-	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL"));
-	_btnCancel.onMouseClick((ActionHandler)PlaceFacilityState.btnCancelClick);
+	_btnCancel.setText(_game.getLanguage().getString("STR_CANCE"));
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtFacility.setColor(Palette.blockOffset(13)+10);
 	_txtFacility.setText(_game.getLanguage().getString(_rule.getType()));
@@ -106,9 +114,9 @@ public PlaceFacilityState(Game game, Base base, RuleBaseFacility rule)
 
 	_numTime.setColor(Palette.blockOffset(13));
 	_numTime.setBig();
-	WStringstream ss;
-	ss << _rule.getBuildTime() << _game.getLanguage().getString("STR_DAYS");
-	_numTime.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_rule.getBuildTime() + _game.getLanguage().getString("STR_DAYS"));
+	_numTime.setText(ss.toString());
 
 	_txtMaintenance.setColor(Palette.blockOffset(13)+10);
 	_txtMaintenance.setText(_game.getLanguage().getString("STR_MAINTENANCE_UC"));

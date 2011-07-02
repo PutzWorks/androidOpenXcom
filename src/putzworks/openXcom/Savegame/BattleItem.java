@@ -18,12 +18,26 @@
  */
 package putzworks.openXcom.Savegame;
 
+import java.util.EnumSet;
+
 import putzworks.openXcom.Battlescape.Position;
 import putzworks.openXcom.Ruleset.RuleItem;
+import putzworks.openXcom.Savegame.Soldier.SoldierRank;
 
 public class BattleItem
 {
-	public enum InventorySlot { RIGHT_HAND, LEFT_HAND };
+	public enum InventorySlot { RIGHT_HAND(0), LEFT_HAND(1) ;
+		private int id;
+		private InventorySlot(int i){
+			this.id = i;
+		}
+	     public static InventorySlot get(int code) { 
+	    	 for(InventorySlot s : EnumSet.allOf(InventorySlot.class)){
+	               if (s.id == code){return s;}
+	    	 }
+	    	 return null;
+	     }
+	}
 
 	private RuleItem _rules;
 	private Position _position;
@@ -64,7 +78,7 @@ public void load(final YAML.Node node)
 	node["Z"] >> _position.z;
 
 	node["inventoryslot"] >> a;
-	_inventorySlot = (InventorySlot)a;
+	_inventorySlot = InventorySlot.get(a);
 }
 
 /**
@@ -80,7 +94,7 @@ public final void save(YAML.Emitter out)
 	out << YAML.Key << "Y" << YAML.Value << _position.y;
 	out << YAML.Key << "Z" << YAML.Value << _position.z;
 	out << YAML.Key << "owner" << YAML.Value << _owner.getId();
-	out << YAML.Key << "inventoryslot" << YAML.Value << (int)_inventorySlot;
+	out << YAML.Key << "inventoryslot" << YAML.Value << _inventorySlot.id;
 
 	out << YAML.EndMap;
 }

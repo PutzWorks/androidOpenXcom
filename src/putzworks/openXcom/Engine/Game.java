@@ -18,12 +18,15 @@
  */
 package putzworks.openXcom.Engine;
 
+import java.util.Iterator;
 import java.util.List;
 
 import putzworks.openXcom.Interface.Cursor;
 import putzworks.openXcom.Interface.FpsCounter;
 import putzworks.openXcom.Resource.ResourcePack;
 import putzworks.openXcom.Ruleset.Ruleset;
+import putzworks.openXcom.SDL.SDL_Color;
+import putzworks.openXcom.SDL.SDL_Event;
 import putzworks.openXcom.Savegame.SavedGame;
 
 
@@ -117,23 +120,22 @@ public void run()
 		// Clean up states
 		while (!_deleted.isEmpty())
 		{
-			delete _deleted.back();
-			_deleted.pop_back();
+			_deleted.remove(_deleted.size()-1);
 		}
 
 		// Initialize active state
 		if (!_init)
 		{
-			_states.back().init();
+			_states.get(_states.size()-1).init();
 			_init = true;
 
 			// Unpress buttons
-			for (Surface i: _states.back().getSurfaces())
+			for (Surface i: _states.get(_states.size()-1).getSurfaces())
 			{
 				InteractiveSurface s = (InteractiveSurface)(i);
 				if (s != null)
 				{
-					s.unpress(_states.back());
+					s.unpress(_states.get(_states.size()-1));
 				}
 			}
 
@@ -157,32 +159,33 @@ public void run()
 			}
 			else
 			{
-				Action action = Action(_event, _screen.getXScale(), _screen.getYScale());
+				Action action = new Action(_event, _screen.getXScale(), _screen.getYScale());
 				_screen.handle(action);
 				_cursor.handle(action);
 				_fpsCounter.handle(action);
-				_states.back().handle(action);
+				_states.get(_states.size()-1).handle(action);
 			}
 		}
 
 		// Process logic
 		_fpsCounter.think();
-		_states.back().think();
+		_states.get(_states.size()-1).think();
 
 		// Process rendering
 		if (_init)
 		{
+			//TODO iterate through the list backwards
 			_screen.clear();
-			std.list<State*>.iterator i = _states.end();
+			Iterator<State> i = _states.end();
 			do
 			{
 				--i;
 			}
-			while(i != _states.begin() && !(*i).isScreen());
+			while(i != _states.begin() && !(i).isScreen());
 
 			for (; i != _states.end(); ++i)
 			{
-				(*i).blit();
+				(i).blit();
 			}
 			_fpsCounter.blit(_screen.getSurface());
 			_cursor.blit(_screen.getSurface());
@@ -243,7 +246,7 @@ public void setPalette(SDL_Color colors, int firstcolor, int ncolors)
 
 	_fpsCounter.setPalette(colors, firstcolor, ncolors);
 
-	if (_res != 0)
+	if (_res != null)
 	{
 		_res.setPalette(colors, firstcolor, ncolors);
 	}
@@ -284,8 +287,8 @@ public void pushState(State state)
  */
 public void popState()
 {
-	_deleted.add(_states.back());
-	_states.pop_back();
+	_deleted.add(_states.get(_states.size()-1));
+	_states.remove(_states.size()-1);
 	_init = false;
 }
 
@@ -295,7 +298,7 @@ public void popState()
  */
 public final Language getLanguage()
 {
-	return final _lang;
+	return _lang;
 }
 
 /**
@@ -304,7 +307,6 @@ public final Language getLanguage()
  */
 public void setLanguage(Language lang)
 {
-	delete _lang;
 	_lang = lang;
 }
 
@@ -314,7 +316,7 @@ public void setLanguage(Language lang)
  */
 public final ResourcePack getResourcePack()
 {
-	return final _res;
+	return  _res;
 }
 
 /**
@@ -332,7 +334,7 @@ public void setResourcePack(ResourcePack res)
  */
 public final SavedGame getSavedGame()
 {
-	return final _save;
+	return _save;
 }
 
 /**
@@ -341,7 +343,6 @@ public final SavedGame getSavedGame()
  */
 public void setSavedGame(SavedGame save)
 {
-	delete _save;
 	_save = save;
 }
 
@@ -351,7 +352,7 @@ public void setSavedGame(SavedGame save)
  */
 public final Ruleset getRuleset()
 {
-	return final _rules;
+	return _rules;
 }
 
 /**
@@ -360,7 +361,6 @@ public final Ruleset getRuleset()
  */
 public void setRuleset(Ruleset rules)
 {
-	delete _rules;
 	_rules = rules;
 }
 

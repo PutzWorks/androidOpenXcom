@@ -27,8 +27,30 @@ import putzworks.openXcom.Savegame.Soldier.SoldierRank;
 
 public class BattleUnit
 {
-	public enum UnitStatus {STATUS_STANDING, STATUS_WALKING, STATUS_TURNING, STATUS_AIMING, STATUS_FALLING, STATUS_DEAD, STATUS_UNCONSCIOUS};
-	public enum UnitFaction {FACTION_PLAYER, FACTION_HOSTILE, FACTION_NEUTRAL};
+	public enum UnitStatus {STATUS_STANDING(0), STATUS_WALKING(1), STATUS_TURNING(2), STATUS_AIMING(3), STATUS_FALLING(4), STATUS_DEAD(5), STATUS_UNCONSCIOUS(6);
+		public int id;
+		private UnitStatus(int i){
+			this.id = i;
+		}
+		public static UnitStatus get(int code) { 
+	    	 for(UnitStatus s : EnumSet.allOf(UnitStatus.class)){
+	               if (s.id == code){return s;}
+	    	 }
+	    	 return null;
+	    }
+	}
+	public enum UnitFaction {FACTION_PLAYER(0), FACTION_HOSTILE(1), FACTION_NEUTRAL(2);
+		public int id;
+		private UnitFaction(int i){
+			this.id = i;
+		}
+		public static UnitFaction get(int code) { 
+	    	 for(UnitFaction s : EnumSet.allOf(UnitFaction.class)){
+	               if (s.id == code){return s;}
+	    	 }
+	    	 return null;
+	    }
+	}
 	public enum UnitSide {SIDE_FRONT(0), SIDE_LEFT(1), SIDE_RIGHT(2), SIDE_REAR(3), SIDE_UNDER(4);
 		public int id;
 		private UnitSide(int i){
@@ -41,7 +63,7 @@ public class BattleUnit
 	    	 return null;
 	     }
 	}
-	enum UnitBodyPart {BODYPART_HEAD(0), BODYPART_TORSO(1), BODYPART_RIGHTARM(2), BODYPART_LEFTARM(3), BODYPART_RIGHTLEG(4), BODYPART_LEFTLEG(5);
+	public enum UnitBodyPart {BODYPART_HEAD(0), BODYPART_TORSO(1), BODYPART_RIGHTARM(2), BODYPART_LEFTARM(3), BODYPART_RIGHTLEG(4), BODYPART_LEFTLEG(5);
 	public int id;
 	private UnitBodyPart(int i){
 		this.id = i;
@@ -114,9 +136,9 @@ public void load(final YAML.Node node)
 	node["id"] >> _id;
 	String name;
 	node["faction"] >> a;
-	_faction = (UnitFaction)a;
+	_faction = UnitFaction.get(a);
 	node["status"] >> a;
-	_status = (UnitStatus)a;
+	_status = UnitStatus.get(a);
 
 	node["X"] >> _pos.x;
 	node["Y"] >> _pos.y;

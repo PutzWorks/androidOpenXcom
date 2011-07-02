@@ -58,7 +58,7 @@ public final RuleArmor getArmor()
 	return _armor;
 }
 
-public abstract String getName(); //was a WString
+public abstract String getName(); //was a String
 /// Gets the unit's time units.
 public abstract int getTimeUnits();
 /// Gets the unit's stamina.

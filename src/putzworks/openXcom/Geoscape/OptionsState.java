@@ -68,19 +68,35 @@ public OptionsState(Game game)
 
 	_btnLoad.setColor(Palette.blockOffset(15)+2);
 	_btnLoad.setText(_game.getLanguage().getString("STR_LOAD_GAME"));
-	_btnLoad.onMouseClick((ActionHandler)OptionsState.btnLoadClick);
+	_btnLoad.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnLoadClick(action);
+		}
+	});
 
 	_btnSave.setColor(Palette.blockOffset(15)+2);
 	_btnSave.setText(_game.getLanguage().getString("STR_SAVE_GAME"));
-	_btnSave.onMouseClick((ActionHandler)OptionsState.btnSaveClick);
+	_btnSave.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnSaveClick(action);
+		}
+	});
 
 	_btnAbandon.setColor(Palette.blockOffset(15)+2);
 	_btnAbandon.setText(_game.getLanguage().getString("STR_ABANDON_GAME"));
-	_btnAbandon.onMouseClick((ActionHandler)OptionsState.btnAbandonClick);
+	_btnAbandon.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnAbandonClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(15)+2);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)OptionsState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);

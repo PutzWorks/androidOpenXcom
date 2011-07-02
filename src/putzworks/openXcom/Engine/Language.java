@@ -19,19 +19,20 @@
 package putzworks.openXcom.Engine;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Language
 {
-	private WString _name;
-	private HashMap<String, WString> _strings;
+	private String _name;
+	private HashMap<String, String> _strings;
 
 /**
  * Initializes an empty language file.
  */
 public Language()
 {
-	_name = L"";
-	_strings= new HashMap<String, WString>();
+	_name = "";
+	_strings= new HashMap<String, String>();
 }
 
 /**
@@ -41,34 +42,34 @@ public Language()
  * @param src UTF-8 string.
  * @return Wide-character string.
  */
-public WString utf8ToWstr(final String src)
+static public String utf8ToWstr(final String src)
 {
-	WString dest;
-	wchar_t w = 0;
+	String dest = "";
+	char w = 0;
 	int bytes = 0;
-	wchar_t err = 0xfffd;
-	for (size_t i = 0; i < src.size(); ++i)
+	char err = 0xfffd;
+	for (int i = 0; i < src.length(); ++i)
 	{
-		unsigned char c = (unsigned char)src[i];
+		char c = (char)src.charAt(i);
 		if (c <= 0x7f) //first byte
 		{
-			if (bytes){
-				dest.add(err);
+			if (bytes != 0){
+				dest = dest + err;
 				bytes = 0;
 			}
-			dest.add((wchar_t)c);
+			dest = dest + ((char)c);
 		}
 		else if (c <= 0xbf) //second/third/etc byte
 		{
-			if (bytes)
+			if (bytes != 0)
 			{
 				w = ((w << 6)|(c & 0x3f));
 				bytes--;
 				if (bytes == 0)
-					dest.add(w);
+					dest = dest + (w);
 			}
 			else
-				dest.add(err);
+				dest = dest + (err);
 		}
 		else if (c <= 0xdf) //2byte sequence start
 		{
@@ -86,12 +87,12 @@ public WString utf8ToWstr(final String src)
 			w = c & 0x07;
 		}
 		else{
-			dest.add(err);
+			dest = dest + (err);
 			bytes = 0;
 		}
 	}
-	if (bytes)
-		dest.add(err);
+	if (bytes != 0)
+		dest = dest + (err);
 	return dest;
 }
 
@@ -102,36 +103,36 @@ public WString utf8ToWstr(final String src)
  * @param src Wide-character string.
  * @return UTF-8 string.
  */
-public String wstrToUtf8(final WString src)
+public static String wstrToUtf8(final String src)
 {
-	std.string dest;
-	for (size_t i = 0; i < src.size(); ++i)
+	String dest = "";
+	for (int i = 0; i < src.length(); ++i)
 	{
-		wchar_t w = src[i];
+		char w = src.charAt(i);
 		if (w <= 0x7f)
 		{
-			dest.add((char)w);
+			dest = dest + ((char)w);
 		}
 		else if (w <= 0x7ff)
 		{
-			dest.add(0xc0 | ((w >> 6)& 0x1f));
-			dest.add(0x80| (w & 0x3f));
+			dest = dest + (0xc0 | ((w >> 6)& 0x1f));
+			dest = dest + (0x80| (w & 0x3f));
 		}
 		else if (w <= 0xffff)
 		{
-			dest.add(0xe0 | ((w >> 12)& 0x0f));
-			dest.add(0x80| ((w >> 6) & 0x3f));
-			dest.add(0x80| (w & 0x3f));
+			dest = dest + (0xe0 | ((w >> 12)& 0x0f));
+			dest = dest + (0x80| ((w >> 6) & 0x3f));
+			dest = dest + (0x80| (w & 0x3f));
 		}
 		else if (w <= 0x10ffff)
 		{
-			dest.add(0xf0 | ((w >> 18)& 0x07));
-			dest.add(0x80| ((w >> 12) & 0x3f));
-			dest.add(0x80| ((w >> 6) & 0x3f));
-			dest.add(0x80| (w & 0x3f));
+			dest = dest + (0xf0 | ((w >> 18)& 0x07));
+			dest = dest + (0x80| ((w >> 12) & 0x3f));
+			dest = dest + (0x80| ((w >> 6) & 0x3f));
+			dest = dest + (0x80| (w & 0x3f));
 		}
 		else
-			dest.add('?');
+			dest = dest + ('?');
 	}
 	return dest;
 }
@@ -156,7 +157,7 @@ public void loadLng(final String filename)
 
 	char value;
 	String buffer, bufid;
-	WString bufstr;
+	String bufstr;
 	boolean first = true, id = true;
 
 	while (txtFile.read(value, 1))
@@ -217,7 +218,7 @@ public final String getName()
  */
 public final String getString(String id)
 {
-	Map<String, WString>.const_iterator s = _strings.find(id);
+	Map<String, String>.const_iterator s = _strings.find(id);
 	if (s == _strings.end())
 	{
 		std.wcout << "WARNING: " << utf8ToWstr(id) << " not found in " << _name << std.endl;
@@ -238,10 +239,10 @@ public final void toHtml()
 	std.ofstream htmlFile ("lang.html", std.ios.out);
 	htmlFile << "<table border=\"1\" width=\"100%\">" << std.endl;
 	htmlFile << "<tr><th>ID String</th><th>English String</th></tr>" << std.endl;
-	for (std.map<std.string, WString>.const_iterator i = _strings.begin(); i != _strings.end(); ++i)
+	for (std.map<std.string, String>.const_iterator i = _strings.begin(); i != _strings.end(); ++i)
 	{
 		htmlFile << "<tr><td>" << i.first << "</td><td>";
-		for (WString.const_iterator j = i.second.begin(); j != i.second.end(); ++j)
+		for (String.const_iterator j = i.second.begin(); j != i.second.end(); ++j)
 		{
 			if (j == 2 || j == '\n')
 			{

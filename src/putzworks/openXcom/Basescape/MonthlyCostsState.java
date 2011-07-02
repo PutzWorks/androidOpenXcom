@@ -20,6 +20,7 @@ package putzworks.openXcom.Basescape;
 
 import putzworks.openXcom.Engine.*;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Savegame.Base;
 
 public class MonthlyCostsState extends State
@@ -79,7 +80,11 @@ public MonthlyCostsState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(15)+4);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)MonthlyCostsState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+1);
 	_txtTitle.setBig();
@@ -93,43 +98,43 @@ public MonthlyCostsState(Game game, Base base)
 	_txtQuantity.setText(_game.getLanguage().getString("STR_QUANTITY"));
 
 	_txtTotal.setColor(Palette.blockOffset(15)+1);
-	_txtTotal.setText(_game.getLanguage().getString("STR_TOTAL"));
+	_txtTotal.setText(_game.getLanguage().getString("STR_TOTA"));
 
 	_txtRental.setColor(Palette.blockOffset(15)+1);
-	_txtRental.setText(_game.getLanguage().getString("STR_CRAFT_RENTAL"));
+	_txtRental.setText(_game.getLanguage().getString("STR_CRAFT_RENTA"));
 
 	_txtSalaries.setColor(Palette.blockOffset(15)+1);
 	_txtSalaries.setText(_game.getLanguage().getString("STR_SALARIES"));
 
 	_txtIncome.setColor(Palette.blockOffset(13)+10);
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_INCOME") << "=" << Text.formatFunding(_game.getSavedGame().getCountryFunding());
-	_txtIncome.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_INCOME") + "=" + Text.formatFunding(_game.getSavedGame().getCountryFunding()));
+	_txtIncome.setText(ss.toString());
 
 	_lstCrafts.setColor(Palette.blockOffset(13)+10);
 	_lstCrafts.setColumns(4, 125, 70, 45, 60);
 	_lstCrafts.setDot(true);
 
-	WStringstream ss2;
-	ss2 << _base.getCraftCount("STR_SKYRANGER");
-	_lstCrafts.addRow(4, _game.getLanguage().getString("STR_SKYRANGER").c_str(), Text.formatFunding(_game.getRuleset().getCraft("STR_SKYRANGER").getCost()).c_str(), ss2.str().c_str(), Text.formatFunding(_base.getCraftCount("STR_SKYRANGER") * _game.getRuleset().getCraft("STR_SKYRANGER").getCost()).c_str());
-	WStringstream ss3;
-	ss3 << _base.getCraftCount("STR_INTERCEPTOR");
-	_lstCrafts.addRow(4, _game.getLanguage().getString("STR_INTERCEPTOR").c_str(), Text.formatFunding(_game.getRuleset().getCraft("STR_INTERCEPTOR").getCost()).c_str(), ss3.str().c_str(), Text.formatFunding(_base.getCraftCount("STR_INTERCEPTOR") * _game.getRuleset().getCraft("STR_INTERCEPTOR").getCost()).c_str());
+	StringBuffer ss2;
+	ss2.append(_base.getCraftCount("STR_SKYRANGER"));
+	_lstCrafts.addRow(4, _game.getLanguage().getString("STR_SKYRANGER"), Text.formatFunding(_game.getRuleset().getCraft("STR_SKYRANGER").getCost()), ss2.toString(), Text.formatFunding(_base.getCraftCount("STR_SKYRANGER") * _game.getRuleset().getCraft("STR_SKYRANGER").getCost()));
+	StringBuffer ss3;
+	ss3.append(_base.getCraftCount("STR_INTERCEPTOR"));
+	_lstCrafts.addRow(4, _game.getLanguage().getString("STR_INTERCEPTOR"), Text.formatFunding(_game.getRuleset().getCraft("STR_INTERCEPTOR").getCost()), ss3.toString(), Text.formatFunding(_base.getCraftCount("STR_INTERCEPTOR") * _game.getRuleset().getCraft("STR_INTERCEPTOR").getCost()));
 
 	_lstSalaries.setColor(Palette.blockOffset(13)+10);
 	_lstSalaries.setColumns(4, 125, 70, 45, 60);
 	_lstSalaries.setDot(true);
 
-	WStringstream ss4;
-	ss4 << _base.getSoldiers().size();
-	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_SOLDIERS").c_str(), Text.formatFunding(_game.getRuleset().getSoldierCost()).c_str(), ss4.str().c_str(), Text.formatFunding(_base.getSoldiers().size() * _game.getRuleset().getSoldierCost()).c_str());
-	WStringstream ss5;
-	ss5 << _base.getTotalEngineers();
-	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_ENGINEERS").c_str(), Text.formatFunding(_game.getRuleset().getEngineerCost()).c_str(), ss5.str().c_str(), Text.formatFunding(_base.getTotalEngineers() * _game.getRuleset().getEngineerCost()).c_str());
-	WStringstream ss6;
-	ss6 << _base.getTotalScientists();
-	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_SCIENTISTS").c_str(), Text.formatFunding(_game.getRuleset().getScientistCost()).c_str(), ss6.str().c_str(), Text.formatFunding(_base.getTotalScientists() * _game.getRuleset().getScientistCost()).c_str());
+	StringBuffer ss4 = new StringBuffer();
+	ss4.append(_base.getSoldiers().size());
+	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_SOLDIERS"), Text.formatFunding(_game.getRuleset().getSoldierCost()), ss4.toString(), Text.formatFunding(_base.getSoldiers().size() * _game.getRuleset().getSoldierCost()));
+	StringBuffer ss5;
+	ss5.append(_base.getTotalEngineers());
+	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_ENGINEERS"), Text.formatFunding(_game.getRuleset().getEngineerCost()), ss5.toString(), Text.formatFunding(_base.getTotalEngineers() * _game.getRuleset().getEngineerCost()));
+	StringBuffer ss6;
+	ss6.append(_base.getTotalScientists());
+	_lstSalaries.addRow(4, _game.getLanguage().getString("STR_SCIENTISTS"), Text.formatFunding(_game.getRuleset().getScientistCost()), ss6.toString(), Text.formatFunding(_base.getTotalScientists() * _game.getRuleset().getScientistCost()));
 
 	_lstMaintenance.setColor(Palette.blockOffset(13)+10);
 	_lstMaintenance.setColumns(2, 240, 60);
@@ -141,7 +146,7 @@ public MonthlyCostsState(Game game, Base base)
 	_lstTotal.setColor(Palette.blockOffset(13));
 	_lstTotal.setColumns(2, 45, 55);
 	_lstTotal.setDot(true);
-	_lstTotal.addRow(2, _game.getLanguage().getString("STR_TOTAL").c_str(), Text.formatFunding(_base.getMonthlyMaintenace()).c_str());
+	_lstTotal.addRow(2, _game.getLanguage().getString("STR_TOTA"), Text.formatFunding(_base.getMonthlyMaintenace()));
 }
 
 /**

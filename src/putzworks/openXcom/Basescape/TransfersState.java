@@ -80,7 +80,11 @@ public TransfersState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)TransfersState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+6);
 	_txtTitle.setBig();
@@ -105,10 +109,10 @@ public TransfersState(Game game, Base base)
 
 	for (Transfer i: _base.getTransfers())
 	{
-		WStringstream ss, ss2;
-		ss << (i).getQuantity();
-		ss2 << (i).getHours();
-		_lstTransfers.addRow(3, (i).getName(_game.getLanguage()).c_str(), ss.str().c_str(), ss2.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+		ss.append((i).getQuantity());
+		ss2.append((i).getHours());
+		_lstTransfers.addRow(3, (i).getName(_game.getLanguage()), ss.toString(), ss2.toString());
 	}
 }
 

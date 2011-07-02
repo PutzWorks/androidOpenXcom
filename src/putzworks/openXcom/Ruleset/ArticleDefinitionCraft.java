@@ -21,8 +21,8 @@ package putzworks.openXcom.Ruleset;
 public class ArticleDefinitionCraft extends ArticleDefinition
 {
 		public String image_id;
-		public ArticleDefinitionRect rect_stats;
-		public ArticleDefinitionRect rect_text;
+		public ArticleDefinitionRectangle rect_stats;
+		public ArticleDefinitionRectangle rect_text;
 		public RuleCraft craft;
 		public String text;
 	/**

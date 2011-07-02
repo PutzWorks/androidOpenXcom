@@ -86,7 +86,11 @@ public ManufactureState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ManufactureState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+6);
 	_txtTitle.setBig();
@@ -95,15 +99,15 @@ public ManufactureState(Game game, Base base)
 
 	_txtAvailable.setColor(Palette.blockOffset(15)+6);
 	_txtAvailable.setSecondaryColor(Palette.blockOffset(13));
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_ENGINEERS_AVAILABLE") << L'\x01' << _base.getAvailableEngineers();
-	_txtAvailable.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_ENGINEERS_AVAILABLE") + '\x01' + _base.getAvailableEngineers());
+	_txtAvailable.setText(ss.toString());
 
 	_txtAllocated.setColor(Palette.blockOffset(15)+6);
 	_txtAllocated.setSecondaryColor(Palette.blockOffset(13));
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_ENGINEERS_ALLOCATED") << L'\x01' << (_base.getTotalEngineers() - _base.getAvailableEngineers());
-	_txtAllocated.setText(ss2.str());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_game.getLanguage().getString("STR_ENGINEERS_ALLOCATED") + '\x01' + (_base.getTotalEngineers() - _base.getAvailableEngineers()));
+	_txtAllocated.setText(ss2.toString());
 
 	_txtSpace.setColor(Palette.blockOffset(15)+6);
 	_txtSpace.setSecondaryColor(Palette.blockOffset(13));
@@ -111,9 +115,9 @@ public ManufactureState(Game game, Base base)
 
 	_txtFunds.setColor(Palette.blockOffset(15)+6);
 	_txtFunds.setSecondaryColor(Palette.blockOffset(13));
-	WStringstream ss4;
-	ss4 << _game.getLanguage().getString("STR_CURRENT_FUNDS") << L'\x01' << Text.formatFunding(_game.getSavedGame().getFunds());
-	_txtFunds.setText(ss4.str());
+	StringBuffer ss4 = new StringBuffer();
+	ss4.append(_game.getLanguage().getString("STR_CURRENT_FUNDS") + '\x01' + Text.formatFunding(_game.getSavedGame().getFunds()));
+	_txtFunds.setText(ss4.toString());
 
 	_txtItem.setColor(Palette.blockOffset(15)+1);
 	_txtItem.setText(_game.getLanguage().getString("STR_ITEM"));

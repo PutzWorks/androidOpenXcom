@@ -21,6 +21,7 @@ package putzworks.openXcom.Basescape;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
+import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Geoscape.Globe;
 import putzworks.openXcom.Interface.Text;
@@ -60,7 +61,11 @@ public PlaceLiftState(Game game, Base base, Globe globe)
 	_view.setTexture(_game.getResourcePack().getSurfaceSet("BASEBITS.PCK"));
 	_view.setBase(_base);
 	_view.setSelectable(_game.getRuleset().getBaseFacility("STR_ACCESS_LIFT").getSize());
-	_view.onMouseClick((ActionHandler)PlaceLiftState.viewClick);
+	_view.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			viewClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setText(_game.getLanguage().getString("STR_SELECT_POSITION_FOR_ACCESS_LIFT"));

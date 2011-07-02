@@ -59,9 +59,9 @@ public final void save(YAML.Emitter out)
  */
 public void addItem(final String id, int qty)
 {
-	if (_qty.find(id) == _qty.end())
+	if (_qty.get(id) == _qty.end())
 	{
-		_qty[id] = 0;
+		_qty.put(id, 0);
 	}
 	_qty[id] += qty;
 }

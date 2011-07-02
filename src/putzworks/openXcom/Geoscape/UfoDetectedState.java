@@ -85,11 +85,19 @@ public UfoDetectedState(Game game, Ufo ufo, GeoscapeState state, boolean detecte
 
 	_btnCentre.setColor(Palette.blockOffset(8)+8);
 	_btnCentre.setText(_game.getLanguage().getString("STR_CENTER_ON_UFO_TIME_5_SECS"));
-	_btnCentre.onMouseClick((ActionHandler)UfoDetectedState.btnCentreClick);
+	_btnCentre.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCentreClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)UfoDetectedState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtDetected.setColor(Palette.blockOffset(8)+5);
 	if (_detected)
@@ -98,7 +106,7 @@ public UfoDetectedState(Game game, Ufo ufo, GeoscapeState state, boolean detecte
 	}
 	else
 	{
-		_txtDetected.setText(L"");
+		_txtDetected.setText("");
 	}
 
 	_txtUfo.setColor(Palette.blockOffset(8)+5);
@@ -108,15 +116,15 @@ public UfoDetectedState(Game game, Ufo ufo, GeoscapeState state, boolean detecte
 	_lstInfo.setColor(Palette.blockOffset(8)+5);
 	_lstInfo.setColumns(2, 82, 78);
 	_lstInfo.setDot(true);
-	_lstInfo.addRow(2, _game.getLanguage().getString("STR_SIZE_UC").c_str(), _game.getLanguage().getString(_ufo.getRules().getSize()).c_str());
+	_lstInfo.addRow(2, _game.getLanguage().getString("STR_SIZE_UC"), _game.getLanguage().getString(_ufo.getRules().getSize()));
 	_lstInfo.getCell(0, 1).setColor(Palette.blockOffset(8)+10);
-	_lstInfo.addRow(2, _game.getLanguage().getString("STR_ALTITUDE").c_str(), _game.getLanguage().getString(_ufo.getAltitude()).c_str());
+	_lstInfo.addRow(2, _game.getLanguage().getString("STR_ALTITUDE"), _game.getLanguage().getString(_ufo.getAltitude()));
 	_lstInfo.getCell(1, 1).setColor(Palette.blockOffset(8)+10);
-	_lstInfo.addRow(2, _game.getLanguage().getString("STR_HEADING").c_str(), _game.getLanguage().getString(_ufo.getDirection()).c_str());
+	_lstInfo.addRow(2, _game.getLanguage().getString("STR_HEADING"), _game.getLanguage().getString(_ufo.getDirection()));
 	_lstInfo.getCell(2, 1).setColor(Palette.blockOffset(8)+10);
-	WStringstream ss;
-	ss << _ufo.getSpeed();
-	_lstInfo.addRow(2, _game.getLanguage().getString("STR_SPEED").c_str(), ss.str().c_str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_ufo.getSpeed());
+	_lstInfo.addRow(2, _game.getLanguage().getString("STR_SPEED"), ss.toString());
 	_lstInfo.getCell(3, 1).setColor(Palette.blockOffset(8)+10);
 	_lstInfo.draw();
 }

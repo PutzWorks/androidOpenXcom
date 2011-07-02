@@ -66,7 +66,11 @@ public MonthlyReportState(Game game)
 
 	_btnOk.setColor(Palette.blockOffset(8)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)MonthlyReportState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setBig();
@@ -78,11 +82,11 @@ public MonthlyReportState(Game game)
 		month = 12;
 		year--;
 	}
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_MONTH") << _game.getLanguage().getString((String)("STR_JAN" - 1 + month)) << " " << year;
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_MONTH") + _game.getLanguage().getString((String)("STR_JAN" - 1 + month)) + " " + year);
 
 	_txtMonth.setColor(Palette.blockOffset(15)-1);
-	_txtMonth.setText(ss.str());
+	_txtMonth.setText(ss.toString());
 
 	_txtRating.setColor(Palette.blockOffset(15)-1);
 	_txtRating.setText(_game.getLanguage().getString("STR_MONTHLY_RATING"));

@@ -20,12 +20,14 @@ package putzworks.openXcom.Savegame;
 
 import java.util.Vector;
 
+import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Ruleset.Ruleset;
+import putzworks.openXcom.Savegame.Transfer.TransferType;
 
 public class Base extends Target
 {
 	private Ruleset _rule;
-	private WString _name;
+	private String _name;
 	private Vector<BaseFacility> _facilities;
 	private Vector<Soldier> _soldiers;
 	private Vector<Craft> _crafts;
@@ -41,7 +43,7 @@ public Base(Ruleset rule)
 {
 	super();
 	_rule = rule; 
-	_name = L"";
+	_name = "";
 	_facilities = new Vector<BaseFacility>(); 
 	_soldiers = new Vector<Soldier>();
 	_crafts = new Vector<Craft>();
@@ -51,87 +53,66 @@ public Base(Ruleset rule)
 }
 
 /**
- * Deletes the contents of the base from memory.
- */
-public void clearBase()
-{
-	for (Vector<BaseFacility*>.iterator i = _facilities.begin(); i != _facilities.end(); ++i)
-	{
-		delete *i;
-	}
-	for (Vector<Soldier*>.iterator i = _soldiers.begin(); i != _soldiers.end(); ++i)
-	{
-		delete *i;
-	}
-	for (Vector<Craft*>.iterator i = _crafts.begin(); i != _crafts.end(); ++i)
-	{
-		delete *i;
-	}
-	delete _items;
-}
-
-/**
  * Loads the base from a YAML file.
  * @param node YAML node.
  * @param save Pointer to saved game.
  */
-public void load(const YAML.Node &node, SavedGame *save)
+public void load(final YAML.Node node, SavedGame save)
 {
-	unsigned int size = 0;
+	// TODO This should be an unsigned int!
+	int size = 0;
 
 	super.load(node);
-	String name;
-	node["name"] >> name;
+	String name = node["name"];
 	_name = Language.utf8ToWstr(name);
 
 	size = node["facilities"].size();
-	for (unsigned int i = 0; i < size; i++)
+	//TODO This should be an unsigned int
+	for (int i = 0; i < size; i++)
 	{
 		int x, y;
 		node["facilities"][i]["x"] >> x;
 		node["facilities"][i]["y"] >> y;
-		String type;
-		node["facilities"][i]["type"] >> type;
-		BaseFacility *f = new BaseFacility(_rule.getBaseFacility(type), this, x, y);
+		String type = node["facilities"][i]["type"];
+		BaseFacility f = new BaseFacility(_rule.getBaseFacility(type), this, x, y);
 		f.load(node["facilities"][i]);
 		_facilities.add(f);
 	}
 
 	size = node["crafts"].size();
-	for (unsigned int i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 	{
-		String type;
-		node["crafts"][i]["type"] >> type;
-		Craft *c = new Craft(_rule.getCraft(type), this);
+		String type = node["crafts"][i]["type"];
+		Craft c = new Craft(_rule.getCraft(type), this);
 		c.load(node["crafts"][i], _rule);
-		if (const YAML.Node *pName = node["crafts"][i].FindValue("dest"))
+		if (YAML.Node pName = node["crafts"][i].FindValue("dest"))
 		{
 			String type;
 			int id;
-			(*pName)["type"] >> type;
-			(*pName)["id"] >> id;
+			(pName)["type"] >> type;
+			(pName)["id"] >> id;
 			if (type == "STR_BASE")
 			{
 				c.returnToBase();
 			}
 			else if (type == "STR_UFO")
 			{
-				for (Vector<Ufo*>.iterator i = save.getUfos().begin(); i != save.getUfos().end(); ++i)
+				for (Ufo u: save.getUfos())
 				{
-					if ((*i).getId() == id)
+					if ((u).getId() == id)
 					{
-						c.setDestination(*i);
+						c.setDestination(u);
 						break;
 					}
 				}
 			}
 			else if (type == "STR_WAYPOINT")
 			{
-				for (Vector<Waypoint*>.iterator i = save.getWaypoints().begin(); i != save.getWaypoints().end(); ++i)
+				for (Waypoint w: save.getWaypoints())
 				{
-					if ((*i).getId() == id)
+					if ((w).getId() == id)
 					{
-						c.setDestination(*i);
+						c.setDestination(w);
 						break;
 					}
 				}
@@ -141,21 +122,21 @@ public void load(const YAML.Node &node, SavedGame *save)
 	}
 
 	size = node["soldiers"].size();
-	for (unsigned int i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 	{
-		Soldier *s = new Soldier(_rule.getSoldier("XCOM"), _rule.getArmor("STR_NONE_UC"));
+		Soldier s = new Soldier(_rule.getSoldier("XCOM"), _rule.getArmor("STR_NONE_UC"));
 		s.load(node["soldiers"][i]);
-		if (const YAML.Node *pName = node["soldiers"][i].FindValue("craft"))
+		if (YAML.Node pName = node["soldiers"][i].FindValue("craft"))
 		{
 			String type;
 			int id;
-			(*pName)["type"] >> type;
-			(*pName)["id"] >> id;
-			for (Vector<Craft*>.iterator i = _crafts.begin(); i != _crafts.end(); ++i)
+			(pName)["type"] >> type;
+			(pName)["id"] >> id;
+			for (Craft c: _crafts)
 			{
-				if ((*i).getRules().getType() == type && (*i).getId() == id)
+				if ((c).getRules().getType() == type && (c).getId() == id)
 				{
-					s.setCraft(*i);
+					s.setCraft(c);
 					break;
 				}
 			}
@@ -168,11 +149,11 @@ public void load(const YAML.Node &node, SavedGame *save)
 	node["engineers"] >> _engineers;
 
 	size = node["transfers"].size();
-	for (unsigned int i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 	{
 		int hours;
 		node["transfers"][i]["hours"] >> hours;
-		Transfer *t = new Transfer(hours);
+		Transfer t = new Transfer(hours);
 		t.load(node["transfers"][i], this, _rule);
 		_transfers.add(t);
 	}
@@ -188,23 +169,23 @@ public final void save(YAML.Emitter out)
 	out << YAML.Key << "name" << YAML.Value << Language.wstrToUtf8(_name);
 	out << YAML.Key << "facilities" << YAML.Value;
 	out << YAML.BeginSeq;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		(*i).save(out);
+		(i).save(out);
 	}
 	out << YAML.EndSeq;
 	out << YAML.Key << "soldiers" << YAML.Value;
 	out << YAML.BeginSeq;
-	for (Vector<Soldier*>.const_iterator i = _soldiers.begin(); i != _soldiers.end(); ++i)
+	for (Soldier i: _soldiers)
 	{
-		(*i).save(out);
+		(i).save(out);
 	}
 	out << YAML.EndSeq;
 	out << YAML.Key << "crafts" << YAML.Value;
 	out << YAML.BeginSeq;
-	for (Vector<Craft*>.const_iterator i = _crafts.begin(); i != _crafts.end(); ++i)
+	for (Craft i: _crafts)
 	{
-		(*i).save(out);
+		(i).save(out);
 	}
 	out << YAML.EndSeq;
 	out << YAML.Key << "items" << YAML.Value;
@@ -213,9 +194,9 @@ public final void save(YAML.Emitter out)
 	out << YAML.Key << "engineers" << YAML.Value << _engineers;
 	out << YAML.Key << "transfers" << YAML.Value;
 	out << YAML.BeginSeq;
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		(*i).save(out);
+		(i).save(out);
 	}
 	out << YAML.EndSeq;
 	out << YAML.EndMap;
@@ -238,7 +219,7 @@ public final void saveId(YAML.Emitter out)
  * @param lang Language to get strings from.
  * @return Name.
  */
-public final WString Base.getName(Language lang)
+public final String getName()
 {
 	return _name;
 }
@@ -247,7 +228,7 @@ public final WString Base.getName(Language lang)
  * Changes the custom name for the base.
  * @param name Name.
  */
-public void setName(final WString name)
+public void setName(final String name)
 {
 	_name = name;
 }
@@ -258,7 +239,7 @@ public void setName(final WString name)
  */
 public Vector<BaseFacility> getFacilities()
 {
-	return final _facilities;
+	return  _facilities;
 }
 
 /**
@@ -342,9 +323,9 @@ public void setEngineers(int engineers)
 public final int getAvailableSoldiers()
 {
 	int total = 0;
-	for (Vector<Soldier*>.const_iterator i = _soldiers.begin(); i != _soldiers.end(); ++i)
+	for (Soldier i: _soldiers)
 	{
-		if ((*i).getCraft() == 0)
+		if ((i).getCraft() == null)
 		{
 			total++;
 		}
@@ -360,11 +341,11 @@ public final int getAvailableSoldiers()
 public final int getTotalSoldiers()
 {
 	int total = _soldiers.size();
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		if ((*i).getType() == TRANSFER_SOLDIER)
+		if ((i).getType() == TransferType.TRANSFER_SOLDIER)
 		{
-			total += (*i).getQuantity();
+			total += (i).getQuantity();
 		}
 	}
 	return total;
@@ -388,11 +369,11 @@ public final int getAvailableScientists()
 public final int getTotalScientists() 
 {
 	int total = _scientists;
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		if ((*i).getType() == TRANSFER_SCIENTIST)
+		if ((i).getType() == TransferType.TRANSFER_SCIENTIST)
 		{
-			total += (*i).getQuantity();
+			total += (i).getQuantity();
 		}
 	}
 	return total;
@@ -416,11 +397,11 @@ public final int getAvailableEngineers()
 public final int getTotalEngineers()
 {
 	int total = _engineers;
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		if ((*i).getType() == TRANSFER_ENGINEER)
+		if ((i).getType() == TransferType.TRANSFER_ENGINEER)
 		{
-			total += (*i).getQuantity();
+			total += (i).getQuantity();
 		}
 	}
 	return total;
@@ -444,11 +425,11 @@ public final int getUsedQuarters()
 public final int getAvailableQuarters()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getPersonnel();
+			total += (i).getRules().getPersonnel();
 		}
 	}
 	return total;
@@ -462,18 +443,18 @@ public final int getAvailableQuarters()
 public final int getUsedStores()
 {
 	double total = _items.getTotalSize(_rule);
-	for (Vector<Craft*>.const_iterator i = _crafts.begin(); i != _crafts.end(); ++i)
+	for (Craft i: _crafts)
 	{
-		total += (*i).getItems().getTotalSize(_rule);
+		total += (i).getItems().getTotalSize(_rule);
 	}
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		if ((*i).getType() == TRANSFER_ITEM)
+		if ((i).getType() == TransferType.TRANSFER_ITEM)
 		{
-			total += (*i).getQuantity() * _rule.getItem((*i).getItems()).getSize();
+			total += (i).getQuantity() * _rule.getItem((i).getItems()).getSize();
 		}
 	}
-	return (int)floor(total);
+	return (int)Math.floor(total);
 }
 
 /**
@@ -484,11 +465,11 @@ public final int getUsedStores()
 public final int getAvailableStores()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getStorage();
+			total += (i).getRules().getStorage();
 		}
 	}
 	return total;
@@ -512,11 +493,11 @@ public final int getUsedLaboratories()
 public final int getAvailableLaboratories()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getLaboratories();
+			total += (i).getRules().getLaboratories();
 		}
 	}
 	return total;
@@ -540,11 +521,11 @@ public final int getUsedWorkshops()
 public final int getAvailableWorkshops()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getWorkshops();
+			total += (i).getRules().getWorkshops();
 		}
 	}
 	return total;
@@ -558,11 +539,11 @@ public final int getAvailableWorkshops()
 public final int getUsedHangars()
 {
 	int total = _crafts.size();
-	for (Vector<Transfer*>.const_iterator i = _transfers.begin(); i != _transfers.end(); ++i)
+	for (Transfer i: _transfers)
 	{
-		if ((*i).getType() == TRANSFER_CRAFT)
+		if ((i).getType() == TransferType.TRANSFER_CRAFT)
 		{
-			total += (*i).getQuantity();
+			total += (i).getQuantity();
 		}
 	}
 	return total;
@@ -576,11 +557,11 @@ public final int getUsedHangars()
 public final int getAvailableHangars()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getCrafts();
+			total += (i).getRules().getCrafts();
 		}
 	}
 	return total;
@@ -594,11 +575,11 @@ public final int getAvailableHangars()
 public final int getDefenceValue()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getDefenceValue();
+			total += (i).getRules().getDefenceValue();
 		}
 	}
 	return total;
@@ -607,14 +588,14 @@ public final int getDefenceValue()
 /**
  * Returns the total amount of short range
  * detection facilities in the base.
- * @return Defence value.
+ * @return Defense value.
  */
 public final int getShortRangeDetection()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0 && (*i).getRules().getRadarRange() == 1500)
+		if ((i).getBuildTime() == 0 && (i).getRules().getRadarRange() == 1500)
 		{
 			total++;
 		}
@@ -625,14 +606,14 @@ public final int getShortRangeDetection()
 /**
  * Returns the total amount of long range
  * detection facilities in the base.
- * @return Defence value.
+ * @return Defense value.
  */
 public final int getLongRangeDetection()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0 && (*i).getRules().getRadarRange() > 1500)
+		if ((i).getBuildTime() == 0 && (i).getRules().getRadarRange() > 1500)
 		{
 			total++;
 		}
@@ -649,9 +630,9 @@ public final int getLongRangeDetection()
 public final int getCraftCount(String craft)
 {
 	int total = 0;
-	for (Vector<Craft*>.const_iterator i = _crafts.begin(); i != _crafts.end(); ++i)
+	for (Craft i: _crafts)
 	{
-		if ((*i).getRules().getType() == craft)
+		if ((i).getRules().getType() == craft)
 		{
 			total++;
 		}
@@ -667,9 +648,9 @@ public final int getCraftCount(String craft)
 public final int getCraftMaintenance()
 {
 	int total = 0;
-	for (Vector<Craft*>.const_iterator i = _crafts.begin(); i != _crafts.end(); ++i)
+	for (Craft i: _crafts)
 	{
-		total += (*i).getRules().getCost();
+		total += (i).getRules().getCost();
 	}
 	return total;
 }
@@ -696,11 +677,11 @@ public final int getPersonnelMaintenance()
 public final int getFacilityMaintenance()
 {
 	int total = 0;
-	for (Vector<BaseFacility*>.const_iterator i = _facilities.begin(); i != _facilities.end(); ++i)
+	for (BaseFacility i: _facilities)
 	{
-		if ((*i).getBuildTime() == 0)
+		if ((i).getBuildTime() == 0)
 		{
-			total += (*i).getRules().getMonthlyCost();
+			total += (i).getRules().getMonthlyCost();
 		}
 	}
 	return total;

@@ -18,7 +18,7 @@
  */
 package putzworks.openXcom.Engine;
 
-import android.graphics.Rect;
+import android.graphics.Rectangle;
 
 public class Screen
 {
@@ -128,12 +128,12 @@ public void flip()
 public void clear()
 {
 	_surface.clear();
-	Rect square;
-	square.left = 0;
-	square.top = 0;
-	square.right = square.left + getWidth();
-	square.bottom = square.top + getHeight();
-	SDL_FillRect(_screen, square, 0);
+	Rectangle square;
+	square.x = 0;
+	square.y = 0;
+	square.w = getWidth();
+	square.h = getHeight();
+	SDL_FillRectangle(_screen, square, 0);
 }
 
 /**

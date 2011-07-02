@@ -80,30 +80,78 @@ public SelectDestinationState(Game game, Craft craft, Globe globe)
 	add(_txtTitle);
 	
 	// Set up objects
-	_globe.onMouseClick((ActionHandler)SelectDestinationState.globeClick);
+	_globe.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			globeClick(action);
+		}
+	});
 
-	_btnRotateLeft.onMousePress((ActionHandler)SelectDestinationState.btnRotateLeftPress);
-	_btnRotateLeft.onMouseRelease((ActionHandler)SelectDestinationState.btnRotateLeftRelease);
+	_btnRotateLeft.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateLeftPress(action);
+		}
+	});
+	_btnRotateLeft.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateLeftRelease(action);
+		}
+	});
 
-	_btnRotateRight.onMousePress((ActionHandler)SelectDestinationState.btnRotateRightPress);
-	_btnRotateRight.onMouseRelease((ActionHandler)SelectDestinationState.btnRotateRightRelease);
+	_btnRotateRight.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateRightPress(action);
+		}
+	});
+	_btnRotateRight.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateRightRelease(action);
+		}
+	});
 
-	_btnRotateUp.onMousePress((ActionHandler)SelectDestinationState.btnRotateUpPress);
-	_btnRotateUp.onMouseRelease((ActionHandler)SelectDestinationState.btnRotateUpRelease);
+	_btnRotateUp.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateUpPress(action);
+		}
+	});
+	_btnRotateUp.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateUpRelease(action);
+		}
+	});
 
-	_btnRotateDown.onMousePress((ActionHandler)SelectDestinationState.btnRotateDownPress);
-	_btnRotateDown.onMouseRelease((ActionHandler)SelectDestinationState.btnRotateDownRelease);
+	_btnRotateDown.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateDownPress(action);
+		}
+	});
+	_btnRotateDown.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateDownRelease(action);
+		}
+	});
 
-	_btnZoomIn.onMouseClick((ActionHandler)SelectDestinationState.btnZoomInClick);
+	_btnZoomIn.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnZoomInClick(action);
+		}
+	});
 
-	_btnZoomOut.onMouseClick((ActionHandler)SelectDestinationState.btnZoomOutClick);
+	_btnZoomOut.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnZoomOutClick(action);
+		}
+	});
 
 	_window.setColor(Palette.blockOffset(15)+2);
 	_window.setBackground(_game.getResourcePack().getSurface("BACK01.SCR"));
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)SelectDestinationState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setText(_game.getLanguage().getString("STR_SELECT_DESTINATION"));
@@ -164,7 +212,7 @@ public void globeClick(Action action)
 			w.setLatitude(lat);
 			v.add(w);
 		}
-		_game.pushState(new MultipleTargetsState(_game, v, _craft, 0));
+		_game.pushState(new MultipleTargetsState(_game, v, _craft, null));
 	}
 }
 

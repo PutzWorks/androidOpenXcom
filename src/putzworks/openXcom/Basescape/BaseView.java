@@ -18,7 +18,9 @@
  */
 package putzworks.openXcom.Basescape;
 
-import android.graphics.Rect;
+import java.util.Vector;
+
+import android.graphics.Rectangle;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.Font;
 import putzworks.openXcom.Engine.Game;
@@ -26,6 +28,7 @@ import putzworks.openXcom.Engine.InteractiveSurface;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.SurfaceSet;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.*;
@@ -79,7 +82,11 @@ public BaseView(int width, int height, int x, int y)
 			_facilities[x1][y1] = null;
 
 	_timer = new Timer(100);
-	_timer.onTimer((SurfaceHandler)&BaseView.blink);
+	_timer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			blink();
+		}
+	});
 	_timer.start();
 }
 
@@ -125,7 +132,7 @@ public void setBase(Base base)
 	{
 		for (int y = (i).getY(); y < (i).getY() + (i).getRules().getSize(); y++)
 		{
-			for (int x = (i).getX(); x < (i).getX() + i).getRules().getSize(); x++)
+			for (int x = (i).getX(); x < (i).getX() + i.getRules().getSize(); x++)
 			{
 				_facilities[x][y] = i;
 			}
@@ -186,17 +193,17 @@ public void setSelectable(int size)
 	{
 		_selector = new Surface(size * GRID_SIZE, size * GRID_SIZE, _x, _y);
 		_selector.setPalette(getPalette());
-		Rect r;
-		r.left = _selector.getWidth();
-		r.top = _selector.getHeight();
-		r.right = r.left;
+		Rectangle r;
+		r.x = _selector.getWidth();
+		r.y = _selector.getHeight();
+		r.right = r.x;
 		r.bottom = r.bottom;
-        _selector.drawRect(r, Palette.blockOffset(1));
+        _selector.drawRectangle(r, Palette.blockOffset(1));
 		r.right -= 2;
 		r.bottom -= 2;
-		r.left++;
+		r.x++;
 		r.right++;
-        _selector.drawRect(r, (short)0);
+        _selector.drawRectangle(r, (short)0);
 		_selector.setVisible(false);
 	}
 	else
@@ -255,21 +262,21 @@ public boolean isPlaceable(RuleBaseFacility rule)
  * @param remove Facility to ignore (in case of facility dismantling).
  * @return Number of squares connected to the starting position.
  */
-public int countConnected(int x, int y, int grid, BaseFacility remove)
+public int countConnected(int x, int y, int[][] grid, BaseFacility remove)
 {
 	boolean newgrid = (grid == null);
 
 	// Create connection grid
 	if (newgrid)
 	{
-		grid = new int[BASE_SIZE];
+		grid = new int[BASE_SIZE][];
 
 		for (int xx = 0; xx < BASE_SIZE; xx++)
 		{
 			grid[xx] = new int[BASE_SIZE];
 			for (int yy = 0; yy < BASE_SIZE; yy++)
 			{
-				if (_facilities[xx][yy] == 0 || _facilities[xx][yy] == remove)
+				if (_facilities[xx][yy] == null || _facilities[xx][yy] == remove)
 				{
 					grid[xx][yy] = -1;
 				}
@@ -347,27 +354,27 @@ public void blink()
 
 	if (_selSize > 0)
 	{
-		Rect r;
+		Rectangle r;
 		if (_blink)
 		{
 			r.right = _selector.getWidth();
 			r.bottom = _selector.getHeight();
-			r.left = 0;
-			r.top = 0;
-            _selector.drawRect(r, Palette.blockOffset(1));
+			r.x = 0;
+			r.y = 0;
+            _selector.drawRectangle(r, Palette.blockOffset(1));
 			r.right -= 2;
 			r.bottom -= 2;
-			r.left++;
-			r.top++;
-            _selector.drawRect(r, (short)0);
+			r.x++;
+			r.y++;
+            _selector.drawRectangle(r, (short)0);
 		}
 		else
 		{
 			r.right = _selector.getWidth();
 			r.bottom = _selector.getHeight();
-			r.left = 0;
-			r.top = 0;
-            _selector.drawRect(r, (short)0);
+			r.x = 0;
+			r.y = 0;
+            _selector.drawRectangle(r, (short)0);
 		}
 	}
 }
@@ -427,7 +434,7 @@ public void draw()
 			{
 				for (int y = (i).getY(); y < (i).getY() + (i).getRules().getSize(); y++)
 				{
-					if (_facilities[x][y] != 0 && _facilities[x][y].getBuildTime() == 0)
+					if (_facilities[x][y] != null && _facilities[x][y].getBuildTime() == 0)
 					{
 						Surface frame = _texture.getFrame(7);
 						frame.setX(x * GRID_SIZE - GRID_SIZE / 2);
@@ -443,7 +450,7 @@ public void draw()
 			{
 				for (int x = (i).getX(); x < (i).getX() + (i).getRules().getSize(); x++)
 				{
-					if (_facilities[x][y] != 0 && _facilities[x][y].getBuildTime() == 0)
+					if (_facilities[x][y] != null && _facilities[x][y].getBuildTime() == 0)
 					{
 						Surface frame = _texture.getFrame(8);
 						frame.setX(x * GRID_SIZE);
@@ -494,13 +501,12 @@ public void draw()
 			text.setX((i).getX() * GRID_SIZE);
 			text.setY((i).getY() * GRID_SIZE + (GRID_SIZE * (i).getRules().getSize() - 16) / 2);
 			text.setBig();
-			WStringstream ss;
-			ss << (i).getBuildTime();
+			StringBuffer ss = new StringBuffer();
+			ss.append((i).getBuildTime());
 			text.setAlign(TextHAlign.ALIGN_CENTER);
 			text.setColor(Palette.blockOffset(13)+5);
-			text.setText(ss.str());
+			text.setText(ss.toString());
 			text.blit(this);
-			delete text;
 		}
 	}
 }
@@ -512,7 +518,7 @@ public void draw()
 public void blit(Surface surface)
 {
 	super.blit(surface);
-	if (_selector != 0)
+	if (_selector != null)
 	{
 		_selector.blit(surface);
 	}
@@ -526,8 +532,8 @@ public void blit(Surface surface)
 public void mouseOver(Action action, State state)
 {
 	double x = action.getXMouse() - _x * action.getXScale(), y = action.getYMouse() - _y * action.getYScale();
-	_gridX = (int)floor(x / (GRID_SIZE * action.getXScale()));
-	_gridY = (int)floor(y / (GRID_SIZE * action.getYScale()));
+	_gridX = (int)Math.floor(x / (GRID_SIZE * action.getXScale()));
+	_gridY = (int)Math.floor(y / (GRID_SIZE * action.getYScale()));
 	if (_gridX >= 0 && _gridX < BASE_SIZE && _gridY >= 0 && _gridY < BASE_SIZE)
 	{
 		_selFacility = _facilities[_gridX][_gridY];
@@ -547,14 +553,14 @@ public void mouseOver(Action action, State state)
 	}
 	else
 	{
-		_selFacility = 0;
+		_selFacility = null;
 		if (_selSize > 0)
 		{
 			_selector.setVisible(false);
 		}
 	}
 
-	InteractiveSurface.mouseOver(action, state);
+	super.mouseOver(action, state);
 }
 
 /**
@@ -564,13 +570,13 @@ public void mouseOver(Action action, State state)
  */
 public void mouseOut(Action action, State state)
 {
-	_selFacility = 0;
+	_selFacility = null;
 	if (_selSize > 0)
 	{
 		_selector.setVisible(false);
 	}
 
-	InteractiveSurface.mouseOut(action, state);
+	super.mouseOut(action, state);
 }
 
 }

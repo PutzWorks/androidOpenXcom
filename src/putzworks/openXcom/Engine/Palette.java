@@ -24,14 +24,14 @@ import android.graphics.Color;
 
 public class Palette
 {
-		private SDL_Color _colors;
+		private SDL_Color[] _colors;
 
 /**
  * Initializes a brand new palette.
  */
 public Palette()
 {
-	_colors = new SDL_Color();
+	_colors = new SDL_Color[]();
 }
 
 /**
@@ -45,7 +45,7 @@ public Palette()
  */
 public void loadDat(final String filename, int ncolors, int offset)
 {
-	_colors = (Color)malloc(sizeof(Color) * ncolors);
+	_colors = (SDL_Color)malloc(sizeof(SDL_Color) * ncolors);
 
 	// Load file and put colors in pallete
 	std.ifstream palFile (filename.c_str(), std.ios.in | std.ios.binary);

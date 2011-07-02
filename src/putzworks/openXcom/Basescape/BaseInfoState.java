@@ -170,68 +170,55 @@ public BaseInfoState(Game game, Base base, BasescapeState state)
 			break;
 		}
 	}
-	//_mini.onMouseClick((ActionHandler)BaseInfoState.miniClick());
-	
-	_mini.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-		      miniClick(action); 
-		   }
-		}); 
-
+	_mini.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			miniClick(action);
+		}
+	});
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	//_btnOk.onMouseClick((ActionHandler)BaseInfoState.btnOkClick);
-	
-	_btnOk.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-			   btnOkClick(action); 
-		   }
-		}); 
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnTransfers.setColor(Palette.blockOffset(15)+9);
 	_btnTransfers.setText(_game.getLanguage().getString("STR_TRANSFERS_UC"));
-	//_btnTransfers.onMouseClick((ActionHandler)BaseInfoState.btnTransfersClick);
-	
-	_btnTransfers.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-			   btnTransfersClick(action); 
-		   }
-		}); 
+	_btnTransfers.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnTransfersClick(action);
+		}
+	});
 
 	_btnStores.setColor(Palette.blockOffset(15)+9);
 	_btnStores.setText(_game.getLanguage().getString("STR_STORES_UC"));
-	//_btnStores.onMouseClick((ActionHandler)BaseInfoState.btnStoresClick);
-	
-	_btnStores.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-			   btnStoresClick(action); 
-		   }
-		}); 
+	_btnStores.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnStoresClick(action);
+		}
+	});
 
 	_btnMonthlyCosts.setColor(Palette.blockOffset(15)+9);
 	_btnMonthlyCosts.setText(_game.getLanguage().getString("STR_MONTHLY_COSTS"));
-	//_btnMonthlyCosts.onMouseClick((ActionHandler)BaseInfoState.btnMonthlyCostsClick);
-	
-	_btnMonthlyCosts.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-			   btnMonthlyCostsClick(action); 
-		   }
-		}); 
+	_btnMonthlyCosts.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnMonthlyCostsClick(action);
+		}
+	});
 
 	_edtBase.setColor(Palette.blockOffset(15)+1);
 	_edtBase.setBig();
-	//_edtBase.onKeyboardPress((ActionHandler)BaseInfoState.edtBaseKeyPress);
-	
-	_edtBase.onMouseClick(new ActionHandler() { 
-		   public void handle(Action action) { 
-			   edtBaseKeyPress(action); 
-		   }
-		}); 
+	_edtBase.onKeyboardPress(new ActionHandler() {
+		public void handle(Action action) {
+			edtBaseKeyPress(action);
+		}
+	});
 
 
 	_txtPersonnel.setColor(Palette.blockOffset(15)+1);
-	_txtPersonnel.setText(_game.getLanguage().getString("STR_PERSONNEL_AVAILABLE_PERSONNEL_TOTAL"));
+	_txtPersonnel.setText(_game.getLanguage().getString("STR_PERSONNEL_AVAILABLE_PERSONNEL_TOTA"));
 
 	_txtSoldiers.setColor(Palette.blockOffset(13)+5);
 	_txtSoldiers.setText(_game.getLanguage().getString("STR_SOLDIERS"));
@@ -314,7 +301,7 @@ public BaseInfoState(Game game, Base base, BasescapeState state)
 	_txtShortRange.setText(_game.getLanguage().getString("STR_SHORT_RANGE_DETECTION"));
 
 	_numShortRange.setColor(Palette.blockOffset(13));
-	if (_game.getLanguage().getName() == L"DEUTSCH")
+	if (_game.getLanguage().getName().equals("DEUTSCH"))
 	{
 		_numShortRange.setX(137);
 	}
@@ -326,7 +313,7 @@ public BaseInfoState(Game game, Base base, BasescapeState state)
 	_txtLongRange.setText(_game.getLanguage().getString("STR_LONG_RANGE_DETECTION"));
 
 	_numLongRange.setColor(Palette.blockOffset(13));
-	if (_game.getLanguage().getName() == L"DEUTSCH")
+	if (_game.getLanguage().getName().equals("DEUTSCH"))
 	{
 		_numLongRange.setX(137);
 	}
@@ -342,81 +329,81 @@ public void init()
 {
 	_edtBase.setText(_base.getName());
 
-	WStringstream ss;
-	ss << _base.getAvailableSoldiers() << ":" << _base.getTotalSoldiers();
-	_numSoldiers.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_base.getAvailableSoldiers() + ":" + _base.getTotalSoldiers());
+	_numSoldiers.setText(ss.toString());
 
 	_barSoldiers.setMax(_base.getTotalSoldiers());
 	_barSoldiers.setValue(_base.getAvailableSoldiers());
 
-	WStringstream ss2;
-	ss2 << _base.getAvailableEngineers() << ":" << _base.getTotalEngineers();
-	_numEngineers.setText(ss2.str());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_base.getAvailableEngineers() + ":" + _base.getTotalEngineers());
+	_numEngineers.setText(ss2.toString());
 
 	_barEngineers.setMax(_base.getTotalEngineers());
 	_barEngineers.setValue(_base.getAvailableEngineers());
 
-	WStringstream ss3;
-	ss3 << _base.getAvailableScientists() << ":" << _base.getTotalScientists();
-	_numScientists.setText(ss3.str());
+	StringBuffer ss3 = new StringBuffer();
+	ss3.append(_base.getAvailableScientists() + ":" + _base.getTotalScientists());
+	_numScientists.setText(ss3.toString());
 
 	_barScientists.setMax(_base.getTotalScientists());
 	_barScientists.setValue(_base.getAvailableScientists());
 
 
-	WStringstream ss4;
-	ss4 << _base.getUsedQuarters() << ":" << _base.getAvailableQuarters();
-	_numQuarters.setText(ss4.str());
+	StringBuffer ss4 = new StringBuffer();
+	ss4.append(_base.getUsedQuarters() + ":" + _base.getAvailableQuarters());
+	_numQuarters.setText(ss4.toString());
 
 	_barQuarters.setMax(_base.getAvailableQuarters());
 	_barQuarters.setValue(_base.getUsedQuarters());
 
-	WStringstream ss5;
-	ss5 << _base.getUsedStores() << ":" << _base.getAvailableStores();
-	_numStores.setText(ss5.str());
+	StringBuffer ss5 = new StringBuffer();
+	ss5.append(_base.getUsedStores() + ":" + _base.getAvailableStores());
+	_numStores.setText(ss5.toString());
 
 	_barStores.setMax(_base.getAvailableStores());
 	_barStores.setValue(_base.getUsedStores());
 
-	WStringstream ss6;
-	ss6 << _base.getUsedLaboratories() << ":" << _base.getAvailableLaboratories();
-	_numLaboratories.setText(ss6.str());
+	StringBuffer ss6 = new StringBuffer();
+	ss6.append(_base.getUsedLaboratories() + ":" + _base.getAvailableLaboratories());
+	_numLaboratories.setText(ss6.toString());
 
 	_barLaboratories.setMax(_base.getAvailableLaboratories());
 	_barLaboratories.setValue(_base.getUsedLaboratories());
 
-	WStringstream ss7;
-	ss7 << _base.getUsedWorkshops() << ":" << _base.getAvailableWorkshops();
-	_numWorkshops.setText(ss7.str());
+	StringBuffer ss7 = new StringBuffer();
+	ss7.append(_base.getUsedWorkshops() + ":" + _base.getAvailableWorkshops());
+	_numWorkshops.setText(ss7.toString());
 
 	_barWorkshops.setMax(_base.getAvailableWorkshops());
 	_barWorkshops.setValue(_base.getUsedWorkshops());
 
-	WStringstream ss8;
-	ss8 << _base.getUsedHangars() << ":" << _base.getAvailableHangars();
-	_numHangars.setText(ss8.str());
+	StringBuffer ss8 = new StringBuffer();
+	ss8.append(_base.getUsedHangars() + ":" + _base.getAvailableHangars());
+	_numHangars.setText(ss8.toString());
 
 	_barHangars.setMax(_base.getAvailableHangars());
 	_barHangars.setValue(_base.getUsedHangars());
 
 
-	WStringstream ss9;
-	ss9 << _base.getDefenceValue();
-	_numDefence.setText(ss9.str());
+	StringBuffer ss9 = new StringBuffer();
+	ss9.append(_base.getDefenceValue());
+	_numDefence.setText(ss9.toString());
 
 	_barDefence.setMax(_base.getDefenceValue());
 	_barDefence.setValue(_base.getDefenceValue());
 
-	WStringstream ss10;
-	ss10 << _base.getShortRangeDetection();
-	_numShortRange.setText(ss10.str());
+	StringBuffer ss10 = new StringBuffer();
+	ss10.append(_base.getShortRangeDetection());
+	_numShortRange.setText(ss10.toString());
 
 	_barShortRange.setMax(_base.getShortRangeDetection());
 	_barShortRange.setValue(_base.getShortRangeDetection());
 
-	WStringstream ss11;
-	ss11 << _base.getLongRangeDetection();
-	_numLongRange.setText(ss11.str());
+	StringBuffer ss11 = new StringBuffer();
+	ss11.append(_base.getLongRangeDetection());
+	_numLongRange.setText(ss11.toString());
 
 	_barLongRange.setMax(_base.getLongRangeDetection());
 	_barLongRange.setValue(_base.getLongRangeDetection());
@@ -484,12 +471,6 @@ public void btnStoresClick(Action action)
 public void btnMonthlyCostsClick(Action action)
 {
 	_game.pushState(new MonthlyCostsState(_game, _base));
-}
-
-@Override
-public void handle() {
-	// TODO Auto-generated method stub
-	
 }
 
 }

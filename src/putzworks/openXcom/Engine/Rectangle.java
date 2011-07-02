@@ -18,31 +18,29 @@
  */
 package putzworks.openXcom.Engine;
 
-public class Exception
-{
-		private String _msg;
 
-/**
- * Creates a new exception.
- * @param msg Exception message.
- */
-public Exception(final String msg) throw()
-{
-	_msg = msg;
-}
+// trying to translate this line into Java
 
-Exception.~Exception() throw()
-{
-}
+// typedef State &(State::*ActionHandler)(Action*);
+// Note: typedef is just way of using another name for a class, so I think this is trying to
+// say that ActionHandler is just another way of saying "a method on the State class"
 
-/**
- * Returns the message describing the exception
- * that occured.
- * @return Exception message.
- */
-char Exception.what()throw()
-{
-	return _msg.c_str();
-}
+
+public class Rectangle {
+	public int x,y,w,h;
+	
+	public Rectangle(int _x, int _y, int _w, int _h){
+		x = _x;
+		y = _y;
+		w = _w;
+		h = _h;
+	}
+	
+	public Rectangle(){
+		x = 0;
+		y = 0;
+		w = 0;
+		h = 0;
+	}
 
 }

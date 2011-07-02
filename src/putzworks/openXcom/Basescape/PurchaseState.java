@@ -21,13 +21,16 @@ package putzworks.openXcom.Basescape;
 import java.util.Vector;
 
 import putzworks.openXcom.Engine.Action;
+import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.StateHandler;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.*;
 import putzworks.openXcom.Ruleset.RuleCraft;
 import putzworks.openXcom.Ruleset.RuleItem;
 import putzworks.openXcom.Savegame.Base;
+import putzworks.openXcom.Savegame.Craft;
 import putzworks.openXcom.Savegame.Soldier;
 import putzworks.openXcom.Savegame.Transfer;
 
@@ -96,27 +99,35 @@ public PurchaseState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)PurchaseState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(13)+13);
-	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL"));
-	_btnCancel.onMouseClick((ActionHandler)PurchaseState.btnCancelClick);
+	_btnCancel.setText(_game.getLanguage().getString("STR_CANCE"));
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			PurchaseState.btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
-	_txtTitle.setText(_game.getLanguage().getString("STR_PURCHASE_HIRE_PERSONNEL"));
+	_txtTitle.setText(_game.getLanguage().getString("STR_PURCHASE_HIRE_PERSONNE"));
 
 	_txtFunds.setColor(Palette.blockOffset(13)+10);
 	_txtFunds.setSecondaryColor(Palette.blockOffset(13));
-	WString s1 = _game.getLanguage().getString("STR_CURRENT_FUNDS");
-	s1 += L'\x01' + Text.formatFunding(_game.getSavedGame().getFunds());
+	String s1 = _game.getLanguage().getString("STR_CURRENT_FUNDS");
+	s1 += '\x01' + Text.formatFunding(_game.getSavedGame().getFunds());
 	_txtFunds.setText(s1);
 
 	_txtPurchases.setColor(Palette.blockOffset(13)+10);
 	_txtPurchases.setSecondaryColor(Palette.blockOffset(13));
-	WString s2 = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
-	s2 += L'\x01' + Text.formatFunding(_total);
+	String s2 = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
+	s2 += '\x01' + Text.formatFunding(_total);
 	_txtPurchases.setText(s2);
 
 	_txtItem.setColor(Palette.blockOffset(13)+10);
@@ -135,10 +146,26 @@ public PurchaseState(Game game, Base base)
 	_lstItems.setSelectable(true);
 	_lstItems.setBackground(_window);
 	_lstItems.setMargin(2);
-	_lstItems.onLeftArrowPress((ActionHandler)PurchaseState.lstItemsLeftArrowPress);
-	_lstItems.onLeftArrowRelease((ActionHandler)PurchaseState.lstItemsLeftArrowRelease);
-	_lstItems.onRightArrowPress((ActionHandler)PurchaseState.lstItemsRightArrowPress);
-	_lstItems.onRightArrowRelease((ActionHandler)PurchaseState.lstItemsRightArrowRelease);
+	_lstItems.onLeftArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsLeftArrowPress(action);
+		}
+	});
+	_lstItems.onLeftArrowRelease(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsLeftArrowRelease(action);
+		}
+	});
+	_lstItems.onRightArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsRightArrowPress(action);
+		}
+	});
+	_lstItems.onRightArrowRelease((new ActionHandler() {
+		public void handle(Action action) {
+			lstItemsRightArrowRelease(action);
+		}
+	});
 
 	_crafts.add("STR_SKYRANGER");
 	_crafts.add("STR_INTERCEPTOR");
@@ -148,7 +175,7 @@ public PurchaseState(Game game, Base base)
 	_items.add("STR_STINGRAY_MISSILES");
 	_items.add("STR_AVALANCHE_MISSILES");
 	_items.add("STR_CANNON_ROUNDS_X50");
-	_items.add("STR_PISTOL");
+	_items.add("STR_PISTO");
 	_items.add("STR_PISTOL_CLIP");
 	_items.add("STR_RIFLE");
 	_items.add("STR_RIFLE_CLIP");
@@ -163,26 +190,34 @@ public PurchaseState(Game game, Base base)
 	_items.add("STR_SMOKE_GRENADE");
 
 	_qtys.add(0);
-	_lstItems.addRow(3, _game.getLanguage().getString("STR_SOLDIER").c_str(), Text.formatFunding(_game.getRuleset().getSoldierCost() * 2).c_str(), L"0");
+	_lstItems.addRow(3, _game.getLanguage().getString("STR_SOLDIER"), Text.formatFunding(_game.getRuleset().getSoldierCost() * 2), "0");
 	_qtys.add(0);
-	_lstItems.addRow(3, _game.getLanguage().getString("STR_SCIENTIST").c_str(), Text.formatFunding(_game.getRuleset().getScientistCost() * 2).c_str(), L"0");
+	_lstItems.addRow(3, _game.getLanguage().getString("STR_SCIENTIST"), Text.formatFunding(_game.getRuleset().getScientistCost() * 2), "0");
 	_qtys.add(0);
-	_lstItems.addRow(3, _game.getLanguage().getString("STR_ENGINEER").c_str(), Text.formatFunding(_game.getRuleset().getEngineerCost() * 2).c_str(), L"0");
+	_lstItems.addRow(3, _game.getLanguage().getString("STR_ENGINEER"), Text.formatFunding(_game.getRuleset().getEngineerCost() * 2), "0");
 	for (Vector<std.string>.iterator i = _crafts.begin(); i != _crafts.end(); ++i)
 	{
 		_qtys.add(0);
-		_lstItems.addRow(3, _game.getLanguage().getString(*i).c_str(), Text.formatFunding(_game.getRuleset().getCraft(*i).getCost()).c_str(), L"0");
+		_lstItems.addRow(3, _game.getLanguage().getString(i), Text.formatFunding(_game.getRuleset().getCraft(i).getCost()), "0");
 	}
 	for (Vector<std.string>.iterator i = _items.begin(); i != _items.end(); ++i)
 	{
 		_qtys.add(0);
-		_lstItems.addRow(3, _game.getLanguage().getString(*i).c_str(), Text.formatFunding(_game.getRuleset().getItem(*i).getCost()).c_str(), L"0");
+		_lstItems.addRow(3, _game.getLanguage().getString(i), Text.formatFunding(_game.getRuleset().getItem(i).getCost()), "0");
 	}
 
 	_timerInc = new Timer(50);
-	_timerInc.onTimer((StateHandler)PurchaseState.increase);
+	_timerInc.onTimer(new StateHandler() {
+		public void handle(State state) {
+			increase();
+		}
+	});
 	_timerDec = new Timer(50);
-	_timerDec.onTimer((StateHandler)PurchaseState.decrease);
+	_timerDec.onTimer(new StateHandler() {
+		public void handle(State state) {
+			decrease();
+		}
+	});
 }
 
 /**
@@ -214,12 +249,12 @@ public void btnOkClick(Action action)
 	_game.getSavedGame().setFunds(_game.getSavedGame().getFunds() - _total);
 	for (int i = 0; i < _qtys.size(); ++i)
 	{
-		if (_qtys[i] > 0)
+		if (_qtys.get(i) > 0)
 		{
 			// Buy soldiers
 			if (i == 0)
 			{
-				for (int s = 0; s < _qtys[i]; s++)
+				for (int s = 0; s < _qtys.get(i); s++)
 				{
 					Transfer t = new Transfer(_game.getRuleset().getPersonnelTime());
 					t.setSoldier(new Soldier(_game.getRuleset().getSoldier("XCOM"), _game.getRuleset().getArmor("STR_NONE_UC"), _game.getRuleset().getPools()));
@@ -230,22 +265,22 @@ public void btnOkClick(Action action)
 			else if (i == 1)
 			{
 				Transfer t = new Transfer(_game.getRuleset().getPersonnelTime());
-				t.setScientists(_qtys[i]);
+				t.setScientists(_qtys.get(i));
 				_base.getTransfers().add(t);
 			}
 			// Buy engineers
 			else if (i == 2)
 			{
 				Transfer t = new Transfer(_game.getRuleset().getPersonnelTime());
-				t.setEngineers(_qtys[i]);
+				t.setEngineers(_qtys.get(i));
 				_base.getTransfers().add(t);
 			}
 			// Buy crafts
 			else if (i >= 3 && i < 3 + _crafts.size())
 			{
-				for (int c = 0; c < _qtys[i]; c++)
+				for (int c = 0; c < _qtys.get(i); c++)
 				{
-					RuleCraft rc = _game.getRuleset().getCraft(_crafts[i - 3]);
+					RuleCraft rc = _game.getRuleset().getCraft(_crafts.get(i - 3));
 					Transfer t = new Transfer(rc.getTransferTime());
 					t.setCraft(new Craft(rc, _base, _game.getSavedGame().getCraftIds()));
 					_base.getTransfers().add(t);
@@ -254,9 +289,9 @@ public void btnOkClick(Action action)
 			// Buy items
 			else
 			{
-				RuleItem ri = _game.getRuleset().getItem(_items[i - 3 - _crafts.size()]);
+				RuleItem ri = _game.getRuleset().getItem(_items.get(i - 3 - _crafts.size()));
 				Transfer t = new Transfer(ri.getTransferTime());
-				t.setItems(_items[i - 3 - _crafts.size()], _qtys[i]);
+				t.setItems(_items.get(i - 3 - _crafts.size()), _qtys.get(i));
 				_base.getTransfers().add(t);
 			}
 		}
@@ -334,12 +369,12 @@ private int getPrice()
 	// Craft cost
 	else if (_sel >= 3 && _sel < 3 + _crafts.size())
 	{
-		return _game.getRuleset().getCraft(_crafts[_sel - 3]).getCost();
+		return _game.getRuleset().getCraft(_crafts.get(_sel - 3)).getCost();
 	}
 	// Item cost
 	else
 	{
-		return _game.getRuleset().getItem(_items[_sel - 3 - _crafts.size()]).getCost();
+		return _game.getRuleset().getItem(_items.get(_sel - 3 - _crafts.size())).getCost();
 	}
 }
 
@@ -383,16 +418,16 @@ public void increase()
 		// Item count
 		else
 		{
-			_iQty += _game.getRuleset().getItem(_items[_sel - 3 - _crafts.size()]).getSize();
+			_iQty += _game.getRuleset().getItem(_items.get(_sel - 3 - _crafts.size())).getSize();
 		}
-		_qtys[_sel]++;
-		WStringstream ss;
-		ss << _qtys[_sel];
-		_lstItems.getCell(_sel, 2).setText(ss.str());
+		_qtys.get(_sel)++;
+		StringBuffer ss = new StringBuffer();
+		ss.append(_qtys.get(_sel));
+		_lstItems.getCell(_sel, 2).setText(ss.toString());
 		_lstItems.draw();
 		_total += getPrice();
-		WString s = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
-		s += L'\x01' + Text.formatFunding(_total);
+		String s = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
+		s += '\x01' + Text.formatFunding(_total);
 		_txtPurchases.setText(s);
 	}
 }
@@ -417,16 +452,16 @@ public void decrease()
 		// Item count
 		else
 		{
-			_iQty -= _game.getRuleset().getItem(_items[_sel - 3 - _crafts.size()]).getSize();
+			_iQty -= _game.getRuleset().getItem(_items.get(_sel - 3 - _crafts.size())).getSize();
 		}
-		_qtys[_sel]--;
-		WStringstream ss;
-		ss << _qtys[_sel];
-		_lstItems.getCell(_sel, 2).setText(ss.str());
+		_qtys.get(_sel)--;
+		StringBuffer ss = new StringBuffer();
+		ss.append(_qtys.get(_sel));
+		_lstItems.getCell(_sel, 2).setText(ss.toString());
 		_lstItems.draw();
 		_total -= getPrice();
-		WString s = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
-		s += L'\x01' + Text.formatFunding(_total);
+		String s = _game.getLanguage().getString("STR_COST_OF_PURCHASES");
+		s += '\x01' + Text.formatFunding(_total);
 		_txtPurchases.setText(s);
 	}
 }

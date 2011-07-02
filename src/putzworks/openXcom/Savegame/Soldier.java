@@ -21,6 +21,7 @@ package putzworks.openXcom.Savegame;
 import java.util.EnumSet;
 import java.util.Vector;
 
+import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Engine.RNG;
 import putzworks.openXcom.Ruleset.RuleArmor;
 import putzworks.openXcom.Ruleset.RuleSoldier;
@@ -41,10 +42,34 @@ public class Soldier extends Unit
 	     }
 
 	}
-	public enum SoldierGender { GENDER_MALE, GENDER_FEMALE };
-	public enum SoldierLook { LOOK_BLONDE, LOOK_BROWNHAIR, LOOK_ORIENTAL, LOOK_AFRICAN };
+	public enum SoldierGender { GENDER_MALE(0), GENDER_FEMALE(1) ;
+		private int id;
+		private SoldierGender(int i){
+			this.id = i;
+		}
+	     public static SoldierGender get(int code) { 
+	    	 for(SoldierGender s : EnumSet.allOf(SoldierGender.class)){
+	               if (s.id == code){return s;}
+	    	 }
+	    	 return null;
+	     }
+	
+	}
+	public enum SoldierLook { LOOK_BLONDE(0), LOOK_BROWNHAIR(1), LOOK_ORIENTAL(2), LOOK_AFRICAN(3) ;
+	private int id;
+	private SoldierLook(int i){
+		this.id = i;
+	}
+     public static SoldierLook get(int code) { 
+    	 for(SoldierLook s : EnumSet.allOf(SoldierLook.class)){
+               if (s.id == code){return s;}
+    	 }
+    	 return null;
+     }
 
-	private WString _name;
+}
+
+	private String _name;
 	private RuleSoldier _rules;
 	private UnitStats _initialStats, _currentStats;
 	private SoldierRank _rank;
@@ -61,7 +86,7 @@ public class Soldier extends Unit
 public Soldier(RuleSoldier rules, RuleArmor armor)
 {
 	super(armor);
-	_name = L"";
+	_name = "";
 	_rules = rules;
 	_rank = SoldierRank.RANK_ROOKIE;
 	_craft = null;
@@ -117,10 +142,10 @@ public Soldier(RuleSoldier rules, RuleArmor armor, Vector<SoldierNamePool> names
 
 	_currentStats = _initialStats;
 
-	int gender;
+	int gender = 0;
 	_name = names.get(RNG.generate(0, names.size()-1)).genName(gender);
-	_gender = (SoldierGender)gender;
-	_look = (SoldierLook)RNG.generate(0, 3);
+	_gender = SoldierGender.get(gender);
+	_look = SoldierLook.get(RNG.generate(0, 3));
 }
 
 /**
@@ -146,11 +171,11 @@ public void load(final YAML.Node node)
 	node["melee"] >> _initialStats.melee;
 	_currentStats = _initialStats;
 	node["rank"] >> a;
-	_rank = (SoldierRank)a;
+	_rank = SoldierRank.get(a);
 	node["gender"] >> a;
-	_gender = (SoldierGender)a;
+	_gender = SoldierGender.get(a);
 	node["look"] >> a;
-	_look = (SoldierLook)a;
+	_look = SoldierLook.get(a);
 	node["missions"] >> _missions;
 	node["kills"] >> _kills;
 }
@@ -175,7 +200,7 @@ public final void save(YAML.Emitter out)
 	out << YAML.Key << "psiSkill" << YAML.Value << _initialStats.psiSkill;
 	out << YAML.Key << "melee" << YAML.Value << _initialStats.melee;
 	out << YAML.Key << "rank" << YAML.Value << _rank;
-	if (_craft != 0)
+	if (_craft != null)
 	{
 		out << YAML.Key << "craft" << YAML.Value;
 		_craft.saveId(out);
@@ -191,7 +216,7 @@ public final void save(YAML.Emitter out)
  * Returns the soldier's full name.
  * @return Soldier name.
  */
-public final WString getName()
+public final String getName()
 {
 	return _name;
 }
@@ -200,7 +225,7 @@ public final WString getName()
  * Changes the soldier's full name.
  * @param name Soldier name.
  */
-public void setName(final WString name)
+public void setName(final String name)
 {
 	_name = name;
 }
@@ -234,22 +259,16 @@ public final String getRankString()
 	{
 	case RANK_ROOKIE:
 		return "STR_ROOKIE";
-		break;
 	case RANK_SQUADDIE:
 		return "STR_SQUADDIE";
-		break;
 	case RANK_SERGEANT:
 		return "STR_SERGEANT";
-		break;
 	case RANK_CAPTAIN:
 		return "STR_CAPTAIN";
-		break;
 	case RANK_COLONEL:
-		return "STR_COLONEL";
-		break;
+		return "STR_COLONE";
 	case RANK_COMMANDER:
 		return "STR_COMMANDER";
-		break;
 	}
 	return "";
 }

@@ -48,7 +48,7 @@ public Pathfinding(SavedBattleGame save)
 	_size = _save.getHeight() * _save.getLength() * _save.getWidth();
 	/* allocate the array and the objects in it */
 	_nodes = new PathfindingNode[_size];
-	int x, y, z;
+	int x = 0, y = 0, z = 0;
 	for (int i = 0; i < _size; ++i)
 	{
 		_save.getTileCoords(i, x, y, z);
@@ -150,7 +150,7 @@ public void calculate(BattleUnit unit, Position endPosition)
                 }
             }
         }
-		openList.pop_front();
+		openListremove(0);
     }
 
     if(!getNode(endPosition).isChecked()) return;
@@ -265,7 +265,7 @@ public void directionToVector(int direction, Position vector)
 public int getStartDirection()
 {
 	if (_path.isEmpty()) return -1;
-	return _path.get(_path.size() - 1);
+	return _path.lastElement();
 }
 
 /*
@@ -275,8 +275,8 @@ public int getStartDirection()
 public int dequeuePath()
 {
 	if (_path.isEmpty()) return -1;
-	int last_element = _path.get(_path.size() - 1);
-	_path.pop_back();
+	int last_element = _path.lastElement();
+	_path.remove(_path.lastElement());
 	return last_element;
 }
 
@@ -334,8 +334,8 @@ private boolean isBlocked(Tile startTile, Tile endTile, int direction)
 	case 1: // north east
 		if (isBlocked(startTile,MapData.O_NORTHWALL)) return true;
 		if (isBlocked(endTile,MapData.O_WESTWALL)) return true;
-		if (isBlocked(_save.getTile(startTile.getPosition() + new Position(1, 0, 0)),MapData.O_WESTWALL)) return true;
-		if (isBlocked(_save.getTile(startTile.getPosition() + new Position(1, 0, 0)),MapData.O_NORTHWALL)) return true;
+		if (isBlocked(_save.getTile(startTile.getPosition().plus(new Position(1, 0, 0))),MapData.O_WESTWALL)) return true;
+		if (isBlocked(_save.getTile(startTile.getPosition().plus(new Position(1, 0, 0))),MapData.O_NORTHWALL)) return true;
 		break;
 	case 2: // east
 		if (isBlocked(endTile,MapData.O_WESTWALL)) return true;
@@ -380,8 +380,8 @@ private boolean canFallDown(Tile here)
 	if (here.getPosition().z == 0)
 		return false;
 
-	if (_save.selectUnit(here.getPosition().plus(new Position(0, 0, -1))) != null &&
-		_save.selectUnit(here.getPosition().plus(new Position(0, 0, -1))) != _unit)
+	BattleUnit unitHere = _save.selectUnit(here.getPosition().plus(new Position(0, 0, -1)));
+	if ( unitHere != null && unitHere != _unit)
 		return false;
 
 	if (here == null || here.hasNoFloor())
@@ -408,7 +408,7 @@ private boolean isOnStairs(Position startPosition, Position endPosition)
 		}
 
 		// condition 3 : the start position has to be on either of the 3 tiles to the south of the endposition
-		if (startPosition == endPosition.plus(new Position(0, -1, 0)) || startPosition == endPosition.plus(new Position(0, -2, 0)) || startPosition == endPosition.plus(new Position(0, -3, 0)))
+		if (startPosition.equals(endPosition.plus(new Position(0, -1, 0))) || startPosition.equals(endPosition.plus(new Position(0, -2, 0))) || startPosition.equals(endPosition.plus(new Position(0, -3, 0))))
 		{
 			return true;
 		}
@@ -421,7 +421,7 @@ private boolean isOnStairs(Position startPosition, Position endPosition)
 		{
 			return false;
 		}
-		if (startPosition == endPosition.plus(new Position(1, 0, 0)) || startPosition == endPosition.plus(new Position(2, 0, 0)) || startPosition == endPosition.plus(new Position(3, 0, 0)))
+		if (startPosition.equals(endPosition.plus(new Position(1, 0, 0))) || startPosition.equals(endPosition.plus(new Position(2, 0, 0))) || startPosition.equals(endPosition.plus(new Position(3, 0, 0))))
 		{
 			return true;
 		}

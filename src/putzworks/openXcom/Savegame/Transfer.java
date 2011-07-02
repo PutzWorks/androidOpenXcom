@@ -195,13 +195,13 @@ public void setEngineers(int engineers)
  * @param lang Language to get strings from.
  * @return Name string.
  */
-public final WString getName(Language lang)
+public final String getName(Language lang)
 {
-	if (_soldier != 0)
+	if (_soldier != null)
 	{
 		return _soldier.getName();
 	}
-	else if (_craft != 0)
+	else if (_craft != null)
 	{
 		return _craft.getName(lang);
 	}

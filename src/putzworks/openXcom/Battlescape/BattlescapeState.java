@@ -21,7 +21,7 @@ package putzworks.openXcom.Battlescape;
 import java.util.List;
 import java.util.Vector;
 
-import android.graphics.Rect;
+import android.graphics.Rectangle;
 
 import putzworks.openXcom.Battlescape.Map.CursorType;
 import putzworks.openXcom.Engine.*;
@@ -42,6 +42,7 @@ public class BattlescapeState extends State
 	public static final int DEFAULT_WALK_SPEED = 40;
 	public static final int DEFAULT_BULLET_SPEED = 20;
 	public static final int DEFAULT_ANIM_SPEED = 100;
+	private static int delta = 1, color = 32;
 
 	public class BattleAction
 	{
@@ -210,7 +211,11 @@ public BattlescapeState(Game game)
 	_map.setResourcePack(_game.getResourcePack());
 	_map.setSavedGame(_battleGame, _game);
 	_map.init();
-	_map.onMouseClick((ActionHandler)BattlescapeState.mapClick);
+	_map.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			mapClick(action);
+		}
+	});
 
 	_numLayers.setColor(Palette.blockOffset(1)-2);
 	_numLayers.setValue(1);
@@ -221,18 +226,58 @@ public BattlescapeState(Game game)
 	_numAmmoRight.setColor(2);
 	_numAmmoRight.setValue(999);
 
-	_btnAbort.onMouseClick((ActionHandler)BattlescapeState.btnAbortClick);
-	_btnEndTurn.onMouseClick((ActionHandler)BattlescapeState.btnEndTurnClick);
-	_btnMapUp.onMouseClick((ActionHandler)BattlescapeState.btnMapUpClick);
-	_btnMapDown.onMouseClick((ActionHandler)BattlescapeState.btnMapDownClick);
-	_btnNextSoldier.onMouseClick((ActionHandler)BattlescapeState.btnNextSoldierClick);
-	_btnCenter.onMouseClick((ActionHandler)BattlescapeState.btnCenterClick);
-	_btnKneel.onMouseClick((ActionHandler)BattlescapeState.btnKneelClick);
-	_btnLeftHandItem.onMouseClick((ActionHandler)BattlescapeState.btnLeftHandItemClick);
-	_btnRightHandItem.onMouseClick((ActionHandler)BattlescapeState.btnRightHandItemClick);
+	_btnAbort.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnAbortClick(action);
+		}
+	});
+	_btnEndTurn.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnEndTurnClick(action);
+		}
+	});
+	_btnMapUp.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnMapUpClick(action);
+		}
+	});
+	_btnMapDown.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnMapDownClick(action);
+		}
+	});
+	_btnNextSoldier.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNextSoldierClick(action);
+		}
+	});
+	_btnCenter.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCenterClick(action);
+		}
+	});
+	_btnKneel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnKneelClick(action);
+		}
+	});
+	_btnLeftHandItem.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnLeftHandItemClick(action);
+		}
+	});
+	_btnRightHandItem.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnRightHandItemClick(action);
+		}
+	});
 	for (int i = 0; i < 10; ++i)
 	{
-		_btnVisibleUnit[i].onMouseClick((ActionHandler)BattlescapeState.btnVisibleUnitClick);
+		_btnVisibleUnit[i].onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnVisibleUnitClick(action);
+			}
+		});
 		_numVisibleUnit[i].setColor(16);
 		_numVisibleUnit[i].setValue(i+1);
 	}
@@ -282,11 +327,19 @@ public BattlescapeState(Game game)
 	_game.getResourcePack().getMusic("GMTACTIC").play();
 
 	_stateTimer = new Timer(DEFAULT_ANIM_SPEED);
-	_stateTimer.onTimer((StateHandler)BattlescapeState.handleState);
+	_stateTimer.onTimer(new StateHandler() {
+		public void handle(State state) {
+			handleState();
+		}
+	});
 	_stateTimer.start();
 
 	_animTimer = new Timer(DEFAULT_ANIM_SPEED);
-	_animTimer.onTimer((StateHandler)BattlescapeState.animate);
+	_animTimer.onTimer(new StateHandler() {
+		public void handle(State state) {
+			animate();
+		}
+	});
 	_animTimer.start();
 
 	_action.type = BattleActionType.BA_NONE;
@@ -331,8 +384,8 @@ public void think()
 	else
 	{
 		// Handle popups
-		_game.pushState(_popups.begin());
-		_popups.erase(_popups.begin());
+		_game.pushState(_popups.firstElement());
+		_popups.remove(_popups.firstElement());
 		popped = true;
 	}
 }
@@ -382,7 +435,7 @@ public void mapClick(Action action)
 	// don't accept leftclicks if there is no cursor or there is an action busy
 	if (_map.getCursorType() == CursorType.CT_NONE || !_states.isEmpty()) return;
 
-	Position pos;
+	Position pos = new Position();
 	_map.getSelectorPosition(pos);
 
 	if (action.getDetails().button.button == SDL_BUTTON_LEFT)
@@ -581,7 +634,7 @@ public void btnEndTurnClick(Action action)
  */
 private void endTurn()
 {
-	Position p;
+	Position p = new Position();
 	// check for hot grenades
 	for (int i = 0; i < _battleGame.getWidth() * _battleGame.getLength() * _battleGame.getHeight(); ++i)
 	{
@@ -593,16 +646,12 @@ private void endTurn()
 				p.y = _battleGame.getTiles()[i].getPosition().y*16 + 8;
 				p.z = _battleGame.getTiles()[i].getPosition().z*24 + _battleGame.getTiles()[i].getTerrainLevel();
 				statePushNext(new ExplosionBState(this, p, (it)));
-				it = _battleGame.getTiles()[i].getInventory().erase(it);
-			}
-			else
-			{
-				++it;
+				_battleGame.getTiles()[i].getInventory().remove(it);
 			}
 		}
 	}
 
-	if (_battleGame.getTerrainModifier().closeUfoDoors() != null)
+	if (_battleGame.getTerrainModifier().closeUfoDoors() != 0)
 	{
 		_game.getResourcePack().getSoundSet("BATTLE.CAT").getSound(21).play(); // ufo door closed
 	}
@@ -730,7 +779,7 @@ public void updateSoldierInfo(BattleUnit battleUnit)
 
 	if (battleUnit == null)
 	{
-		_txtName.setText(L"");
+		_txtName.setText("");
 		_rank.clear();
 		_numTimeUnits.clear();
 		_barTimeUnits.clear();
@@ -784,7 +833,7 @@ public void updateSoldierInfo(BattleUnit battleUnit)
 	if (rightHandItem != null)
 	{
 		drawItemSprite(rightHandItem, _btnRightHandItem);
-		if (rightHandItem.getAmmoItem()!= null)
+		if (rightHandItem.getAmmoItem() != null)
 			_numAmmoRight.setValue(rightHandItem.getAmmoItem().getAmmoQuantity());
 	}
 
@@ -804,25 +853,24 @@ public void updateSoldierInfo(BattleUnit battleUnit)
   */
 private void blinkVisibleUnitButtons()
 {
-	int delta = 1, color = 32;
 
-	Rect square1;
-	square1.left = 0;
-	square1.top = 0;
-	square1.right = 15;
-	square1.bottom = 12;
-	Rect square2;
-	square2.left = 1;
-	square2.top = 1;
-	square2.right = square2.left + 13;
-	square2.bottom = square2.top + 10;
+	Rectangle square1 = new Rectangle();
+	square1.x = 0;
+	square1.y = 0;
+	square1.w = 15;
+	square1.h = 12;
+	Rectangle square2 = new Rectangle();
+	square2.x = 1;
+	square2.y = 1;
+	square2.w = 13;
+	square2.h = 10;
 
 	for (int i = 0; i < 10;  ++i)
 	{
 		if (_btnVisibleUnit[i].getVisible() == true)
 		{
-			_btnVisibleUnit[i].drawRect(square1, 15);
-			_btnVisibleUnit[i].drawRect(square2, color);
+			_btnVisibleUnit[i].drawRectangle(square1, 15);
+			_btnVisibleUnit[i].drawRectangle(square2, color);
 		}
 	}
 
@@ -843,12 +891,12 @@ private void blinkWarningMessage()
 	if (_warningMessageBackground.getVisible() == false)
 		return;
 
-	Rect square1;
+	Rectangle square1 = new Rectangle();
 	square1.x = 0;
 	square1.y = 0;
 	square1.w = 224;
 	square1.h = 48;
-	_warningMessageBackground.drawRect(square1, color);
+	_warningMessageBackground.drawRectangle(square1, color);
 
 	if (color >= 44)
 	{
@@ -875,7 +923,7 @@ private void blinkWarningMessage()
   */
 private void showWarningMessage(String message)
 {
-	WString messageText = _game.getLanguage().getString(message);
+	String messageText = _game.getLanguage().getString(message);
 	_warningMessageBackground.setVisible(true);
 	_txtWarningMessage.setVisible(true);
 	_txtWarningMessage.setText(messageText);
@@ -967,7 +1015,7 @@ public Map getMap()
  */
 public void statePushFront(BattleState bs)
 {
-	_states.add(0,bs);
+	_states.add(0, bs);
 	bs.init();
 }
 
@@ -979,7 +1027,7 @@ public void statePushNext(BattleState bs)
 {
 	if (_states.isEmpty())
 	{
-		_states.add(0,bs);
+		_states.add(0, bs);
 		bs.init();
 	}
 	else
@@ -997,11 +1045,11 @@ public void statePushBack(BattleState bs)
 {
 	if (_states.isEmpty())
 	{
-		_states.add(0,bs);
+		_states.add(0, bs);
 		// end turn request?
 		if (_states.get(0) == null)
 		{
-			_states.pop_front();
+			_states.remove(0);
 			endTurn();
 			return;
 		}
@@ -1031,7 +1079,7 @@ public void popState()
 		showWarningMessage(_states.get(0).getResult());
 		actionFailed = true;
 	}
-	_states.pop_front();
+	_states.remove(0);
 
 	if (_states.isEmpty())
 	{
@@ -1052,7 +1100,7 @@ public void popState()
 		// end turn request?
 		if (_states.get(0) == null)
 		{
-			_states.pop_front();
+			_states.remove(0);
 			endTurn();
 			return;
 		}
@@ -1083,7 +1131,7 @@ public void setStateInterval(long interval)
  * Show a debug message in the topleft corner.
  * @param message Debug message.
  */
-public void debug(String message) //was WString
+public void debug(String message) //was String
 {
 	if (_battleGame.getDebugMode())
 	{
@@ -1107,7 +1155,7 @@ public void handle(Action action)
 			if (action.getDetails().key.keysym.sym == SDLK_d)
 			{
 				_battleGame.setDebugMode();
-				debug(L"Debug Mode");
+				debug("Debug Mode");
 			}
 		}
 	}

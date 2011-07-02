@@ -68,7 +68,11 @@ public BriefingCrashState(Game game, Craft craft)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)BriefingCrashState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+5);
 	_txtTitle.setBig();
@@ -80,9 +84,9 @@ public BriefingCrashState(Game game, Craft craft)
 
 	_txtCraft.setColor(Palette.blockOffset(8)+5);
 	_txtCraft.setBig();
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_CRAFT_") << _craft.getName(_game.getLanguage());
-	_txtCraft.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_CRAFT_") + _craft.getName(_game.getLanguage()));
+	_txtCraft.setText(ss.toString());
 
 	_txtBriefing.setColor(Palette.blockOffset(8)+5);
 	_txtBriefing.setWordWrap(true);

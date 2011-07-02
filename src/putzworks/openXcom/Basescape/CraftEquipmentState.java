@@ -25,6 +25,7 @@ import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.StateHandler;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.*;
 import putzworks.openXcom.Interface.TextList.ArrowOrientation;
@@ -86,12 +87,16 @@ public CraftEquipmentState(Game game, Base base, int craft)
 
 	_btnOk.setColor(Palette.blockOffset(15)+4);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftEquipmentState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+1);
 	_txtTitle.setBig();
-	Craft c = _base.getCrafts().at(_craft);
-	WString s;
+	Craft c = _base.getCrafts().get(_craft);
+	String s;
 	s = _game.getLanguage().getString("STR_EQUIPMENT_FOR") + c.getName(_game.getLanguage());
 	_txtTitle.setText(s);
 
@@ -102,14 +107,14 @@ public CraftEquipmentState(Game game, Base base, int craft)
 	_txtStores.setText(_game.getLanguage().getString("STR_STORES"));
 
 	_txtAvailable.setColor(Palette.blockOffset(15)+1);
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_SPACE_AVAILABLE") << c.getRules().getSoldiers() - c.getNumSoldiers();
-	_txtAvailable.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_SPACE_AVAILABLE") + (c.getRules().getSoldiers() - c.getNumSoldiers()));
+	_txtAvailable.setText(ss.toString());
 
 	_txtUsed.setColor(Palette.blockOffset(15)+1);
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_SPACE_USED") << c.getNumSoldiers();
-	_txtUsed.setText(ss2.str());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_game.getLanguage().getString("STR_SPACE_USED") + c.getNumSoldiers());
+	_txtUsed.setText(ss2.toString());
 
 	_lstEquipment.setColor(Palette.blockOffset(13)+10);
 	_lstEquipment.setArrowColor(Palette.blockOffset(15)+4);
@@ -118,12 +123,28 @@ public CraftEquipmentState(Game game, Base base, int craft)
 	_lstEquipment.setSelectable(true);
 	_lstEquipment.setBackground(_window);
 	_lstEquipment.setMargin(8);
-	_lstEquipment.onLeftArrowPress((ActionHandler)CraftEquipmentState.lstEquipmentLeftArrowPress);
-	_lstEquipment.onLeftArrowRelease((ActionHandler)CraftEquipmentState.lstEquipmentLeftArrowRelease);
-	_lstEquipment.onRightArrowPress((ActionHandler)CraftEquipmentState.lstEquipmentRightArrowPress);
-	_lstEquipment.onRightArrowRelease((ActionHandler)CraftEquipmentState.lstEquipmentRightArrowRelease);
+	_lstEquipment.onLeftArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstEquipmentLeftArrowPress(action);
+		}
+	});
+	_lstEquipment.onLeftArrowRelease(new ActionHandler() {
+		public void handle(Action action) {
+			lstEquipmentLeftArrowRelease(action);
+		}
+	});
+	_lstEquipment.onRightArrowPress(new ActionHandler() {
+		public void handle(Action action) {
+			lstEquipmentRightArrowPress(action);
+		}
+	});
+	_lstEquipment.onRightArrowRelease(new ActionHandler() {
+		public void handle(Action action) {
+			lstEquipmentRightArrowRelease(action);
+		}
+	});
 
-	_items.add("STR_PISTOL");
+	_items.add("STR_PISTO");
 	_items.add("STR_PISTOL_CLIP");
 	_items.add("STR_RIFLE");
 	_items.add("STR_RIFLE_CLIP");
@@ -146,17 +167,17 @@ public CraftEquipmentState(Game game, Base base, int craft)
 		}
 		else
 		{
-			WStringstream ss, ss2;
-			ss << _base.getItems().getItem(i);
-			ss2 << c.getItems().getItem(i);
+			StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+			ss.append(_base.getItems().getItem(i));
+			ss2.append(c.getItems().getItem(i));
 
 			RuleItem rule = _game.getRuleset().getItem(i);
-			WString s = _game.getLanguage().getString(i);
+			String s = _game.getLanguage().getString(i);
 			if (rule.getBattleType() == BattleType.BT_AMMO)
 			{
-				s.insert(0, L"  ");
+				s.insert(0, "  ");
 			}
-			_lstEquipment.addRow(3, s.c_str(), ss.str().c_str(), ss2.str().c_str());
+			_lstEquipment.addRow(3, s, ss.toString(), ss2.toString());
 
 			short color;
 			if (c.getItems().getItem(i) == 0)
@@ -185,9 +206,17 @@ public CraftEquipmentState(Game game, Base base, int craft)
 	_lstEquipment.draw();
 
 	_timerLeft = new Timer(50);
-	_timerLeft.onTimer((StateHandler)CraftEquipmentState.moveLeft);
+	_timerLeft.onTimer(new StateHandler() {
+		public void handle(State state) {
+			moveLeft();
+		}
+	});
 	_timerRight = new Timer(50);
-	_timerRight.onTimer((StateHandler)CraftEquipmentState.moveRight);
+	_timerRight.onTimer(new StateHandler() {
+		public void handle(State state) {
+			moveRight();
+		}
+	});
 }
 
 /**
@@ -265,9 +294,9 @@ public void lstEquipmentRightArrowRelease(Action action)
 private void updateQuantity()
 {
 	Craft c = _base.getCrafts().get(_craft);
-	WStringstream ss, ss2;
-	ss << _base.getItems().getItem(_items.get(_sel));
-	ss2 << c.getItems().getItem(_items.get(_sel));
+	StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+	ss.append(_base.getItems().getItem(_items.get(_sel)));
+	ss2.append(c.getItems().getItem(_items.get(_sel)));
 
 	short color;
 	if (c.getItems().getItem(_items.get(_sel)) == 0)

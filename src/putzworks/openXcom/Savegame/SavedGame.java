@@ -18,6 +18,7 @@
  */
 package putzworks.openXcom.Savegame;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -25,11 +26,24 @@ import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Engine.RNG;
 import putzworks.openXcom.Interface.TextList;
 import putzworks.openXcom.Ruleset.Ruleset;
+import putzworks.openXcom.Savegame.Soldier.SoldierRank;
 
 public class SavedGame
 {
-	private static final String USER_DIR = "./USER/";
-	public enum GameDifficulty { DIFF_BEGINNER, DIFF_EXPERIENCED, DIFF_VETERAN, DIFF_GENIUS, DIFF_SUPERHUMAN };
+	public static final String USER_DIR = "./USER/";
+	
+	public enum GameDifficulty { DIFF_BEGINNER(0), DIFF_EXPERIENCED(1), DIFF_VETERAN(2), DIFF_GENIUS(3), DIFF_SUPERHUMAN(4) ;
+		private int id;
+		private GameDifficulty(int i){
+			this.id = i;
+		}
+	     public static GameDifficulty get(int code) { 
+	    	 for(GameDifficulty s : EnumSet.allOf(GameDifficulty.class)){
+	               if (s.id == code){return s;}
+	    	 }
+	    	 return null;
+	     }
+	}
 
 	private GameDifficulty _difficulty;
 	private GameTime _time;
@@ -63,7 +77,7 @@ public SavedGame(GameDifficulty difficulty)
 	_waypointId = 1;
 	_battleGame = new SavedBattleGame();
 
-	RNG.init();
+	RNG.init(-1);
 	_time = new GameTime(6, 1, 1, 1999, 12, 0, 0);
 	_ufopaedia = new UfopaediaSaved();
 }
@@ -74,12 +88,12 @@ public SavedGame(GameDifficulty difficulty)
  * @param list Text list.
  * @param lang Loaded language.
  */
-public void getList(TextList list, Language lang)
+static public void getList(TextList list, Language lang)
 {
 	DIR dp = opendir(USER_DIR);
     if (dp == 0)
 	{
-        throw Exception("Failed to open saves directory");
+        throw new Exception("Failed to open saves directory");
     }
 
     struct dirent dirp;
@@ -104,12 +118,12 @@ public void getList(TextList list, Language lang)
 		parser.GetNextDocument(doc);
 		GameTime time = GameTime(6, 1, 1, 1999, 12, 0, 0);
 		time.load(doc["time"]);
-		Stringstream saveTime;
-		WStringstream saveDay, saveMonth, saveYear;
-		saveTime << time.getHour() << ":" << std.setfill('0') << std.setw(2) << time.getMinute();
-		saveDay << time.getDay() << lang.getString(time.getDayString());
-		saveMonth << lang.getString(time.getMonthString());
-		saveYear << time.getYear();
+		StringBuffer saveTime = new StringBuffer();
+		StringBuffer saveDay = new StringBuffer(), saveMonth = new StringBuffer(), saveYear = new StringBuffer();
+		saveTime.append(time.getHour() + ":" + std.setfill('0') + std.setw(2) + time.getMinute());
+		saveDay.append(time.getDay() + lang.getString(time.getDayString()));
+		saveMonth.append(lang.getString(time.getMonthString()));
+		saveYear.append(time.getYear());
 		list.addRow(5, Language.utf8ToWstr(file.substr(0, file.length()-4)).c_str(), Language.utf8ToWstr(saveTime.str()).c_str(), saveDay.str().c_str(), saveMonth.str().c_str(), saveYear.str().c_str());
 		fin.close();
     }
@@ -127,7 +141,7 @@ public void load(final String filename, Ruleset rule)
 	int size = 0;
 
 	String s = USER_DIR + filename + ".sav";
-	std.ifstream fin(s.c_str());
+	std.ifstream fin(s);
 	if (!fin)
 	{
 		throw Exception("Failed to load savegame");
@@ -149,7 +163,7 @@ public void load(final String filename, Ruleset rule)
 	parser.GetNextDocument(doc);
 	int a = 0;
 	doc["difficulty"] >> a;
-	_difficulty = (GameDifficulty)a;
+	_difficulty = GameDifficulty.get(a);
 	doc["funds"] >> _funds;
 
 	size = doc["countries"].size();
@@ -219,7 +233,7 @@ public void load(final String filename, Ruleset rule)
 public final void save(final String filename)
 {
 	String s = USER_DIR + filename + ".sav";
-	std.ofstream sav(s.c_str());
+	std.ofstream sav(s);
 	if (!sav)
 	{
 		throw Exception("Failed to save savegame");

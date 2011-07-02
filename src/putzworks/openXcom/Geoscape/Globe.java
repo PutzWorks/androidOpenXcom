@@ -27,11 +27,13 @@ import putzworks.openXcom.Engine.InteractiveSurface;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.SurfaceSet;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.Text;
 import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Ruleset.City;
+import putzworks.openXcom.SDL.SDL_Color;
 import putzworks.openXcom.Savegame.Base;
 import putzworks.openXcom.Savegame.Country;
 import putzworks.openXcom.Savegame.Craft;
@@ -110,10 +112,18 @@ public Globe(Game game, int cenX, int cenY, int width, int height, int x, int y)
 
 	// Animation timers
 	_blinkTimer = new Timer(100);
-	_blinkTimer.onTimer((SurfaceHandler)Globe.blink);
+	_blinkTimer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			blink();
+		}
+	});
 	_blinkTimer.start();
 	_rotTimer = new Timer(50);
-	_rotTimer.onTimer((SurfaceHandler)Globe.rotate);
+	_rotTimer.onTimer((new SurfaceHandler() {
+		public void handle(Surface surface) {
+			rotate();
+		}
+	});
 
 	// Globe markers
 	_mkXcomBase = new Surface(3, 3);
@@ -348,13 +358,13 @@ private final boolean insidePolygon(double lon, double lat, Polygon poly)
  * @param polygons Pointer to the polygon set.
  * @sa http://www.ufopaedia.org/index.php?title=WORLD.DAT
  */
-public void loadDat(final String filename, List<Polygon> polygons)
+static public void loadDat(final String filename, List<Polygon> polygons)
 {
 	// Load file
 	std.ifstream mapFile (filename.c_str(), std.ios.in | std.ios.binary);
 	if (!mapFile)
 	{
-		throw Exception("Failed to load DAT");
+		throw new Exception("Failed to load DAT");
 	}
 
 	short[] value = new short[10];
@@ -390,7 +400,7 @@ public void loadDat(final String filename, List<Polygon> polygons)
 
 	if (!mapFile.eof())
 	{
-		throw Exception("Invalid data from file");
+		throw new Exception("Invalid data from file");
 	}
 
 	mapFile.close();
@@ -769,7 +779,7 @@ private void fillLongitudeSegments(double startLon, double endLon, int colourShi
 
 	if (Math.abs(startLon-endLon) > 1)
 	{
-		bigLonAperture = 1;
+		bigLonAperture = true;
 	}
 
     // find two latitudes where
@@ -1081,7 +1091,7 @@ public void drawDetail()
 				continue;
 
 			// Convert coordinates
-			polarToCart((i).getRules().getLabelLongitude(), (i).getRules().getLabelLatitude(), &x, &y);
+			polarToCart((i).getRules().getLabelLongitude(), (i).getRules().getLabelLatitude(), x, y);
 
 			label.setX(x - 40);
 			label.setY(y);
@@ -1120,7 +1130,7 @@ public void drawDetail()
 
 				label.setX(x - 40);
 				label.setY(y + 2);
-				label.setText(_game.getLanguage().getString((*j).getName()));
+				label.setText(_game.getLanguage().getString(j.getName()));
 				label.blit(_countries);
 			}
 		}

@@ -21,6 +21,7 @@ package putzworks.openXcom.Basescape;
 import java.util.Vector;
 
 import putzworks.openXcom.Engine.Action;
+import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.*;
@@ -70,8 +71,12 @@ public TransferBaseState(Game game, Base base)
 	_window.setBackground(_game.getResourcePack().getSurface("BACK13.SCR"));
 
 	_btnCancel.setColor(Palette.blockOffset(13)+8);
-	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL"));
-	_btnCancel.onMouseClick((ActionHandler)TransferBaseState.btnCancelClick);
+	_btnCancel.setText(_game.getLanguage().getString("STR_CANCE"));
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+5);
 	_txtTitle.setBig();
@@ -80,8 +85,8 @@ public TransferBaseState(Game game, Base base)
 
 	_txtFunds.setColor(Palette.blockOffset(13)+5);
 	_txtFunds.setSecondaryColor(Palette.blockOffset(13));
-	WString s = _game.getLanguage().getString("STR_CURRENT_FUNDS");
-	s += L'\x01' + Text.formatFunding(_game.getSavedGame().getFunds());
+	String s = _game.getLanguage().getString("STR_CURRENT_FUNDS");
+	s += '\x01' + Text.formatFunding(_game.getSavedGame().getFunds());
 	_txtFunds.setText(s);
 
 	_txtName.setColor(Palette.blockOffset(13)+5);
@@ -98,27 +103,31 @@ public TransferBaseState(Game game, Base base)
 	_lstBases.setSelectable(true);
 	_lstBases.setBackground(_window);
 	_lstBases.setMargin(2);
-	_lstBases.onMouseClick((ActionHandler)TransferBaseState.lstBasesClick);
+	_lstBases.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstBasesClick(action);
+		}
+	});
 
 	int row = 0;
-	for (Vector<Base*>.iterator i = _game.getSavedGame().getBases().begin(); i != _game.getSavedGame().getBases().end(); ++i)
+	for (Vector<Base>.iterator i = _game.getSavedGame().getBases().begin(); i != _game.getSavedGame().getBases().end(); ++i)
 	{
-		if ((*i) != _base)
+		if ((i) != _base)
 		{
 			// Get area
-			WString area = L"";
-			for (Vector<Region*>.iterator j = _game.getSavedGame().getRegions().begin(); j != _game.getSavedGame().getRegions().end(); ++j)
+			String area = "";
+			for (Vector<Region>.iterator j = _game.getSavedGame().getRegions().begin(); j != _game.getSavedGame().getRegions().end(); ++j)
 			{
-				if ((*j).getRules().insideRegion((*i).getLongitude(), (*i).getLatitude()))
+				if ((j).getRules().insideRegion((i).getLongitude(), (i).getLatitude()))
 				{
-					area = _game.getLanguage().getString((*j).getRules().getType());
+					area = _game.getLanguage().getString((j).getRules().getType());
 					break;
 				}
 			}
 
-			_lstBases.addRow(2, (*i).getName().c_str(), area.c_str());
+			_lstBases.addRow(2, (i).getName(), area);
 			_lstBases.getCell(row, 1).setColor(Palette.blockOffset(13)+5);
-			_bases.add(*i);
+			_bases.add(i);
 			row++;
 		}
 	}
@@ -140,7 +149,7 @@ public void btnCancelClick(Action action)
  */
 public void lstBasesClick(Action action)
 {
-	_game.pushState(new TransferItemsState(_game, _base, _bases[_lstBases.getSelectedRow()]));
+	_game.pushState(new TransferItemsState(_game, _base, _bases.get(_lstBases.getSelectedRow())));
 }
 
 }

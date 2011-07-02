@@ -24,6 +24,7 @@ import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.*;
+import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Savegame.Base;
 
 public class TransferConfirmState extends State
@@ -72,16 +73,24 @@ public TransferConfirmState(Game game, Base base, TransferItemsState state) //un
 
 	_btnCancel.setColor(Palette.blockOffset(15)+9);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)TransferConfirmState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_btnOk.setColor(Palette.blockOffset(15)+9);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)TransferConfirmState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
-	WString s = _game.getLanguage().getString("STR_TRANSFER_ITEMS_TO");
+	String s = _game.getLanguage().getString("STR_TRANSFER_ITEMS_TO");
 	s += _base.getName();
 	_txtTitle.setText(s);
 

@@ -225,6 +225,12 @@ public void setColor(short color)
 	draw();
 }
 
+public void setColor(int color)
+{
+	_color = (short)color;
+	draw();
+}
+
 /**
  * Returns the color used to render the number.
  * @return Color value.

@@ -80,25 +80,33 @@ public ConfirmDestinationState(Game game, Craft craft, Target target)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ConfirmDestinationState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)ConfirmDestinationState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTarget.setColor(Palette.blockOffset(15)-1);
 	_txtTarget.setBig();
 	_txtTarget.setAlign(TextHAlign.ALIGN_CENTER);
-	WStringstream ss;
+	StringBuffer ss = new StringBuffer();
 	if (w != null && w.getId() == 0)
 	{
-		ss << _game.getLanguage().getString("STR_TARGET_WAY_POINT");
+		ss.append(_game.getLanguage().getString("STR_TARGET_WAY_POINT"));
 	}
 	else
 	{
-		ss << _game.getLanguage().getString("STR_TARGET") << _target.getName(_game.getLanguage());
+		ss.append(_game.getLanguage().getString("STR_TARGET") + _target.getName(_game.getLanguage()));
 	}
-	_txtTarget.setText(ss.str());
+	_txtTarget.setText(ss.toString());
 }
 
 /**

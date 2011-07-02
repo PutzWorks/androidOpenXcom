@@ -22,14 +22,17 @@ import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.Font;
 import putzworks.openXcom.Engine.InteractiveSurface;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.Text.TextHAlign;
 import putzworks.openXcom.Interface.Text.TextVAlign;
+import putzworks.openXcom.SDL.SDL_Color;
 
 public class TextEdit extends InteractiveSurface
 {
 	private Text _text, _caret;
-	private WString _value;
+	private String _value;
 	private boolean _blink;
 	private Timer _timer;
 	private char _ascii; //Was Wchar
@@ -45,7 +48,7 @@ public class TextEdit extends InteractiveSurface
 public TextEdit(int width, int height, int x, int y) 
 {
 	super(width, height, x, y);
-	_value = L"";
+	_value = "";
 	_blink = true;
 	_ascii = 'A';
 	_caretPos = 0;
@@ -54,9 +57,13 @@ public TextEdit(int width, int height, int x, int y)
 
 	_text = new Text(width, height, 0, 0);
 	_timer = new Timer(100);
-	_timer.onTimer((SurfaceHandler)TextEdit.blink);
+	_timer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			blink();
+		}
+	});
 	_caret = new Text(16, 16, 0, 0);
-	_caret.setText(L"|");
+	_caret.setText("|");
 }
 
 /**
@@ -110,7 +117,7 @@ public void setFonts(Font big, Font small)
  * Changes the string displayed on screen.
  * @param text Text string.
  */
-public void setText(final WString text)
+public void setText(final String text)
 {
 	_value = text;
 	draw();
@@ -120,7 +127,7 @@ public void setText(final WString text)
  * Returns the string displayed on screen.
  * @return Text string.
  */
-public final WString getText()
+public final String getText()
 {
 	return _value;
 }
@@ -261,35 +268,35 @@ public void blink()
 public void draw()
 {
 	_text.setText(_value);
-#ifdef DINGOO
-	WString newValue = _value;
+//#ifdef DINGOO
+	String newValue = _value;
 	if (_isFocused && _blink)
 	{
 		newValue += _ascii;
 		_text.setText(newValue);
     }
-#endif
+//#endif
 	clear();
 	_text.blit(this);
-#ifndef DINGOO
+//#ifndef DINGOO
 	if (_isFocused && _blink)
 	{
 		int x = 0;
 		for (int i = 0; i < _caretPos; i++)
 		{
-			if (_value[i] == ' ')
+			if (_value.charAt(i) == ' ')
 			{
 				x += _text.getFont().getWidth() / 2;
 			}
 			else
 			{
-				x += _text.getFont().getChar(_value[i]).getCrop().w + _text.getFont().getSpacing();
+				x += _text.getFont().getChar(_value.charAt(i)).getCrop().w + _text.getFont().getSpacing();
 			}
 		}
 		_caret.setX(x);
 		_caret.blit(this);
     }
-#endif
+//#endif
 }
 
 /**
@@ -302,10 +309,10 @@ public void draw()
 private boolean exceedsMaxWidth(char c) //Was Wchar
 {
 	int w = 0;
-	WString s = _value;
+	String s = _value;
 
 	s += c;
-	for (WString.iterator i = s.begin(); i < s.end(); ++i)
+	for (String.iterator i = s.begin(); i < s.end(); ++i)
 	{
 		if (i == ' ')
 		{
@@ -408,9 +415,9 @@ public void keyboardPress(Action action, State state)
 	default:
 		if (action.getDetails().key.keysym.unicode != 0)
 		{
-			if (action.getDetails().key.keysym.unicode >= ' ' && action.getDetails().key.keysym.unicode <= '~' && !exceedsMaxWidth((wchar_t)action.getDetails().key.keysym.unicode))
+			if (action.getDetails().key.keysym.unicode >= ' ' && action.getDetails().key.keysym.unicode <= '~' && !exceedsMaxWidth((char)action.getDetails().key.keysym.unicode))
 			{
-			    _value.insert(_caretPos, 1, (wchar_t) action.getDetails().key.keysym.unicode);
+			    _value.insert(_caretPos, 1, (char) action.getDetails().key.keysym.unicode);
 				_caretPos++;
 			}
 		}

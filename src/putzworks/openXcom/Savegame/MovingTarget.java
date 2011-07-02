@@ -57,7 +57,7 @@ public void load(final YAML.Node node)
 public final void save(YAML.Emitter out)
 {
 	super.save(out);
-	if (_dest != 0)
+	if (_dest != null)
 	{
 		out << YAML.Key << "dest" << YAML.Value;
 		_dest.saveId(out);
@@ -73,7 +73,7 @@ public final void save(YAML.Emitter out)
  */
 public final Target getDestination()
 {
-	return final _dest;
+	return _dest;
 }
 
 /**
@@ -83,11 +83,11 @@ public final Target getDestination()
 public void setDestination(Target dest)
 {
 	// Remove moving target from old destination's followers
-	if (_dest != 0)
+	if (_dest != null)
 	{
-		for (Vector<Target*>.iterator i = _dest.getFollowers().begin(); i != _dest.getFollowers().end(); ++i)
+		for (Vector<Target>.iterator i = _dest.getFollowers().begin(); i != _dest.getFollowers().end(); ++i)
 		{
-			if ((*i) == this)
+			if ((i) == this)
 			{
 				_dest.getFollowers().erase(i);
 				break;
@@ -96,7 +96,7 @@ public void setDestination(Target dest)
 	}
 	_dest = dest;
 	// Add moving target to new destination's followers
-	if (_dest != 0)
+	if (_dest != null)
 	{
 		_dest.getFollowers().add(this);
 	}
@@ -131,7 +131,7 @@ public final double getRadianSpeed()
 {
 	// Each nautical mile is 1/60th of a degree.
 	// Each hour contains 300 5-seconds.
-	return _speed * (1 / 60.0) * (M_PI / 180) / 300.0;
+	return _speed * (1 / 60.0) * (Math.PI / 180) / 300.0;
 }
 
 /**
@@ -144,17 +144,17 @@ public final double getRadianSpeed()
  */
 public final double getDistance(Target target, double dLon, double dLat)
 {
-	double minLength = 2*M_PI, lat = super.getLatitude();
-	for (double lon = super.getLongitude() - 2*M_PI; lon <= super.getLongitude() + 2*M_PI; lon += 2*M_PI)
+	double minLength = 2*Math.PI, lat = super.getLatitude();
+	for (double lon = super.getLongitude() - 2*Math.PI; lon <= super.getLongitude() + 2*Math.PI; lon += 2*Math.PI)
 	{
 		double dx = lon - _lon;
 		double dy = lat - _lat;
-		double length = sqrt(dx * dx + dy * dy);
+		double length = Math.sqrt(dx * dx + dy * dy);
 		if (length < minLength)
 		{
 			minLength = length;
-			*dLon = dx;
-			*dLat = dy;
+			dLon = dx;
+			dLat = dy;
 		}
 	}
 	return minLength;
@@ -166,10 +166,11 @@ public final double getDistance(Target target, double dLon, double dLat)
  */
 public void calculateSpeed()
 {
-	if (_dest != 0)
+	if (_dest != null)
 	{
-		double dLon, dLat;
-		double length = getDistance(_dest, &dLon, &dLat);
+		//TODO this is broken because the getDistance method is supposed to change dLon and dLat...
+		double dLon = 0, dLat = 0;
+		double length = getDistance(_dest, dLon, dLat);
 		_speedLon = dLon / length * getRadianSpeed();
 		_speedLat = dLat / length * getRadianSpeed();
 	}
@@ -197,7 +198,7 @@ public final boolean finishedRoute()
  */
 public final boolean reachedDestination()
 {
-	if (_dest == 0)
+	if (_dest == null)
 	{
 		return false;
 	}

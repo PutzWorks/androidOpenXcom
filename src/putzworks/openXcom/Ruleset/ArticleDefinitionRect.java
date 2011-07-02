@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import putzworks.openXcom.Savegame.Soldier.SoldierRank;
 
 
-public class ArticleDefinitionRect
+public class ArticleDefinitionRectangle
 {
 		public int x;
 		public int y;
@@ -32,7 +32,7 @@ public class ArticleDefinitionRect
 	/** 
 	 * Constructor
 	 */
-	public ArticleDefinitionRect()
+	public ArticleDefinitionRectangle()
 	{
 		x = 0;
 		y = 0;

@@ -51,12 +51,12 @@ public Alien(RuleAlien rules, RuleArmor armor, Language lang)
  * Returns the Alien's full name.
  * @return Soldier name.
  */
-public final WString getName()
+public final String getName()
 {
-	WStringstream name;
-	name << _lang.getString(_rules.getRace());
-	name << _lang.getString(_rules.getRank());
-	return name.str();
+	StringBuffer name = new StringBuffer();
+	name.append(_lang.getString(_rules.getRace()));
+	name.append(_lang.getString(_rules.getRank()));
+	return name.toString();
 }
 
 /**

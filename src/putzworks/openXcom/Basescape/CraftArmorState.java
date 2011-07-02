@@ -77,7 +77,11 @@ public CraftArmorState(Game game, Base base, int craft) //unknown  : State(game)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftArmorState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(13)+10);
 	_txtTitle.setBig();
@@ -98,14 +102,18 @@ public CraftArmorState(Game game, Base base, int craft) //unknown  : State(game)
 	_lstSoldiers.setSelectable(true);
 	_lstSoldiers.setBackground(_window);
 	_lstSoldiers.setMargin(8);
-	_lstSoldiers.onMouseClick((ActionHandler)CraftArmorState.lstSoldiersClick);
+	_lstSoldiers.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstSoldiersClick(action);
+		}
+	});
 
 	int row = 0;
-	Craft c = _base.getCrafts().at(_craft);
+	Craft c = _base.getCrafts().get(_craft);
 	for (Soldier i: _base.getSoldiers())
 	{
-		WString s;
-		if ((i).getCraft() == 0)
+		String s;
+		if ((i).getCraft() == null)
 		{
 			s = _game.getLanguage().getString("STR_NONE_UC");
 		}
@@ -113,14 +121,14 @@ public CraftArmorState(Game game, Base base, int craft) //unknown  : State(game)
 		{
 			s = (i).getCraft().getName(_game.getLanguage());
 		}
-		_lstSoldiers.addRow(3, (i).getName().c_str(), s.c_str(), _game.getLanguage().getString("STR_NONE_UC").c_str());
+		_lstSoldiers.addRow(3, (i).getName(), s, _game.getLanguage().getString("STR_NONE_UC"));
 
 		Uint8 color;
 		if ((i).getCraft() == c)
 		{
 			color = Palette.blockOffset(13);
 		}
-		else if ((i).getCraft() != 0)
+		else if ((i).getCraft() != null)
 		{
 			color = Palette.blockOffset(15)+6;
 		}

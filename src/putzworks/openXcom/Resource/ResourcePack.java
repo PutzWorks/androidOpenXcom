@@ -68,7 +68,7 @@ String insensitive(final String filename)
 	String newName = filename;
 
 	// Ignore DATA folder
-	size_t i = newName.find("/DATA/");
+	int i = newName.indexOf("/DATA/");
 	if (i != String.npos)
 		i += 6;
 	else
@@ -122,7 +122,7 @@ public final String getFolder()
  */
 public Font getFont(String name)
 {
-	return _fonts[name];
+	return _fonts.get(name);
 }
 
 /**
@@ -132,7 +132,7 @@ public Font getFont(String name)
  */
 public Surface getSurface(final String name)
 {
-	return _surfaces[name];
+	return _surfaces.get(name);
 }
 
 /**
@@ -140,9 +140,9 @@ public Surface getSurface(final String name)
  * @param name Name of the surface set.
  * @return Pointer to the surface set.
  */
-public SurfaceSet getSurfaceSet(final String &name)
+public SurfaceSet getSurfaceSet(final String name)
 {
-	return _sets[name];
+	return _sets.get(name);
 }
 
 /**
@@ -170,7 +170,7 @@ public List<Polyline> getPolylines()
  */
 public Music getMusic(final String name)
 {
-	return _musics[name];
+	return _musics.get(name);
 }
 
 /**
@@ -180,7 +180,7 @@ public Music getMusic(final String name)
  */
 public SoundSet getSoundSet(final String name)
 {
-	return _sounds[name];
+	return _sounds.get(name);
 }
 
 /**
@@ -190,7 +190,7 @@ public SoundSet getSoundSet(final String name)
  */
 public Palette getPalette(final String name)
 {
-	return _palettes[name];
+	return _palettes.get(name);
 }
 
 /**

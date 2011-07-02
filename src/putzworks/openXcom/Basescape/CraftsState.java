@@ -75,7 +75,11 @@ public CraftsState(Game game, Base base)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftsState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+1);
 	_txtTitle.setBig();
@@ -83,7 +87,7 @@ public CraftsState(Game game, Base base)
 
 	_txtBase.setColor(Palette.blockOffset(15)+1);
 	_txtBase.setBig();
-	WString baseName = _game.getLanguage().getString("STR_BASE_");
+	String baseName = _game.getLanguage().getString("STR_BASE_");
 	baseName += _base.getName();
 	_txtBase.setText(baseName);
 
@@ -108,7 +112,11 @@ public CraftsState(Game game, Base base)
 	_lstCrafts.setSelectable(true);
 	_lstCrafts.setBackground(_window);
 	_lstCrafts.setMargin(8);
-	_lstCrafts.onMouseClick((ActionHandler)CraftsState.lstCraftsClick);
+	_lstCrafts.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstCraftsClick(action);
+		}
+	});
 }
 
 /**
@@ -120,11 +128,11 @@ public void init()
 	_lstCrafts.clearList();
 	for (Craft i: _base.getCrafts())
 	{
-		WStringstream ss, ss2, ss3;
-		ss << (*i).getNumWeapons() << "/" << (*i).getRules().getWeapons();
-		ss2 << (*i).getNumSoldiers();
-		ss3 << (*i).getNumHWPs();
-		_lstCrafts.addRow(5, (*i).getName(_game.getLanguage()).c_str(), _game.getLanguage().getString((*i).getStatus()).c_str(), ss.str().c_str(), ss2.str().c_str(), ss3.str().c_str());
+		StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer(), ss3 = new StringBuffer();
+		ss.append((i).getNumWeapons() + "/" + (i).getRules().getWeapons());
+		ss2.append((i).getNumSoldiers());
+		ss3.append((i).getNumHWPs());
+		_lstCrafts.addRow(5, (i).getName(_game.getLanguage()), _game.getLanguage().getString((i).getStatus()), ss.toString(), ss2.toString(), ss3.toString());
 	}
 }
 
@@ -143,7 +151,7 @@ public void btnOkClick(Action action)
  */
 public void lstCraftsClick(Action action)
 {
-	if (_base.getCrafts().at(_lstCrafts.getSelectedRow()).getStatus() != "STR_OUT")
+	if (!_base.getCrafts().get(_lstCrafts.getSelectedRow()).getStatus().equals("STR_OUT"))
 	{
 		_game.pushState(new CraftInfoState(_game, _base, _lstCrafts.getSelectedRow()));
 	}

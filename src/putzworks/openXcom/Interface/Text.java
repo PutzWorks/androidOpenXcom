@@ -26,7 +26,7 @@ import putzworks.openXcom.Engine.Surface;
 public class Text extends Surface
 {
 	private Font _big, _small, _font;
-	private String _text, _wrappedText; //was WString
+	private String _text, _wrappedText; //was String
 	private Vector<Integer> _lineWidth, _lineHeight;
 	private boolean _wrap, _invert, _contrast;
 	private TextHAlign _align;
@@ -67,19 +67,18 @@ public Text(int width, int height, int x, int y)
  * @param funds The funding value.
  * @return The formatted string.
  */
-public WString formatFunding(int funds)
+public static String formatFunding(int funds)
 {
-	WStringstream ss;
-	ss << funds;
-	WString s = ss.str();
-	size_t spacer = s.size() - 3;
-	while (spacer > 0 && spacer < s.size())
+	StringBuffer ss = new StringBuffer();
+	ss.append(funds);
+	int spacer = ss.length() - 3;
+	while (spacer > 0 && spacer < ss.length())
 	{
-		s.insert(spacer, L" ");
+		ss.insert(spacer, " ");
 		spacer -= 3;
 	}
-	s.insert(0, L"$");
-	return s;
+	ss.insert(0, "$");
+	return ss.toString();
 }
 
 /**
@@ -127,7 +126,7 @@ public void setFonts(Font big, Font small)
  * Changes the string displayed on screen.
  * @param text Text string.
  */
-public void setText(final WString text)
+public void setText(final String text)
 {
 	_text = text;
 	processText();
@@ -137,7 +136,7 @@ public void setText(final WString text)
  * Returns the string displayed on screen.
  * @return Text string.
  */
-public final WString getText()
+public final String getText()
 {
 	return _text;
 }
@@ -291,7 +290,7 @@ private void processText()
 		return;
 	}
 
-	WString s = _text;
+	String s = _text;
 
 	// Use a separate string for wordwrapping text
 	if (_wrap)
@@ -304,11 +303,11 @@ private void processText()
 	_lineHeight.clear();
 
 	int width = 0, word = 0;
-	WString.iterator space = s.begin();
+	String.iterator space = s.begin();
 	Font font = _font;
 
 	// Go through the text character by character
-	for (WString.iterator c = s.begin(); c <= s.end(); ++c)
+	for (String.iterator c = s.begin(); c <= s.end(); ++c)
 	{
 		// End of the line
 		if (c == s.end() || c == L'\n' || c == 2)
@@ -360,7 +359,7 @@ public void draw()
 {
 	clear();
 
-	if (_text.isEmpty() || _font == null)
+	if (_text.equals("") || _font == null)
 	{
 		return;
 	}
@@ -368,7 +367,7 @@ public void draw()
 	int x = 0, y = 0, line = 0, height = 0;
 	Font font = _font;
 	short color = _color;
-	WString s = _text;
+	String s = _text;
 
 	for (int i: _lineHeight)
 	{
@@ -393,11 +392,11 @@ public void draw()
 	case ALIGN_LEFT:
 		x = 0;
 		break;
-	case TextHAlign.ALIGN_CENTER:
+	case ALIGN_CENTER:
 		x = (getWidth() - _lineWidth.get(line)) / 2;
 		break;
 	case ALIGN_RIGHT:
-		x = getWidth() - _lineWidth.get(line));
+		x = getWidth() - _lineWidth.get(line);
 		break;
 	}
 
@@ -407,7 +406,7 @@ public void draw()
 	}
 
 	// Draw each letter one by one
-	for (WString.iterator c = s.begin(); c != s.end(); ++c)
+	for (String.iterator c = s.begin(); c != s.end(); ++c)
 	{
 		if (c == ' ')
 		{
@@ -422,7 +421,7 @@ public void draw()
 			case ALIGN_LEFT:
 				x = 0;
 				break;
-			case TextHAlign.ALIGN_CENTER:
+			case ALIGN_CENTER:
 				x = (getWidth() - _lineWidth.get(line)) / 2;
 				break;
 			case ALIGN_RIGHT:

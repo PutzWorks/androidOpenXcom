@@ -18,6 +18,8 @@
  */
 package putzworks.openXcom.Savegame;
 
+import putzworks.openXcom.Engine.Language;
+
 public class Waypoint extends Target
 {
 	private int _id;
@@ -87,11 +89,11 @@ public void setId(int id)
  * @param lang Language to get strings from.
  * @return Full name.
  */
-public final WString getName(Language lang)
+public final String getName(Language lang)
 {
-	WStringstream name;
-	name << lang.getString("STR_WAY_POINT_") << _id;
-	return name.str();
+	StringBuffer name = new StringBuffer();
+	name.append(lang.getString("STR_WAY_POINT_") + _id);
+	return name.toString();
 }
 
 }

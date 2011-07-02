@@ -73,24 +73,32 @@ public ConfirmNewBaseState(Game game, Base base, Globe globe)
 
 	_btnOk.setColor(Palette.blockOffset(15)+2);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ConfirmNewBaseState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(15)+2);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)ConfirmNewBaseState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
-	WStringstream ss;
+	StringBuffer ss = new StringBuffer();
 	for (Region i: _game.getSavedGame().getRegions())
 	{
 		if ((i).getRules().insideRegion(_base.getLongitude(), _base.getLatitude()))
 		{
 			_cost = (i).getRules().getBaseCost();
-			ss << _game.getLanguage().getString("STR_AREA_") << L'\x01' << _game.getLanguage().getString((*i).getRules().getType());
+			ss.append(_game.getLanguage().getString("STR_AREA_") << '\x01' << _game.getLanguage().getString((*i).getRules().getType()));
 			break;
 		}
 	}
 
-	WString s = _game.getLanguage().getString("STR_COST_");
+	String s = _game.getLanguage().getString("STR_COST_");
 	s.erase(s.size()-1, 1);
 	s += L'\x01' + Text.formatFunding(_cost);
 	_txtCost.setColor(Palette.blockOffset(15)-1);

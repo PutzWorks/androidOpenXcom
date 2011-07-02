@@ -25,6 +25,7 @@ import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Geoscape.BuildNewBaseState;
 import putzworks.openXcom.Geoscape.Globe;
 import putzworks.openXcom.Interface.*;
 import putzworks.openXcom.Savegame.Base;
@@ -94,9 +95,21 @@ public BasescapeState(Game game, Base base, Globe globe)
 	// Set up objects
 	_view.setFonts(_game.getResourcePack().getFont("BIGLETS.DAT"), _game.getResourcePack().getFont("SMALLSET.DAT"));
 	_view.setTexture(_game.getResourcePack().getSurfaceSet("BASEBITS.PCK"));
-	_view.onMouseClick((ActionHandler)BasescapeState.viewClick);
-	_view.onMouseOver((ActionHandler)BasescapeState.viewMouseOver);
-	_view.onMouseOut((ActionHandler)BasescapeState.viewMouseOut);
+	_view.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			viewClick(action);
+		}
+	});
+	_view.onMouseOver(new ActionHandler() {
+		public void handle(Action action) {
+			viewMouseOver(action);
+		}
+	});
+	_view.onMouseOut(new ActionHandler() {
+		public void handle(Action action) {
+			viewMouseOut(action);
+		}
+	});
 
 	_mini.setTexture(_game.getResourcePack().getSurfaceSet("BASEBITS.PCK"));
 	_mini.setBases(_game.getSavedGame().getBases());
@@ -108,7 +121,11 @@ public BasescapeState(Game game, Base base, Globe globe)
 			break;
 		}
 	}
-	_mini.onMouseClick((ActionHandler)BasescapeState.miniClick);
+	_mini.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			miniClick(action);
+		}
+	});
 
 	_txtFacility.setColor(Palette.blockOffset(13)+10);
 
@@ -121,47 +138,91 @@ public BasescapeState(Game game, Base base, Globe globe)
 
 	_btnNewBase.setColor(Palette.blockOffset(13)+8);
 	_btnNewBase.setText(_game.getLanguage().getString("STR_BUILD_NEW_BASE_UC"));
-	_btnNewBase.onMouseClick((ActionHandler)BasescapeState.btnNewBaseClick);
+	_btnNewBase.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNewBaseClick(action);
+		}
+	});
 
 	_btnBaseInfo.setColor(Palette.blockOffset(13)+8);
 	_btnBaseInfo.setText(_game.getLanguage().getString("STR_BASE_INFORMATION"));
-	_btnBaseInfo.onMouseClick((ActionHandler)BasescapeState.btnBaseInfoClick);
+	_btnBaseInfo.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnBaseInfoClick(action);
+		}
+	});
 
 	_btnSoldiers.setColor(Palette.blockOffset(13)+8);
 	_btnSoldiers.setText(_game.getLanguage().getString("STR_SOLDIERS_UC"));
-	_btnSoldiers.onMouseClick((ActionHandler)BasescapeState.btnSoldiersClick);
+	_btnSoldiers.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnSoldiersClick(action);
+		}
+	});
 
 	_btnCrafts.setColor(Palette.blockOffset(13)+8);
 	_btnCrafts.setText(_game.getLanguage().getString("STR_EQUIP_CRAFT"));
-	_btnCrafts.onMouseClick((ActionHandler)BasescapeState.btnCraftsClick);
+	_btnCrafts.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCraftsClick(action);
+		}
+	});
 
 	_btnFacilities.setColor(Palette.blockOffset(13)+8);
 	_btnFacilities.setText(_game.getLanguage().getString("STR_BUILD_FACILITIES"));
-	_btnFacilities.onMouseClick((ActionHandler)BasescapeState.btnFacilitiesClick);
+	_btnFacilities.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnFacilitiesClick(action);
+		}
+	});
 
 	_btnResearch.setColor(Palette.blockOffset(13)+8);
 	_btnResearch.setText(_game.getLanguage().getString("STR_NOT_AVAILABLE"));
-	_btnResearch.onMouseClick((ActionHandler)BasescapeState.btnResearchClick);
+	_btnResearch.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnResearchClick(action);
+		}
+	});
 
 	_btnManufacture.setColor(Palette.blockOffset(13)+8);
 	_btnManufacture.setText(_game.getLanguage().getString("STR_NOT_AVAILABLE"));
-	_btnManufacture.onMouseClick((ActionHandler)BasescapeState.btnManufactureClick);
+	_btnManufacture.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnManufactureClick(action);
+		}
+	});
 
 	_btnTransfer.setColor(Palette.blockOffset(13)+8);
 	_btnTransfer.setText(_game.getLanguage().getString("STR_TRANSFER_UC"));
-	_btnTransfer.onMouseClick((ActionHandler)BasescapeState.btnTransferClick);
+	_btnTransfer.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnTransferClick(action);
+		}
+	});
 
 	_btnPurchase.setColor(Palette.blockOffset(13)+8);
 	_btnPurchase.setText(_game.getLanguage().getString("STR_PURCHASE_RECRUIT"));
-	_btnPurchase.onMouseClick((ActionHandler)BasescapeState.btnPurchaseClick);
+	_btnPurchase.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnPurchaseClick(action);
+		}
+	});
 
 	_btnSell.setColor(Palette.blockOffset(13)+8);
 	_btnSell.setText(_game.getLanguage().getString("STR_SELL_SACK_UC"));
-	_btnSell.onMouseClick((ActionHandler)BasescapeState.btnSellClick);
+	_btnSell.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnSellClick(action);
+		}
+	});
 
 	_btnGeoscape.setColor(Palette.blockOffset(13)+8);
 	_btnGeoscape.setText(_game.getLanguage().getString("STR_GEOSCAPE"));
-	_btnGeoscape.onMouseClick((ActionHandler)BasescapeState.btnGeoscapeClick);
+	_btnGeoscape.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnGeoscapeClick(action);
+		}
+	});
 }
 
 /**
@@ -222,12 +283,12 @@ public void init()
 	{
 		if ((i).getRules().insideRegion(_base.getLongitude(), _base.getLatitude()))
 		{
-			_txtLocation.setText(_game.getLanguage().getString((*i).getRules().getType()));
+			_txtLocation.setText(_game.getLanguage().getString((i).getRules().getType()));
 			break;
 		}
 	}
 
-	WString s = _game.getLanguage().getString("STR_FUNDS");
+	String s = _game.getLanguage().getString("STR_FUNDS");
 	s += Text.formatFunding(_game.getSavedGame().getFunds());
 	_txtFunds.setText(s);
 
@@ -403,7 +464,7 @@ public void viewMouseOver(Action action)
 {
 	BaseFacility f = _view.getSelectedFacility();
 	if (f == null)
-		_txtFacility.setText(L"");
+		_txtFacility.setText("");
 	else
 		_txtFacility.setText(_game.getLanguage().getString(f.getRules().getType()));
 }
@@ -414,7 +475,7 @@ public void viewMouseOver(Action action)
  */
 public void viewMouseOut(Action action)
 {
-	_txtFacility.setText(L"");
+	_txtFacility.setText("");
 }
 
 /**

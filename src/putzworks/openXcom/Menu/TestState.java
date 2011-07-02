@@ -58,14 +58,14 @@ public void FontToBmp(final String font, int w, int h)
 	}
 	s.setPalette(clr, 0, 8);
 
-	SDL_SaveBMP(s.getSurface(), bmp.c_str());
+	SDL_SaveBMP(s.getSurface(), bmp);
 }
 
 public void BmpToFont(final String font)
 {
 	String dat = "./" + font + ".DAT";
 	String bmp = "./" + font + ".BMP";
-	SDL_Surface s = SDL_LoadBMP(bmp.c_str());
+	SDL_Surface s = SDL_LoadBMP(bmp);
 }
 
 /**
@@ -97,7 +97,7 @@ public TestState(Game game)
 	_window.setBackground(_game.getResourcePack().getSurface("BACK04.SCR"));
 	
 	_button.setColor(Palette.blockOffset(15)+4);
-	_button.setText(L"LOLOLOL");
+	_button.setText("LOLOLO");
 	
 	_text.setColor(Palette.blockOffset(15)+1);
 	//_text.setBig();
@@ -108,9 +108,9 @@ public TestState(Game game)
 
 	_list.setColor(Palette.blockOffset(15)+1);
 	_list.setColumns(3, 100, 50, 100);
-	_list.addRow(2, L"a", L"b");
-	_list.addRow(3, L"lol", L"welp", L"yo");
-	_list.addRow(1, L"0123456789");
+	_list.addRow(2, "a", "b");
+	_list.addRow(3, "lol", "welp", "yo");
+	_list.addRow(1, "0123456789");
 	
 	_i = 0;
 

@@ -21,6 +21,7 @@ package putzworks.openXcom.Menu;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
+import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.State;
 import putzworks.openXcom.Interface.TextButton;
@@ -63,32 +64,52 @@ LanguageState(Game game)
 	_window.setBackground(_game.getResourcePack().getSurface("BACK01.SCR"));
 	
 	_btnEnglish.setColor(Palette.blockOffset(8)+8);
-	_btnEnglish.setText(L"ENGLISH");
-	_btnEnglish.onMouseClick((ActionHandler)LanguageState.btnEnglishClick);
+	_btnEnglish.setText("ENGLISH");
+	_btnEnglish.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnEnglishClick(action);
+		}
+	});
 	
 	_btnGerman.setColor(Palette.blockOffset(8)+8);
-	_btnGerman.setText(L"DEUTSCH");
-	_btnGerman.onMouseClick((ActionHandler)LanguageState.btnGermanClick);
+	_btnGerman.setText("DEUTSCH");
+	_btnGerman.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnGermanClick(action);
+		}
+	});
 
 	_btnFrench.setColor(Palette.blockOffset(8)+8);
-	_btnFrench.setText(L"FRANCAIS");
-	_btnFrench.onMouseClick((ActionHandler)LanguageState.btnFrenchClick);
+	_btnFrench.setText("FRANCAIS");
+	_btnFrench.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnFrenchClick(action);
+		}
+	});
 
 	_btnItalian.setColor(Palette.blockOffset(8)+8);
-	_btnItalian.setText(L"ITALIANO");
-	_btnItalian.onMouseClick((ActionHandler)LanguageState.btnItalianClick);
+	_btnItalian.setText("ITALIANO");
+	_btnItalian.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnItalianClick(action);
+		}
+	});
 
 	_btnSpanish.setColor(Palette.blockOffset(8)+8);
-	_btnSpanish.setText(L"ESPANOL");
-	_btnSpanish.onMouseClick((ActionHandler)LanguageState.btnSpanishClick);
+	_btnSpanish.setText("ESPANO");
+	_btnSpanish.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnSpanishClick(action);
+		}
+	});
 }
 
 public void changeLanguage(final String lang)
 {
-	Stringstream ss;
-	ss << _game.getResourcePack().getFolder() << "Language/" << lang;
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getResourcePack().getFolder() + "Language/" + lang);
 	Language l = new Language();
-	l.loadLng(ss.str());
+	l.loadLng(ss.toString());
 	_game.setLanguage(l);
 	_game.setState(new MainMenuState(_game));
 }

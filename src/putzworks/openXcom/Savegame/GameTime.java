@@ -20,7 +20,7 @@ package putzworks.openXcom.Savegame;
 
 public class GameTime
 {
-	enum TimeTrigger { TIME_5SEC, TIME_10MIN, TIME_30MIN, TIME_1HOUR, TIME_1DAY, TIME_1MONTH };
+	public enum TimeTrigger { TIME_5SEC, TIME_10MIN, TIME_30MIN, TIME_1HOUR, TIME_1DAY, TIME_1MONTH };
 
 	private int _second, _minute, _hour, _weekday, _day, _month, _year;
 
@@ -236,7 +236,7 @@ public final int getMonth()
  */
 public final String getMonthString()
 {
-	String months[] = {"STR_JAN", "STR_FEB", "STR_MAR", "STR_APR", "STR_MAY", "STR_JUN", "STR_JUL", "STR_AUG", "STR_SEP", "STR_OCT", "STR_NOV", "STR_DEC"};
+	String months[] = {"STR_JAN", "STR_FEB", "STR_MAR", "STR_APR", "STR_MAY", "STR_JUN", "STR_JU", "STR_AUG", "STR_SEP", "STR_OCT", "STR_NOV", "STR_DEC"};
 	return months[_month - 1];
 }
 

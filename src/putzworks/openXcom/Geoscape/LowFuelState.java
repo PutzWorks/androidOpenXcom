@@ -74,11 +74,19 @@ public LowFuelState(Game game, Craft craft, GeoscapeState state)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)LowFuelState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnOk5Secs.setColor(Palette.blockOffset(8)+8);
 	_btnOk5Secs.setText(_game.getLanguage().getString("STR_OK_5_SECS"));
-	_btnOk5Secs.onMouseClick((ActionHandler)LowFuelState.btnOk5SecsClick);
+	_btnOk5Secs.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOk5SecsClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+10);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);

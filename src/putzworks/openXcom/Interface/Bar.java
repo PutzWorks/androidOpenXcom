@@ -139,7 +139,7 @@ public void draw()
 {
 	clear();
 
-	Rect square;
+	Rectangle square;
 
 	square.x = 0;
 	square.y = 0;
@@ -148,28 +148,28 @@ public void draw()
 
 	if (_invert)
 	{
-        drawRect(square, _color); 
+        drawRectangle(square, _color); 
 	}
 	else
 	{
-        drawRect(square, _color + 4);
+        drawRectangle(square, _color + 4);
 	}
 
 	square.y++;
 	square.w--;
 	square.h -= 2;
 
-	drawRect(square, 0);
+	drawRectangle(square, 0);
 	
 	square.w = (short)(_scale * _value);
 
 	if (_invert)
     {
-		drawRect(square, _color + 4);
+		drawRectangle(square, _color + 4);
     }
 	else
     {
-		drawRect(square, _color);
+		drawRectangle(square, _color);
     }
 }
 

@@ -83,11 +83,19 @@ public ConfirmLandingState(Game game, Craft craft, int texture, int shade)
 
 	_btnYes.setColor(Palette.blockOffset(8)+8);
 	_btnYes.setText(_game.getLanguage().getString("STR_YES"));
-	_btnYes.onMouseClick((ActionHandler)ConfirmLandingState.btnYesClick);
+	_btnYes.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnYesClick(action);
+		}
+	});
 
 	_btnNo.setColor(Palette.blockOffset(8)+8);
 	_btnNo.setText(_game.getLanguage().getString("STR_NO"));
-	_btnNo.onMouseClick((ActionHandler)ConfirmLandingState.btnNoClick);
+	_btnNo.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNoClick(action);
+		}
+	});
 
 	_txtCraft.setColor(Palette.blockOffset(8)+10);
 	_txtCraft.setBig();

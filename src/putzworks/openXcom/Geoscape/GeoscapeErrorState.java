@@ -63,7 +63,11 @@ public GeoscapeErrorState(Game game, String str)
 
 	_btnOk.setColor(Palette.blockOffset(8)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)GeoscapeErrorState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtMessage.setColor(Palette.blockOffset(8)+10);
 	_txtMessage.setAlign(TextHAlign.ALIGN_CENTER);

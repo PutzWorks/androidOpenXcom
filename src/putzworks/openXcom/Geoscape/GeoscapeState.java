@@ -22,13 +22,16 @@ import java.util.Vector;
 
 import putzworks.openXcom.Basescape.BasescapeState;
 import putzworks.openXcom.Battlescape.BattlescapeGenerator;
+import putzworks.openXcom.Battlescape.BattlescapeState;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.ActionHandler;
 import putzworks.openXcom.Engine.Game;
 import putzworks.openXcom.Engine.InteractiveSurface;
+import putzworks.openXcom.Engine.Language;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.RNG;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.StateHandler;
 import putzworks.openXcom.Engine.Surface;
 import putzworks.openXcom.Engine.Timer;
 import putzworks.openXcom.Interface.ImageButton;
@@ -38,7 +41,11 @@ import putzworks.openXcom.Ruleset.RuleItem.BattleType;
 import putzworks.openXcom.Savegame.Base;
 import putzworks.openXcom.Savegame.BaseFacility;
 import putzworks.openXcom.Savegame.Craft;
+import putzworks.openXcom.Savegame.GameTime.TimeTrigger;
 import putzworks.openXcom.Savegame.SavedBattleGame;
+import putzworks.openXcom.Savegame.SavedBattleGame.MissionType;
+import putzworks.openXcom.Savegame.Target;
+import putzworks.openXcom.Savegame.Transfer;
 import putzworks.openXcom.Savegame.Ufo;
 import putzworks.openXcom.Savegame.Waypoint;
 import putzworks.openXcom.Ufopaedia.Ufopaedia;
@@ -145,19 +152,19 @@ public GeoscapeState(Game game)
 	_game.getResourcePack().getSurface("GEOBORD.SCR").blit(_bg);
 
 	Surface sidebar = null;
-	if (_game.getLanguage().getName() == L"DEUTSCH")
+	if (_game.getLanguage().getName() == "DEUTSCH")
 	{
 		sidebar = _game.getResourcePack().getSurface("German.geo");
 	}
-	else if (_game.getLanguage().getName() == L"FRANCAIS")
+	else if (_game.getLanguage().getName() == "FRANCAIS")
 	{
 		sidebar = _game.getResourcePack().getSurface("French.geo");
 	}
-	else if (_game.getLanguage().getName() == L"ITALIANO")
+	else if (_game.getLanguage().getName() == "ITALIANO")
 	{
 		sidebar = _game.getResourcePack().getSurface("Italian.geo");
 	}
-	else if (_game.getLanguage().getName() == L"ESPANOL")
+	else if (_game.getLanguage().getName() == "ESPANO")
 	{
 		sidebar = _game.getResourcePack().getSurface("Spanish.geo");
 	}
@@ -170,27 +177,51 @@ public GeoscapeState(Game game)
 
 	_btnIntercept.copy(_bg);
 	_btnIntercept.setColor(Palette.blockOffset(15)+8);
-	_btnIntercept.onMouseClick((ActionHandler)GeoscapeState.btnInterceptClick);
+	_btnIntercept.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnInterceptClick(action);
+		}
+	});
 
 	_btnBases.copy(_bg);
 	_btnBases.setColor(Palette.blockOffset(15)+8);
-	_btnBases.onMouseClick((ActionHandler)GeoscapeState.btnBasesClick);
+	_btnBases.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnBasesClick(action);
+		}
+	});
 
 	_btnGraphs.copy(_bg);
 	_btnGraphs.setColor(Palette.blockOffset(15)+8);
-	_btnGraphs.onMouseClick((ActionHandler)GeoscapeState.btnGraphsClick);
+	_btnGraphs.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnGraphsClick(action));
+		}
+	});
 
 	_btnUfopaedia.copy(_bg);
 	_btnUfopaedia.setColor(Palette.blockOffset(15)+8);
-	_btnUfopaedia.onMouseClick((ActionHandler)GeoscapeState.btnUfopaediaClick);
+	_btnUfopaedia.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnUfopaediaClick(action);
+		}
+	});
 
 	_btnOptions.copy(_bg);
 	_btnOptions.setColor(Palette.blockOffset(15)+8);
-	_btnOptions.onMouseClick((ActionHandler)GeoscapeState.btnOptionsClick);
+	_btnOptions.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOptionsClick(action);
+		}
+	});
 
 	_btnFunding.copy(_bg);
 	_btnFunding.setColor(Palette.blockOffset(15)+8);
-	_btnFunding.onMouseClick((ActionHandler)GeoscapeState.btnFundingClick);
+	_btnFunding.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnFundingClick(action);
+		}
+	});
 
 	_btn5Secs.copy(_bg);
 	_btn5Secs.setColor(Palette.blockOffset(15)+8);
@@ -216,64 +247,108 @@ public GeoscapeState(Game game)
 	_btn1Day.setColor(Palette.blockOffset(15)+8);
 	_btn1Day.setGroup(_timeSpeed);
 
-	_btnRotateLeft.onMousePress((ActionHandler)GeoscapeState.btnRotateLeftPress);
-	_btnRotateLeft.onMouseRelease((ActionHandler)GeoscapeState.btnRotateLeftRelease);
+	_btnRotateLeft.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateLeftPress(action);
+		}
+	});
+	_btnRotateLeft.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateLeftRelease(action);
+		}
+	});
 
-	_btnRotateRight.onMousePress((ActionHandler)GeoscapeState.btnRotateRightPress);
-	_btnRotateRight.onMouseRelease((ActionHandler)GeoscapeState.btnRotateRightRelease);
+	_btnRotateRight.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateRightPress(action);
+		}
+	});
+	_btnRotateRight.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateRightRelease(action);
+		}
+	});
 
-	_btnRotateUp.onMousePress((ActionHandler)GeoscapeState.btnRotateUpPress);
-	_btnRotateUp.onMouseRelease((ActionHandler)GeoscapeState.btnRotateUpRelease);
+	_btnRotateUp.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateUpPress(action);
+		}
+	});
+	_btnRotateUp.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateUpRelease(action);
+		}
+	});
 
-	_btnRotateDown.onMousePress((ActionHandler)GeoscapeState.btnRotateDownPress);
-	_btnRotateDown.onMouseRelease((ActionHandler)GeoscapeState.btnRotateDownRelease);
+	_btnRotateDown.onMousePress(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateDownPress(action);
+		}
+	});
+	_btnRotateDown.onMouseRelease(new ActionHandler() {
+		public void handle(Action action) {
+			btnRotateDownRelease(action);
+		}
+	});
 
-	_btnZoomIn.onMouseClick((ActionHandler)GeoscapeState.btnZoomInClick);
+	_btnZoomIn.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnZoomInClick(action);
+		}
+	});
 
-	_btnZoomOut.onMouseClick((ActionHandler)GeoscapeState.btnZoomOutClick);
+	_btnZoomOut.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnZoomOutClick(action);
+		}
+	});
 
 	_txtHour.setBig();
 	_txtHour.setColor(Palette.blockOffset(15)+4);
 	_txtHour.setAlign(TextHAlign.ALIGN_RIGHT);
-	_txtHour.setText(L"");
+	_txtHour.setText("");
 
 	_txtHourSep.setBig();
 	_txtHourSep.setColor(Palette.blockOffset(15)+4);
-	_txtHourSep.setText(L":");
+	_txtHourSep.setText(":");
 
 	_txtMin.setBig();
 	_txtMin.setColor(Palette.blockOffset(15)+4);
-	_txtMin.setText(L"");
+	_txtMin.setText("");
 
 	_txtMinSep.setBig();
 	_txtMinSep.setColor(Palette.blockOffset(15)+4);
-	_txtMinSep.setText(L":");
+	_txtMinSep.setText(":");
 
 	_txtSec.setSmall();
 	_txtSec.setColor(Palette.blockOffset(15)+4);
-	_txtSec.setText(L"");
+	_txtSec.setText("");
 
 	_txtWeekday.setSmall();
 	_txtWeekday.setColor(Palette.blockOffset(15)+4);
-	_txtWeekday.setText(L"");
+	_txtWeekday.setText("");
 	_txtWeekday.setAlign(TextHAlign.ALIGN_CENTER);
 
 	_txtDay.setSmall();
 	_txtDay.setColor(Palette.blockOffset(15)+4);
-	_txtDay.setText(L"");
+	_txtDay.setText("");
 	_txtDay.setAlign(TextHAlign.ALIGN_CENTER);
 
 	_txtMonth.setSmall();
 	_txtMonth.setColor(Palette.blockOffset(15)+4);
-	_txtMonth.setText(L"");
+	_txtMonth.setText("");
 	_txtMonth.setAlign(TextHAlign.ALIGN_CENTER);
 
 	_txtYear.setSmall();
 	_txtYear.setColor(Palette.blockOffset(15)+4);
-	_txtYear.setText(L"");
+	_txtYear.setText("");
 	_txtYear.setAlign(TextHAlign.ALIGN_CENTER);
 
-	_timer.onTimer((StateHandler)GeoscapeState.timeAdvance);
+	_timer.onTimer(new StateHandler() {
+		public void handle(State state) {
+			timeAdvance();
+		}
+	});
 	_timer.start();
 
 	timeDisplay();
@@ -298,16 +373,20 @@ public void init()
 
 	timeDisplay();
 
-	_globe.onMouseClick((ActionHandler)GeoscapeState.globeClick);
+	_globe.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			globeClick(action);
+		}
+	});
 	_globe.focus();
 	_globe.draw();
 
 	// Set music if it's not already playing
 	if (!_music)
 	{
-		Stringstream ss;
-		ss << "GMGEO" << RNG.generate(1, 2);
-		_game.getResourcePack().getMusic(ss.str()).play();
+		StringBuffer ss = new StringBuffer();
+		ss.append("GMGEO" << RNG.generate(1, 2));
+		_game.getResourcePack().getMusic(ss.toString()).play();
 		_music = true;
 	}
 }
@@ -319,17 +398,17 @@ public void think()
 {
 	super.think();
 
-	if (_popups.empty())
+	if (_popups.isEmpty())
 	{
 		// Handle timers
-		_timer.think(this, 0);
+		_timer.think(this, null);
 	}
 	else
 	{
 		// Handle popups
 		_globe.rotateStop();
-		_game.pushState(_popups.begin());
-		_popups.erase(_popups.begin());
+		_game.pushState(_popups.firstElement());
+		_popups.remove(_popups.firstElement());
 	}
 
 }
@@ -340,27 +419,27 @@ public void think()
  */
 public void timeDisplay()
 {
-	Stringstream ss, ss2;
-	WStringstream ss3, ss4, ss5;
+	StringBuffer ss = new StringBuffer(), ss2 = new StringBuffer();
+	StringBuffer ss3 = new StringBuffer(), ss4 = new StringBuffer(), ss5 = new StringBuffer();
 
-	ss << std.setfill('0') << std.setw(2) << _game.getSavedGame().getTime().getSecond();
-	_txtSec.setText(Language.utf8ToWstr(ss.str()));
+	ss.append(std.setfill('0') + std.setw(2) + _game.getSavedGame().getTime().getSecond());
+	_txtSec.setText(Language.utf8ToWstr(ss.toString()));
 
-	ss2 << std.setfill('0') << std.setw(2) << _game.getSavedGame().getTime().getMinute();
-	_txtMin.setText(Language.utf8ToWstr(ss2.str()));
+	ss2.append(std.setfill('0') + std.setw(2) + _game.getSavedGame().getTime().getMinute());
+	_txtMin.setText(Language.utf8ToWstr(ss2.toString()));
 
-	ss3 << _game.getSavedGame().getTime().getHour();
-	_txtHour.setText(ss3.str());
+	ss3.append(_game.getSavedGame().getTime().getHour());
+	_txtHour.setText(ss3.toString());
 
-	ss4 << _game.getSavedGame().getTime().getDay() << _game.getLanguage().getString(_game.getSavedGame().getTime().getDayString());
-	_txtDay.setText(ss4.str());
+	ss4.append(_game.getSavedGame().getTime().getDay() + _game.getLanguage().getString(_game.getSavedGame().getTime().getDayString()));
+	_txtDay.setText(ss4.toString());
 
 	_txtWeekday.setText(_game.getLanguage().getString(_game.getSavedGame().getTime().getWeekdayString()));
 
 	_txtMonth.setText(_game.getLanguage().getString(_game.getSavedGame().getTime().getMonthString()));
 
-	ss5 << _game.getSavedGame().getTime().getYear();
-	_txtYear.setText(ss5.str());
+	ss5.append(_game.getSavedGame().getTime().getYear());
+	_txtYear.setText(ss5.toString());
 }
 
 /**
@@ -480,7 +559,7 @@ public void time5Seconds()
 						if ((j).getNumSoldiers() > 0)
 						{
 							// look up polygons texture
-							int texture, shade;
+							int texture = 0, shade = 0;
 							_globe.getPolygonTextureAndShade(u.getLongitude(),u.getLatitude(), texture, shade);
 							_music = false;
 							timerReset();
@@ -492,11 +571,11 @@ public void time5Seconds()
 						}
 					}
 				}
-				else if (w != 0)
+				else if (w != null)
 				{
 					popup(new CraftPatrolState(_game, (j), _globe));
 					(j).setSpeed((j).getRules().getMaxSpeed() / 2);
-					(j).setDestination(0);
+					(j).setDestination(null);
 				}
 			}
 		}
@@ -508,25 +587,17 @@ public void time5Seconds()
 		if ((i).reachedDestination() || (i).getHoursCrashed() == 0)
 		{
 			i = null;
-			i = _game.getSavedGame().getUfos().erase(i);
-		}
-		else
-		{
-			++i;
+			_game.getSavedGame().getUfos().remove(i);
 		}
 	}
 
 	// Clean up unused waypoints
 	for (Waypoint i: _game.getSavedGame().getWaypoints())
 	{
-		if ((i).getFollowers().empty())
+		if ((i).getFollowers().isEmpty())
 		{
 			i = null;
-			i = _game.getSavedGame().getWaypoints().erase(i);
-		}
-		else
-		{
-			++i;
+			_game.getSavedGame().getWaypoints().remove(i);
 		}
 	}
 }
@@ -617,8 +688,8 @@ public void time30Minutes()
 						continue;
 					if ((f).insideRadarRange(u))
 					{
-						int chance = RNG.generate(1, 100);
-						if (chance <= (f).getRules().getRadarChance())
+						int chance1 = RNG.generate(1, 100);
+						if (chance1 <= (f).getRules().getRadarChance())
 						{
 							detected = true;
 						}
@@ -626,7 +697,7 @@ public void time30Minutes()
 				}
 				for (Craft c: (b).getCrafts()) //!Detected
 				{
-					if ((c).getLongitude() == (b).getLongitude() && (c).getLatitude() == (b).getLatitude() && (c).getDestination() == 0)
+					if ((c).getLongitude() == (b).getLongitude() && (c).getLatitude() == (b).getLatitude() && (c).getDestination() == null)
 						continue;
 					if ((c).insideRadarRange(u))
 					{
@@ -757,8 +828,8 @@ public void timerReset()
 {
 	SDL_Event ev;
 	ev.button.button = SDL_BUTTON_LEFT;
-	Action act(ev, _game.getScreen().getXScale(), _game.getScreen().getYScale());
-	_btn5Secs.mousePress(&act, this);
+	Action act = new Action(ev, _game.getScreen().getXScale(), _game.getScreen().getYScale());
+	_btn5Secs.mousePress(act, this);
 }
 
 /**
@@ -791,7 +862,7 @@ public final Globe getGlobe()
 
 public void globeClick(Action action)
 {
-	int mouseX = (int)Math.floor(action.getXMouse() / action.getXScale()), mouseY = (int)floor(action.getYMouse() / action.getYScale());
+	int mouseX = (int)Math.floor(action.getXMouse() / action.getXScale()), mouseY = (int)Math.floor(action.getYMouse() / action.getYScale());
 
 	// Clicking markers on the globe
 	if (action.getDetails().button.button == SDL_BUTTON_LEFT)
@@ -799,7 +870,7 @@ public void globeClick(Action action)
 		Vector<Target> v = _globe.getTargets(mouseX, mouseY, false);
 		if (v.size() > 0)
 		{
-			_game.pushState(new MultipleTargetsState(_game, v, 0, this));
+			_game.pushState(new MultipleTargetsState(_game, v, null, this));
 		}
 	}
 }
@@ -821,11 +892,11 @@ public void btnBasesClick(Action action)
 {
 	if (_game.getSavedGame().getBases().size() > 0)
 	{
-		_game.pushState(new BasescapeState(_game, _game.getSavedGame().getBases().front(), _globe));
+		_game.pushState(new BasescapeState(_game, _game.getSavedGame().getBases().firstElement(), _globe));
 	}
 	else
 	{
-		_game.pushState(new BasescapeState(_game, 0, _globe));
+		_game.pushState(new BasescapeState(_game, null, _globe));
 	}
 }
 
@@ -840,13 +911,13 @@ public void btnGraphsClick(Action action)
 	/* Daiky: uncomment this bit to start a terror mission */
 	_game.getSavedGame().setBattleGame(new SavedBattleGame());
 	BattlescapeGenerator bgen = new BattlescapeGenerator(_game);
-	bgen.setMissionType(MISS_TERROR);
+	bgen.setMissionType(MissionType.MISS_TERROR);
 	//bgen.setMissionType(MISS_UFOASSAULT);
 	bgen.setWorldTexture(1);
 	bgen.setWorldShade(1);
-	bgen.setCraft(_game.getSavedGame().getBases().at(0).getCrafts().at(0));
+	bgen.setCraft(_game.getSavedGame().getBases().get(0).getCrafts().get(0));
 	bgen.run();
-	delete bgen;
+	bgen = null;
 	_music = false;
 	_game.pushState(new BattlescapeState(_game));
 }

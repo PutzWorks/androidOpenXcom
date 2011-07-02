@@ -70,7 +70,11 @@ public TargetInfoState(Game game, Target target)
 
 	_btnOk.setColor(Palette.blockOffset(8)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)TargetInfoState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+10);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
@@ -83,11 +87,11 @@ public TargetInfoState(Game game, Target target)
 
 	_txtFollowers.setColor(Palette.blockOffset(15)-1);
 	_txtFollowers.setAlign(TextHAlign.ALIGN_CENTER);
-	WString s = L"";
+	String s = "";
 	for (Target i: _target.getFollowers())
 	{
 		s += (i).getName(_game.getLanguage());
-		s += L'\n';
+		s += '\n';
 	}
 	_txtFollowers.setText(s);
 }

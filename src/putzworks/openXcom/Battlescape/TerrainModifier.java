@@ -69,7 +69,7 @@ public void calculateSunShading(Tile tile)
 	// At night/dusk sun isn't dropping shades
 	if (_save.getGlobalShade() <= 5)
 	{
-		if (verticalBlockage(_save.getTile(new Position(tile.getPosition().x, tile.getPosition().y, _save.getHeight() - 1)), tile, ItemDamageType.DT_NONE))
+		if (verticalBlockage(_save.getTile(new Position(tile.getPosition().x, tile.getPosition().y, _save.getHeight() - 1)), tile, ItemDamageType.DT_NONE) != 0)
 		{
 			power-=2;
 		}
@@ -101,18 +101,18 @@ public void calculateTerrainLighting()
 	{
 		// only floors and objects can light up
 		if (_save.getTiles()[i].getMapData(MapData.O_FLOOR) != null
-			&& _save.getTiles()[i].getMapData(MapData.O_FLOOR).getLightSource() != null)
+			&& _save.getTiles()[i].getMapData(MapData.O_FLOOR).getLightSource() != 0)
 		{
 			addLight(_save.getTiles()[i].getPosition(), _save.getTiles()[i].getMapData(MapData.O_FLOOR).getLightSource(), layer);
 		}
 		if (_save.getTiles()[i].getMapData(MapData.O_OBJECT) != null
-			&& _save.getTiles()[i].getMapData(MapData.O_OBJECT).getLightSource() != null)
+			&& _save.getTiles()[i].getMapData(MapData.O_OBJECT).getLightSource() != 0)
 		{
 			addLight(_save.getTiles()[i].getPosition(), _save.getTiles()[i].getMapData(MapData.O_OBJECT).getLightSource(), layer);
 		}
 
 		// fires
-		if (_save.getTiles()[i].getFire() != null)
+		if (_save.getTiles()[i].getFire() != 0)
 		{
 			addLight(_save.getTiles()[i].getPosition(), fireLightPower, layer);
 		}
@@ -321,7 +321,7 @@ boolean checkForVisibleUnits(BattleUnit unit, Tile tile)
 	targetVoxel.z += bu.isKneeled()?bu.getUnit().getKneelHeight():bu.getUnit().getStandHeight();
 
 	// cast a ray from the middle of the unit to the middle of this one
-	int test = calculateLine(originVoxel, targetVoxel, false, 0, 0);
+	int test = calculateLine(originVoxel, targetVoxel, false, null, null);
 	Position hitPosition = new Position(targetVoxel.x/16, targetVoxel.y/16, targetVoxel.z/24);
 	if (test == -1 || (test == 4 && bu.getPosition() == hitPosition))
 	{
@@ -599,28 +599,36 @@ private int horizontalBlockage(Tile startTile, Tile endTile, ItemDamageType type
 	{
 	case 0:	// north
 		return blockage(startTile, MapData.O_NORTHWALL, type);
+//		break;
 	case 1: // north east
 		return (blockage(startTile,MapData.O_NORTHWALL, type) + blockage(endTile,MapData.O_WESTWALL, type))/2
 			+ (blockage(_save.getTile(startTile.getPosition().plus(new Position(1, 0, 0))),MapData.O_WESTWALL, type)
 			+ blockage(_save.getTile(startTile.getPosition().plus(new Position(1, 0, 0))),MapData.O_NORTHWALL, type))/2;
+//		break;
 	case 2: // east
 		return blockage(endTile,MapData.O_WESTWALL, type);
+//		break;
 	case 3: // south east
 		return (blockage(endTile,MapData.O_WESTWALL, type) + blockage(endTile,MapData.O_NORTHWALL, type))/2
 			+ (blockage(_save.getTile(startTile.getPosition().plus(new Position(1, 0, 0))),MapData.O_WESTWALL, type)
 			+ blockage(_save.getTile(startTile.getPosition().plus(new Position(0, -1, 0))),MapData.O_NORTHWALL, type))/2;
+//		break;
 	case 4: // south
 		return blockage(endTile,MapData.O_NORTHWALL, type);
+//		break;
 	case 5: // south west
 		return (blockage(endTile,MapData.O_NORTHWALL, type) + blockage(startTile,MapData.O_WESTWALL, type))/2
 			+ (blockage(_save.getTile(startTile.getPosition().plus(new Position(0, -1, 0))),MapData.O_WESTWALL, type)
 			+ blockage(_save.getTile(startTile.getPosition().plus(new Position(0, -1, 0))),MapData.O_NORTHWALL, type))/2;
+//		break;
 	case 6: // west
 		return blockage(startTile,MapData.O_WESTWALL, type);
+//		break;
 	case 7: // north west
 		return (blockage(startTile,MapData.O_WESTWALL, type) + blockage(startTile,MapData.O_NORTHWALL, type))/2
 			+ (blockage(_save.getTile(startTile.getPosition().plus(new Position(0, 1, 0))),MapData.O_WESTWALL, type)
 			+ blockage(_save.getTile(startTile.getPosition().plus(new Position(-1, 0, 0))),MapData.O_NORTHWALL, type))/2;
+//		break;
 	}
 
 	return 0;
@@ -739,16 +747,28 @@ public int calculateLine(final Position origin, final Position target, boolean s
     swap_xy = Math.abs(y1 - y0) > Math.abs(x1 - x0);
     if (swap_xy)
 	{
-        std.swap(x0, y0);
-        std.swap(x1, y1);
+    	//swap x0 and y0
+    	int temp = x0;
+    	x0 = y0;
+    	y0 = temp;
+    	//swap x1 and y1
+    	temp = x1;
+    	x1 = y1;
+    	y1 = temp;
 	}
 
     //do same for xz
     swap_xz = Math.abs(z1 - z0) > Math.abs(x1 - x0);
     if (swap_xz)
 	{
-        std.swap(x0, z0);
-		std.swap(x1, z1);
+    	//swap x0 and z0
+    	int temp = x0;
+    	x0 = z0;
+    	z0 = temp;
+    	//swap x1 and z1
+    	temp = x1;
+    	x1 = z1;
+    	z1 = temp;
 	}
 
     //delta is Length in each plane
@@ -777,8 +797,20 @@ public int calculateLine(final Position origin, final Position target, boolean s
         cx = x;    cy = y;    cz = z;
 
         //unswap (in reverse)
-        if (swap_xz) std.swap(cx, cz);
-        if (swap_xy) std.swap(cx, cy);
+        if (swap_xz) 
+        {
+        	//swap cx and cz
+        	int temp = cx;
+        	cx = cz;
+        	cz = temp;
+        }
+        if (swap_xy) 
+        	{
+        	//swap cx and cy
+        	int temp = cx;
+        	cx = cy;
+        	cy = temp;
+        	}
 
 		if (storeTrajectory)
 		{

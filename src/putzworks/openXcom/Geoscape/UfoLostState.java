@@ -32,14 +32,14 @@ public class UfoLostState extends State
 	TextButton _btnOk;
 	Window _window;
 	Text _txtTitle;
-	WString _id;
+	String _id;
 
 /**
  * Initializes all the elements in the Ufo Lost window.
  * @param game Pointer to the core game.
  * @param id Name of the UFO.
  */
-public UfoLostState(Game game, WString id)
+public UfoLostState(Game game, String id)
 {
 	super(game);
 	_id = id;
@@ -63,13 +63,17 @@ public UfoLostState(Game game, WString id)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)UfoLostState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+5);
 	_txtTitle.setBig();
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
-	WString s = _id;
-	s += L'\n';
+	String s = _id;
+	s += '\n';
 	s += _game.getLanguage().getString("STR_TRACKING_LOST");
 	_txtTitle.setText(s);
 }

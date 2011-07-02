@@ -44,7 +44,7 @@ public class CannotRearmState extends State
  * @param craft Craft rearming.
  * @param base Base the craft belongs to.
  */
-public CannotRearmState(Game game, GeoscapeState state, final WString ammo, final WString craft, final WString base)
+public CannotRearmState(Game game, GeoscapeState state, final String ammo, final String craft, final String base)
 {
 	super(game);
 	_state = state;
@@ -70,18 +70,26 @@ public CannotRearmState(Game game, GeoscapeState state, final WString ammo, fina
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CannotRearmState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnOk5Secs.setColor(Palette.blockOffset(8)+8);
 	_btnOk5Secs.setText(_game.getLanguage().getString("STR_OK_5_SECS"));
-	_btnOk5Secs.onMouseClick((ActionHandler)CannotRearmState.btnOk5SecsClick);
+	_btnOk5Secs.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOk5SecsClick(action);
+		}
+	});
 
 	_txtMessage.setColor(Palette.blockOffset(15)-1);
 	_txtMessage.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtMessage.setVerticalAlign(TextVAlign.ALIGN_MIDDLE);
 	_txtMessage.setBig();
 	_txtMessage.setWordWrap(true);
-	WString s = _game.getLanguage().getString("STR_NOT_ENOUGH");
+	String s = _game.getLanguage().getString("STR_NOT_ENOUGH");
 	s += ammo;
 	s += _game.getLanguage().getString("STR_TO_REARM");
 	s += craft;

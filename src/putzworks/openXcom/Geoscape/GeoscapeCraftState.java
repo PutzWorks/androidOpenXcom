@@ -110,19 +110,35 @@ public GeoscapeCraftState(Game game, Craft craft, Globe globe, Waypoint waypoint
 
 	_btnBase.setColor(Palette.blockOffset(8)+8);
 	_btnBase.setText(_game.getLanguage().getString("STR_RETURN_TO_BASE"));
-	_btnBase.onMouseClick((ActionHandler)GeoscapeCraftState.btnBaseClick);
+	_btnBase.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnBaseClick(action);
+		}
+	});
 
 	_btnTarget.setColor(Palette.blockOffset(8)+8);
 	_btnTarget.setText(_game.getLanguage().getString("STR_SELECT_NEW_TARGET"));
-	_btnTarget.onMouseClick((ActionHandler)GeoscapeCraftState.btnTargetClick);
+	_btnTarget.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnTargetClick(action);
+		}
+	});
 
 	_btnPatrol.setColor(Palette.blockOffset(8)+8);
-	_btnPatrol.setText(_game.getLanguage().getString("STR_PATROL"));
-	_btnPatrol.onMouseClick((ActionHandler)GeoscapeCraftState.btnPatrolClick);
+	_btnPatrol.setText(_game.getLanguage().getString("STR_PATRO"));
+	_btnPatrol.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnPatrolClick(action);
+		}
+	});
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)GeoscapeCraftState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action));
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setBig();
@@ -130,19 +146,19 @@ public GeoscapeCraftState(Game game, Craft craft, Globe globe, Waypoint waypoint
 
 	_txtStatus.setColor(Palette.blockOffset(15)-1);
 	_txtStatus.setSecondaryColor(Palette.blockOffset(8)+10);
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_STATUS_") << L'\x01';
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_STATUS_") + '\x01');
 	if (_craft.getLowFuel())
 	{
-		ss << _game.getLanguage().getString("STR_LOW_FUEL_RETURNING_TO_BASE");
+		ss.append(_game.getLanguage().getString("STR_LOW_FUEL_RETURNING_TO_BASE"));
 	}
 	else if (_craft.getDestination() == 0)
 	{
-		ss << _game.getLanguage().getString("STR_PATROLLING");
+		ss.append(_game.getLanguage().getString("STR_PATROLLING"));
 	}
 	else if (_craft.getDestination() == (Target)_craft.getBase())
 	{
-		ss << _game.getLanguage().getString("STR_RETURNING_TO_BASE");
+		ss.append(_game.getLanguage().getString("STR_RETURNING_TO_BASE"));
 	}
 	else
 	{
@@ -152,101 +168,101 @@ public GeoscapeCraftState(Game game, Craft craft, Globe globe, Waypoint waypoint
 		{
 			if (!u.isCrashed())
 			{
-				ss << _game.getLanguage().getString("STR_INTERCEPTING_UFO") << u.getId();
+				ss.append(_game.getLanguage().getString("STR_INTERCEPTING_UFO") + u.getId());
 			}
 			else
 			{
-				ss << _game.getLanguage().getString("STR_DESTINATION_CRASH_SITE") << u.getId();
+				ss.append(_game.getLanguage().getString("STR_DESTINATION_CRASH_SITE") + u.getId());
 			}
 		}
 		else if (w != 0)
 		{
-			ss << _game.getLanguage().getString("STR_DESTINATION_WAY_POINT") << w.getId();
+			ss.append(_game.getLanguage().getString("STR_DESTINATION_WAY_POINT") + w.getId());
 		}
 	}
-	_txtStatus.setText(ss.str());
+	_txtStatus.setText(ss.toString());
 
 	_txtBase.setColor(Palette.blockOffset(15)-1);
 	_txtBase.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_BASE_UC_") << L'\x01' << _craft.getBase().getName();
-	_txtBase.setText(ss2.str());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_game.getLanguage().getString("STR_BASE_UC_") + '\x01' + _craft.getBase().getName());
+	_txtBase.setText(ss2.toString());
 
 	_txtSpeed.setColor(Palette.blockOffset(15)-1);
 	_txtSpeed.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss3;
-	ss3 << _game.getLanguage().getString("STR_SPEED_") << L'\x01' << _craft.getSpeed();
-	_txtSpeed.setText(ss3.str());
+	StringBuffer ss3 = new StringBuffer();
+	ss3.append(_game.getLanguage().getString("STR_SPEED_") + '\x01' + _craft.getSpeed());
+	_txtSpeed.setText(ss3.toString());
 
 	_txtMaxSpeed.setColor(Palette.blockOffset(15)-1);
 	_txtMaxSpeed.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss4;
-	ss4 << _game.getLanguage().getString("STR_MAXIMUM_SPEED_UC") << L'\x01' << _craft.getRules().getMaxSpeed();
-	_txtMaxSpeed.setText(ss4.str());
+	StringBuffer ss4 = new StringBuffer();
+	ss4.append(_game.getLanguage().getString("STR_MAXIMUM_SPEED_UC") + '\x01' + _craft.getRules().getMaxSpeed());
+	_txtMaxSpeed.setText(ss4.toString());
 
 	_txtAltitude.setColor(Palette.blockOffset(15)-1);
 	_txtAltitude.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss5;
-	ss5 << _game.getLanguage().getString("STR_ALTITUDE_") << L'\x01';
-	_txtAltitude.setText(ss5.str());
+	StringBuffer ss5 = new StringBuffer();
+	ss5.append(_game.getLanguage().getString("STR_ALTITUDE_") + '\x01');
+	_txtAltitude.setText(ss5.toString());
 
 	_txtFuel.setColor(Palette.blockOffset(15)-1);
 	_txtFuel.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss6;
-	ss6 << _game.getLanguage().getString("STR_FUEL") << L'\x01' << _craft.getFuelPercentage() << "%";
-	_txtFuel.setText(ss6.str());
+	StringBuffer ss6 = new StringBuffer();
+	ss6.append(_game.getLanguage().getString("STR_FUE") + '\x01' + _craft.getFuelPercentage() + "%");
+	_txtFuel.setText(ss6.toString());
 
 	_txtW1Name.setColor(Palette.blockOffset(15)-1);
 	_txtW1Name.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss7;
-	ss7 << _game.getLanguage().getString("STR_WEAPON_1") << L'\x01';
+	StringBuffer ss7 = new StringBuffer();
+	ss7.append(_game.getLanguage().getString("STR_WEAPON_1") + '\x01');
 	
 	_txtW1Ammo.setColor(Palette.blockOffset(15)-1);
 	_txtW1Ammo.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss8;
-	ss8 << _game.getLanguage().getString("STR_ROUNDS_") << L'\x01';
+	StringBuffer ss8 = new StringBuffer();
+	ss8.append(_game.getLanguage().getString("STR_ROUNDS_") + '\x01');
 
 	if (_craft.getRules().getWeapons() > 0 && _craft.getWeapons().at(0) != 0)
 	{
 		CraftWeapon w1 = _craft.getWeapons().at(0);
 
-		ss7 << _game.getLanguage().getString(w1.getRules().getType());
-		_txtW1Name.setText(ss7.str());
+		ss7.append(_game.getLanguage().getString(w1.getRules().getType()));
+		_txtW1Name.setText(ss7.toString());
 		
-		ss8 << w1.getAmmo();
-		_txtW1Ammo.setText(ss8.str());
+		ss8.append(w1.getAmmo());
+		_txtW1Ammo.setText(ss8.toString());
 	}
 	else
 	{
-		ss7 << _game.getLanguage().getString("STR_NONE_UC");
-		_txtW1Name.setText(ss7.str());
+		ss7.append(_game.getLanguage().getString("STR_NONE_UC"));
+		_txtW1Name.setText(ss7.toString());
 		_txtW1Ammo.setVisible(false);
 	}
 
 	_txtW2Name.setColor(Palette.blockOffset(15)-1);
 	_txtW2Name.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss9;
-	ss9 << _game.getLanguage().getString("STR_WEAPON_2") << L'\x01';
+	StringBuffer ss9 = new StringBuffer();
+	ss9.append(_game.getLanguage().getString("STR_WEAPON_2") + '\x01');
 	
 	_txtW2Ammo.setColor(Palette.blockOffset(15)-1);
 	_txtW2Ammo.setSecondaryColor(Palette.blockOffset(8)+5);
-	WStringstream ss10;
-	ss10 << _game.getLanguage().getString("STR_ROUNDS_") << L'\x01';
+	StringBuffer ss10 = new StringBuffer();
+	ss10.append(_game.getLanguage().getString("STR_ROUNDS_") + '\x01');
 
 	if (_craft.getRules().getWeapons() > 1 && _craft.getWeapons().at(1) != 0)
 	{
 		CraftWeapon w2 = _craft.getWeapons().at(1);
 
-		ss9 << _game.getLanguage().getString(w2.getRules().getType());
-		_txtW2Name.setText(ss9.str());
+		ss9.append(_game.getLanguage().getString(w2.getRules().getType()));
+		_txtW2Name.setText(ss9.toString());
 		
-		ss10 << w2.getAmmo();
-		_txtW2Ammo.setText(ss10.str());
+		ss10.append(w2.getAmmo());
+		_txtW2Ammo.setText(ss10.toString());
 	}
 	else
 	{
-		ss9 << _game.getLanguage().getString("STR_NONE_UC");
-		_txtW2Name.setText(ss9.str());
+		ss9.append(_game.getLanguage().getString("STR_NONE_UC"));
+		_txtW2Name.setText(ss9.toString());
 		_txtW2Ammo.setVisible(false);
 	}
 

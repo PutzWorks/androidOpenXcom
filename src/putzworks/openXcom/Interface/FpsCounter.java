@@ -21,7 +21,9 @@ package putzworks.openXcom.Interface;
 import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.Palette;
 import putzworks.openXcom.Engine.Surface;
+import putzworks.openXcom.Engine.SurfaceHandler;
 import putzworks.openXcom.Engine.Timer;
+import putzworks.openXcom.SDL.SDL_Color;
 
 public class FpsCounter extends Surface
 {
@@ -43,7 +45,11 @@ public FpsCounter(int width, int height, int x, int y)
 	_visible = false;
 
 	_timer = new Timer(1000);
-	_timer.onTimer((SurfaceHandler)&FpsCounter.update);
+	_timer.onTimer(new SurfaceHandler() {
+		public void handle(Surface surface) {
+			update();
+		}
+	});
 	_timer.start();
 
 	_text = new NumberText(width, height, x, y);

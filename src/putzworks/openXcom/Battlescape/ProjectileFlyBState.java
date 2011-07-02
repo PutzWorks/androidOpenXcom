@@ -188,7 +188,7 @@ public void think()
 			_parent.statePushNext(new ExplosionBState(_parent, _parent.getMap().getProjectile().getPosition(offset), _ammo));
 		}
 
-		_parent.getMap().setProjectile((Projectile)null);
+//		_parent.getMap().getProjectile() = null;
 		_parent.getMap().setProjectile(null);
 		_parent.popState();
 	}

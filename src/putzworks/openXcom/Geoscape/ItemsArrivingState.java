@@ -78,11 +78,19 @@ public ItemsArrivingState(Game game, GeoscapeState state)
 
 	_btnOk.setColor(Palette.blockOffset(8)+8);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)ItemsArrivingState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_btnOk5Secs.setColor(Palette.blockOffset(8)+8);
 	_btnOk5Secs.setText(_game.getLanguage().getString("STR_OK_5_SECS"));
-	_btnOk5Secs.onMouseClick((ActionHandler)ItemsArrivingState.btnOk5SecsClick);
+	_btnOk5Secs.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOk5SecsClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(8)+5);
 	_txtTitle.setBig();
@@ -111,9 +119,9 @@ public ItemsArrivingState(Game game, GeoscapeState state)
 		{
 			if ((j).getHours() == 0)
 			{
-				WStringstream ss;
-				ss << (j).getQuantity();
-				_lstTransfers.addRow(3, (j).getName(_game.getLanguage()).c_str(), ss.str().c_str(), (*i).getName().c_str());
+				StringBuffer ss = new StringBuffer();
+				ss.append((j).getQuantity());
+				_lstTransfers.addRow(3, (j).getName(_game.getLanguage()).c_str(), ss.toString(), i.getName().toString());
 				j = null;
 				j = (i).getTransfers().erase(j);
 			}

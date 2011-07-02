@@ -91,17 +91,25 @@ public MultipleTargetsState(Game game, Vector<Target> targets, Craft craft, Geos
 
 		_btnCancel.setColor(Palette.blockOffset(8)+8);
 		_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-		_btnCancel.onMouseClick((ActionHandler)MultipleTargetsState.btnCancelClick);
+		_btnCancel.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnCancelClick(action);
+			}
+		});
 
 		_lstTargets.setColor(Palette.blockOffset(8)+5);
 		_lstTargets.setAlign(TextHAlign.ALIGN_CENTER);
 		_lstTargets.setColumns(1, 116);
 		_lstTargets.setSelectable(true);
 		_lstTargets.setBackground(_window);
-		_lstTargets.onMouseClick((ActionHandler)MultipleTargetsState.lstTargetsClick);
+		_lstTargets.onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				lstTargetsClick(action);
+			}
+		});
 		for (Target i: _targets)
 		{
-			_lstTargets.addRow(1, (i).getName(_game.getLanguage()).c_str());
+			_lstTargets.addRow(1, (i).getName(_game.getLanguage()).toString());
 		}
 	}
 }
@@ -139,7 +147,7 @@ public void popupTarget(Target target)
 		}
 		else if (c != null)
 		{
-			_game.pushState(new GeoscapeCraftState(_game, c, _state.getGlobe(), 0));
+			_game.pushState(new GeoscapeCraftState(_game, c, _state.getGlobe(), null));
 		}
 		else if (u != null)
 		{
@@ -171,7 +179,7 @@ public void btnCancelClick(Action action)
  */
 public void lstTargetsClick(Action action)
 {
-	Target t = _targets[_lstTargets.getSelectedRow()];
+	Target t = _targets.get(_lstTargets.getSelectedRow());
 	popupTarget(t);
 }
 

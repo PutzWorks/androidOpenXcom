@@ -47,9 +47,6 @@ public class SavedBattleGame
 	private int _turn;
 	private boolean _debugMode;
 
-	//confused about this one
-	String base64_encode(char bytes_to_encode, int in_len);
-
 /**
  * Initializes a brand new battlescape saved game.
  */
@@ -328,7 +325,7 @@ public BattleUnit selectNextPlayerUnit()
 	boolean bNext = false;
 	int wraps = 0;
 
-	if (_selectedUnit == 0)
+	if (_selectedUnit == null)
 	{
 		bNext = true;
 	}
@@ -510,8 +507,8 @@ public final boolean getDebugMode()
 *
 */
 static String base64_chars =
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
+             "abcdefghijklmnopqrstuvwxyz"+
              "0123456789+/";
 
 

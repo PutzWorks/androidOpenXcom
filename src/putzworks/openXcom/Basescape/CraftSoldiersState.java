@@ -80,12 +80,16 @@ public CraftSoldiersState(Game game, Base base, int craft)
 
 	_btnOk.setColor(Palette.blockOffset(13)+13);
 	_btnOk.setText(_game.getLanguage().getString("STR_OK"));
-	_btnOk.onMouseClick((ActionHandler)CraftSoldiersState.btnOkClick);
+	_btnOk.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnOkClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)+6);
 	_txtTitle.setBig();
 	Craft c = _base.getCrafts().get(_craft);
-	WString s;
+	String s;
 	s = _game.getLanguage().getString("STR_SELECT_SQUAD_FOR") + c.getName(_game.getLanguage());
 	_txtTitle.setText(s);
 
@@ -99,14 +103,14 @@ public CraftSoldiersState(Game game, Base base, int craft)
 	_txtCraft.setText(_game.getLanguage().getString("STR_CRAFT"));
 
 	_txtAvailable.setColor(Palette.blockOffset(15)+6);
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_SPACE_AVAILABLE") << c.getRules().getSoldiers() - c.getNumSoldiers();
-	_txtAvailable.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_SPACE_AVAILABLE") + (c.getRules().getSoldiers() - c.getNumSoldiers()));
+	_txtAvailable.setText(ss.toString());
 
 	_txtUsed.setColor(Palette.blockOffset(15)+6);
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_SPACE_USED") << c.getNumSoldiers();
-	_txtUsed.setText(ss2.str());
+	StringBuffer ss2;
+	ss2.append(_game.getLanguage().getString("STR_SPACE_USED") + c.getNumSoldiers());
+	_txtUsed.setText(ss2.toString());
 
 	_lstSoldiers.setColor(Palette.blockOffset(13)+10);
 	_lstSoldiers.setArrowColor(Palette.blockOffset(15)+9);
@@ -114,13 +118,17 @@ public CraftSoldiersState(Game game, Base base, int craft)
 	_lstSoldiers.setSelectable(true);
 	_lstSoldiers.setBackground(_window);
 	_lstSoldiers.setMargin(8);
-	_lstSoldiers.onMouseClick((ActionHandler)CraftSoldiersState.lstSoldiersClick);
+	_lstSoldiers.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstSoldiersClick(action);
+		}
+	});
 
 	int row = 0;
 	for (Soldier i: _base.getSoldiers())
 	{
-		WString s;
-		if ((*i).getCraft() == 0)
+		String s;
+		if ((i).getCraft() == null)
 		{
 			s = _game.getLanguage().getString("STR_NONE_UC");
 		}
@@ -128,14 +136,14 @@ public CraftSoldiersState(Game game, Base base, int craft)
 		{
 			s = (i).getCraft().getName(_game.getLanguage());
 		}
-		_lstSoldiers.addRow(3, (i).getName().c_str(), _game.getLanguage().getString((i).getRankString()).c_str(), s.c_str());
+		_lstSoldiers.addRow(3, (i).getName(), _game.getLanguage().getString((i).getRankString()), s);
 
 		Uint8 color;
 		if ((i).getCraft() == c)
 		{
 			color = Palette.blockOffset(13);
 		}
-		else if ((i).getCraft() != 0)
+		else if ((i).getCraft() != null)
 		{
 			color = Palette.blockOffset(15)+6;
 		}
@@ -167,12 +175,12 @@ public void btnOkClick(Action action)
 public void lstSoldiersClick(Action action)
 {
 	int row = _lstSoldiers.getSelectedRow();
-	Craft c = _base.getCrafts().at(_craft);
-	Soldier s = _base.getSoldiers().at(_lstSoldiers.getSelectedRow());
+	Craft c = _base.getCrafts().get(_craft);
+	Soldier s = _base.getSoldiers().get(_lstSoldiers.getSelectedRow());
 	Uint8 color;
 	if (s.getCraft() == c)
 	{
-		s.setCraft(0);
+		s.setCraft(null);
 		_lstSoldiers.getCell(row, 2).setText(_game.getLanguage().getString("STR_NONE_UC"));
 		color = Palette.blockOffset(13)+10;
 	}
@@ -187,12 +195,12 @@ public void lstSoldiersClick(Action action)
 	_lstSoldiers.getCell(row, 2).setColor(color);
 	_lstSoldiers.draw();
 
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_SPACE_AVAILABLE") << c.getRules().getSoldiers() - c.getNumSoldiers();
-	_txtAvailable.setText(ss.str());
-	WStringstream ss2;
-	ss2 << _game.getLanguage().getString("STR_SPACE_USED") << c.getNumSoldiers();
-	_txtUsed.setText(ss2.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_SPACE_AVAILABLE") + (c.getRules().getSoldiers() - c.getNumSoldiers()));
+	_txtAvailable.setText(ss.toString());
+	StringBuffer ss2 = new StringBuffer();
+	ss2.append(_game.getLanguage().getString("STR_SPACE_USED") + c.getNumSoldiers());
+	_txtUsed.setText(ss2.toString());
 }
 
 }

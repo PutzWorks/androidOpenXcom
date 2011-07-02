@@ -77,7 +77,11 @@ public LoadGameState(Game game)
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)LoadGameState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setBig();
@@ -99,7 +103,11 @@ public LoadGameState(Game game)
 	_lstSaves.setSelectable(true);
 	_lstSaves.setBackground(_window);
 	_lstSaves.setMargin(8);
-	_lstSaves.onMouseClick((ActionHandler)LoadGameState.lstSavesClick);
+	_lstSaves.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstSavesClick(action);
+		}
+	});
 	SavedGame.getList(_lstSaves, _game.getLanguage());
 }
 
@@ -143,13 +151,15 @@ public void lstSavesClick(Action action)
 	}
 	catch (Exception e)
 	{
-		std.cerr << "ERROR: " << e.what() << std.endl;
-		_game.pushState(new GeoscapeErrorState(_game, "STR_LOAD_UNSUCCESSFUL"));
+		//TODO Log out to error
+//		std.cerr << "ERROR: " << e.what() << std.endl;
+		_game.pushState(new GeoscapeErrorState(_game, "STR_LOAD_UNSUCCESSFU"));
 	}
 	catch (YAML.Exception e)
 	{
-		std.cerr << "ERROR: " << e.what() << std.endl;
-		_game.pushState(new GeoscapeErrorState(_game, "STR_LOAD_UNSUCCESSFUL"));
+		//TODO Log out to error
+//		std.cerr << "ERROR: " << e.what() << std.endl;
+		_game.pushState(new GeoscapeErrorState(_game, "STR_LOAD_UNSUCCESSFU"));
 	}
 }
 

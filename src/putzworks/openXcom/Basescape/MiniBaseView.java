@@ -20,7 +20,6 @@ package putzworks.openXcom.Basescape;
 
 import java.util.Vector;
 
-import android.graphics.Rect;
 import putzworks.openXcom.Engine.*;
 import putzworks.openXcom.Interface.*;
 import putzworks.openXcom.Savegame.Base;
@@ -106,12 +105,12 @@ public void draw()
 		// Draw base squares
 		if (i == _base)
 		{
-			Rect r;
-			r.left = i * (MINI_SIZE + 2);
-			r.top = 0;
-			r.right = r.left + MINI_SIZE + 2;
-			r.bottom = r.top + MINI_SIZE + 2;
-            drawRect(r, 1);
+			Rectangle r = new Rectangle();
+			r.x = i * (MINI_SIZE + 2);
+			r.y = 0;
+			r.w = MINI_SIZE + 2;
+			r.h = MINI_SIZE + 2;
+            drawRectangle(r, 1);
 		}
 		_texture.getFrame(41).setX(i * (MINI_SIZE + 2));
 		_texture.getFrame(41).setY(0);
@@ -120,9 +119,9 @@ public void draw()
 		// Draw facilities
 		if (i < _bases.size())
 		{
-			Rect r;
+			Rectangle r = new Rectangle();
 			lock();
-			for (BaseFacility f: _bases.at(i).getFacilities())
+			for (BaseFacility f: _bases.get(i).getFacilities())
 			{
 				int pal;
 				if ((f).getBuildTime() == 0)
@@ -130,24 +129,24 @@ public void draw()
 				else
 					pal = 2;
 
-				r.left = i * (MINI_SIZE + 2) + 2 + (f).getX() * 2;
-				r.top = 2 + (f).getY() * 2;
-				r.right = r.left + (f).getRules().getSize() * 2;
-				r.bottom = r.top + (f).getRules().getSize() * 2;
-                drawRect(r, Palette.blockOffset(pal)+3);
+				r.x = i * (MINI_SIZE + 2) + 2 + (f).getX() * 2;
+				r.y = 2 + (f).getY() * 2;
+				r.w = (f).getRules().getSize() * 2;
+				r.h = (f).getRules().getSize() * 2;
+                drawRectangle(r, Palette.blockOffset(pal)+3);
 				r.x++;
 				r.y++;
 				r.w--;
 				r.h--;
-                drawRect(r, Palette.blockOffset(pal)+5);
+                drawRectangle(r, Palette.blockOffset(pal)+5);
 				r.x--;
 				r.y--;
-                drawRect(r, Palette.blockOffset(pal)+2);
+                drawRectangle(r, Palette.blockOffset(pal)+2);
 				r.x++;
 				r.y++;
 				r.w--;
 				r.h--;
-                drawRect(r, Palette.blockOffset(pal)+3);
+                drawRectangle(r, Palette.blockOffset(pal)+3);
 				r.x--;
 				r.y--;
 				setPixel(r.x, r.y, Palette.blockOffset(pal)+1);

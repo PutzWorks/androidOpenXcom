@@ -61,31 +61,31 @@ public class ArticleStateCraftWeapon extends ArticleState
 		_lstInfo = new TextList(210, 111, 5, 80);
 		add(_lstInfo);
 		
-		WStringstream ss;
+		StringBuffer ss = new StringBuffer();
 		_lstInfo.setColor(Palette.blockOffset(14)+15);
 		_lstInfo.setColumns(2, 134, 70);
 		_lstInfo.setDot(true);
 		_lstInfo.setBig();
 		
-		ss.str(L"");ss.clear();
-		ss << defs.weapon.getDamage();
+		ss.delete(0, ss.length());
+		ss.append(defs.weapon.getDamage());
 		
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_DAMAGE").c_str(), ss.str().c_str());
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_DAMAGE"), ss.str());
 		_lstInfo.getCell(0, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.weapon.getRange() << _game.getLanguage().getString("STR_KM").c_str();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_RANGE").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.weapon.getRange() + _game.getLanguage().getString("STR_KM"));
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_RANGE"), ss.toString());
 		_lstInfo.getCell(1, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.weapon.getAccuracy() << "%";
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_ACCURACY").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.weapon.getAccuracy() + "%");
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_ACCURACY"), ss.toString());
 		_lstInfo.getCell(2, 1).setColor(Palette.blockOffset(15)+4);
 		
-		ss.str(L"");ss.clear();
-		ss << defs.weapon.getStandardReload() << _game.getLanguage().getString("STR_S").c_str();
-		_lstInfo.addRow(2, _game.getLanguage().getString("STR_RE_LOAD_TIME").c_str(), ss.str().c_str());
+		ss.delete(0, ss.length());
+		ss.append(defs.weapon.getStandardReload() + _game.getLanguage().getString("STR_S"));
+		_lstInfo.addRow(2, _game.getLanguage().getString("STR_RE_LOAD_TIME"), ss.toString()());
 		_lstInfo.getCell(3, 1).setColor(Palette.blockOffset(15)+4);
 		
 		_lstInfo.draw();

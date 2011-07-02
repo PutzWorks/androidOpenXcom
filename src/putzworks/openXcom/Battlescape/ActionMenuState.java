@@ -49,57 +49,61 @@ public ActionMenuState(Game game, BattleAction action)
 		_actionMenu[i] = new ActionMenuItem(this, i, _game.getResourcePack().getFont("BIGLETS.DAT"));
 		add(_actionMenu[i]);
 		_actionMenu[i].setVisible(false);
-		_actionMenu[i].onMouseClick((ActionHandler)ActionMenuState.btnActionMenuItemClick);
+		_actionMenu[i].onMouseClick(new ActionHandler() {
+			public void handle(Action action) {
+				btnActionMenuItemClick(action);
+			}
+		});
 	}
 
 	// Build up the popup menu
 	int id = 0, tu;
-	WString strAcc = _game.getLanguage().getString("STR_ACC");
-	WString strTU = _game.getLanguage().getString("STR_TUS");
-	WStringstream ss1, ss2;
+	String strAcc = _game.getLanguage().getString("STR_ACC");
+	String strTU = _game.getLanguage().getString("STR_TUS");
+	StringBuffer ss1 = new StringBuffer(), ss2 = new StringBuffer();
 
 	// throwing
 	tu = (int)Math.floor(_action.actor.getUnit().getTimeUnits() * 0.25);
-	ss1 << strAcc.c_str() << (int)Math.floor(_action.actor.getThrowingAccuracy() * 100) << "%";
-	ss2 << strTU.c_str() << tu;
-	_actionMenu[id].setAction(BattleActionType.BA_THROW, _game.getLanguage().getString("STR_THROW"), ss1.str(), ss2.str(), tu);
+	ss1.append(strAcc + (int)Math.floor(_action.actor.getThrowingAccuracy() * 100) + "%");
+	ss2.append(strTU + tu);
+	_actionMenu[id].setAction(BattleActionType.BA_THROW, _game.getLanguage().getString("STR_THROW"), ss1.toString(), ss2.toString(), tu);
 	_actionMenu[id].setVisible(true);
 	id++;
-	ss1.str(L"");
-	ss2.str(L"");
+	ss1.delete(0, ss1.length());
+	ss2.delete(0, ss2.length());
 
 	if (_action.weapon.getRules().getAccuracyAuto() != 0)
 	{
 		tu = (int)(_action.actor.getUnit().getTimeUnits() * _action.weapon.getRules().getTUAuto() / 100);
-		ss1 << strAcc.c_str() << (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracyAuto()) * 100) << "%";
-		ss2 << strTU.c_str() << tu;
-		_actionMenu[id].setAction(BattleActionType.BA_AUTOSHOT, _game.getLanguage().getString("STR_AUTO_SHOT"), ss1.str(), ss2.str(), tu);
+		ss1.append(strAcc + (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracyAuto()) * 100) + "%");
+		ss2.append(strTU + tu);
+		_actionMenu[id].setAction(BattleActionType.BA_AUTOSHOT, _game.getLanguage().getString("STR_AUTO_SHOT"), ss1.toString(), ss2.toString(), tu);
 		_actionMenu[id].setVisible(true);
 		id++;
-		ss1.str(L"");
-		ss2.str(L"");
+		ss1.delete(0, ss1.length());
+		ss2.delete(0, ss2.length());
 	}
 	if (_action.weapon.getRules().getAccuracySnap() != 0)
 	{
 		tu = (int)(_action.actor.getUnit().getTimeUnits() * _action.weapon.getRules().getTUSnap() / 100);
-		ss1 << strAcc.c_str() << (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracySnap()) * 100) << "%";
-		ss2 << strTU.c_str() << tu;
-		_actionMenu[id].setAction(BattleActionType.BA_SNAPSHOT, _game.getLanguage().getString("STR_SNAP_SHOT"), ss1.str(), ss2.str(), tu);
+		ss1.append(strAcc + (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracySnap()) * 100) + "%");
+		ss2.append(strTU + tu);
+		_actionMenu[id].setAction(BattleActionType.BA_SNAPSHOT, _game.getLanguage().getString("STR_SNAP_SHOT"), ss1.toString(), ss2.toString(), tu);
 		_actionMenu[id].setVisible(true);
 		id++;
-		ss1.str(L"");
-		ss2.str(L"");
+		ss1.delete(0, ss1.length());
+		ss2.delete(0, ss2.length());
 	}
 	if (_action.weapon.getRules().getAccuracyAimed() != 0)
 	{
 		tu = (int)(_action.actor.getUnit().getTimeUnits() * _action.weapon.getRules().getTUAimed() / 100);
-		ss1 << strAcc.c_str() << (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracyAimed()) * 100) << "%";
-		ss2 << strTU.c_str() << tu;
-		_actionMenu[id].setAction(BattleActionType.BA_AIMEDSHOT, _game.getLanguage().getString("STR_AIMED_SHOT"), ss1.str(), ss2.str(), tu);
+		ss1.append(strAcc + (int)Math.floor(_action.actor.getFiringAccuracy(_action.weapon.getRules().getAccuracyAimed()) * 100) + "%");
+		ss2.append(strTU + tu);
+		_actionMenu[id].setAction(BattleActionType.BA_AIMEDSHOT, _game.getLanguage().getString("STR_AIMED_SHOT"), ss1.toString(), ss2.toString(), tu);
 		_actionMenu[id].setVisible(true);
 		id++;
-		ss1.str(L"");
-		ss2.str(L"");
+		ss1.delete(0, ss1.length());
+		ss2.delete(0, ss2.length());
 	}
 
 }

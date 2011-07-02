@@ -23,6 +23,7 @@ import putzworks.openXcom.Engine.Action;
 import putzworks.openXcom.Engine.Font;
 import putzworks.openXcom.Engine.InteractiveSurface;
 import putzworks.openXcom.Engine.State;
+import putzworks.openXcom.Engine.Surface;
 import putzworks.openXcom.Interface.Text;
 
 public class ActionMenuItem extends InteractiveSurface
@@ -72,7 +73,7 @@ public ActionMenuItem(State state, int id, Font bigFont)
  * @param accuracy the actions accuracy, including the Acc> prefix
  * @param timeunits the timeunits string, incliding the TUs> prefix
  */
-public void setAction(BattleActionType action, WString description, WString accuracy, WString timeunits, int tu)
+public void setAction(BattleActionType action, String description, String accuracy, String timeunits, int tu)
 {
 	_action = action;
 	_txtDescription.setText(description);
@@ -119,7 +120,7 @@ public void setPalette(SDL_Color colors, int firstcolor, int ncolors)
  */
 public void draw()
 {
-	Rect square;
+	Rectangle square;
 	short color = 11;
 
 	clear();
@@ -134,7 +135,7 @@ public void draw()
 	{
 		if (i == 8 && _highlighted)
 			color -= 4;
-		drawRect(square, color);
+		drawRectangle(square, color);
 		if (i < 3)
 			color-=2;
 		else

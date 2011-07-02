@@ -79,7 +79,11 @@ public SaveGameState(Game game)
 
 	_btnCancel.setColor(Palette.blockOffset(8)+8);
 	_btnCancel.setText(_game.getLanguage().getString("STR_CANCEL_UC"));
-	_btnCancel.onMouseClick((ActionHandler)SaveGameState.btnCancelClick);
+	_btnCancel.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnCancelClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setBig();
@@ -101,13 +105,21 @@ public SaveGameState(Game game)
 	_lstSaves.setSelectable(true);
 	_lstSaves.setBackground(_window);
 	_lstSaves.setMargin(8);
-	_lstSaves.onMouseClick((ActionHandler)SaveGameState.lstSavesClick);
-	_lstSaves.addRow(1, L"<NEW SAVED GAME>");
+	_lstSaves.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			lstSavesClick(action);
+		}
+	});
+	_lstSaves.addRow(1, "<NEW SAVED GAME>");
 	SavedGame.getList(_lstSaves, _game.getLanguage());
 
 	_edtSave.setColor(Palette.blockOffset(8)+10);
 	_edtSave.setVisible(false);
-	_edtSave.onKeyboardPress((ActionHandler)SaveGameState.edtSaveKeyPress);
+	_edtSave.onKeyboardPress(new ActionHandler() {
+		public void handle(Action action) {
+			edtSaveKeyPress(action);
+		}
+	});
 }
 
 /**
@@ -135,11 +147,11 @@ public void lstSavesClick(Action action)
 {
 	Text t = _lstSaves.getCell(_lstSaves.getSelectedRow(), 0);
 	_selected = Language.wstrToUtf8(t.getText());
-	t.setText(L"");
+	t.setText("");
 	_lstSaves.draw();
 	if (_lstSaves.getSelectedRow() == 0)
 	{
-		_edtSave.setText(L"");
+		_edtSave.setText("");
 		_selected = "";
 	}
 	else
@@ -166,22 +178,24 @@ public void edtSaveKeyPress(Action action)
 			{
 				String oldName = USER_DIR + _selected + ".sav";
 				String newName = USER_DIR + Language.wstrToUtf8(_edtSave.getText()) + ".sav";
-				if (rename(oldName.c_str(), newName.c_str()) != 0)
+				if (rename(oldName, newName) != 0)
 				{
-					throw Exception("Failed to overwrite save");
+					throw new Exception("Failed to overwrite save");
 				}
 			}
 			_game.getSavedGame().save(Language.wstrToUtf8(_edtSave.getText()));
 		}
 		catch (Exception e)
 		{
-			std.cerr << "ERROR: " << e.what() << std.endl;
-			_game.pushState(new GeoscapeErrorState(_game, "STR_SAVE_UNSUCCESSFUL"));
+			//TODO Log to error
+//			std.cerr << "ERROR: " << e.what() << std.endl;
+			_game.pushState(new GeoscapeErrorState(_game, "STR_SAVE_UNSUCCESSFU"));
 		}
 		catch (YAML.Exception e)
 		{
-			std.cerr << "ERROR: " << e.what() << std.endl;
-			_game.pushState(new GeoscapeErrorState(_game, "STR_SAVE_UNSUCCESSFUL"));
+			//TODO Log to error
+//			std.cerr << "ERROR: " << e.what() << std.endl;
+			_game.pushState(new GeoscapeErrorState(_game, "STR_SAVE_UNSUCCESSFU"));
 		}
 		_game.popState();
 	}
