@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout 
+android:id="@+id/AbsoluteLayout01" 
+android:layout_width="fill_parent" 
+android:layout_height="fill_parent" 
+xmlns:android="http://schemas.android.com/apk/res/android">
+	<Button android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="25dip" 
+		android:id="@+id/NewGameButton" 
+		android:text="Start New Game" 
+		android:layout_y="60dip">
+	</Button>
+	<ImageView android:layout_height="wrap_content" 
+		android:id="@+id/ImageView01" 
+		android:layout_width="wrap_content" 
+		android:layout_y="10dip" 
+		android:layout_x="200dip">
+	</ImageView>
+	<Button android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="25dip" 
+		android:id="@+id/UnlockablesButton" 
+		android:text="Unlockables" 
+		android:layout_y="150dip">
+		</Button>
+	<Button android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="100dip" 
+		android:id="@+id/AchievementsButton" 
+		android:text="Achievements" 
+		android:layout_y="150dip">
+		</Button>
+	<Button android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="25dip" 
+		android:id="@+id/OptionsButton" 
+		android:text="Options" 
+		android:layout_y="110dip">
+		</Button>
+	<Button android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="25dip" 
+		android:layout_y="210dip" 
+		android:text="Exit" 
+		android:id="@+id/ExitButton">
+	</Button>
+	<TextView android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_x="25dip" 
+		android:layout_y="10dip" 
+		android:id="@+id/TitleText" 
+		android:textStyle="bold|italic" 
+		android:typeface="serif" 
+		android:text="Nature DEFENSE!" 
+		android:textSize="45dip">
+	</TextView>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Resume Saved" android:id="@+id/resumeBtn" android:layout_y="60dip" android:layout_x="150dip"></Button>
+</AbsoluteLayout>

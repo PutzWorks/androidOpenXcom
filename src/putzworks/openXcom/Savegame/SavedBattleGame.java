@@ -1,0 +1,606 @@
+/*
+ * Copyright 2010 OpenXcom Developers.
+ *
+ * This file is part of OpenXcom.
+ *
+ * OpenXcom is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenXcom is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package putzworks.openXcom.Savegame;
+
+import java.util.Vector;
+
+import putzworks.openXcom.Battlescape.Pathfinding;
+import putzworks.openXcom.Battlescape.Position;
+import putzworks.openXcom.Battlescape.TerrainModifier;
+import putzworks.openXcom.Resource.ResourcePack;
+import putzworks.openXcom.Ruleset.MapDataSet;
+import putzworks.openXcom.Savegame.BattleItem.InventorySlot;
+import putzworks.openXcom.Savegame.BattleUnit.UnitFaction;
+
+public class SavedBattleGame
+{
+	public enum MissionType { MISS_UFORECOVERY, MISS_UFOASSAULT, MISS_TERROR, MISS_ALIENBASE, MISS_BASEDEFENSE, MISS_CYDONIA };
+
+	private int _width, _length, _height;
+	private Vector<MapDataSet> _mapDataFiles;
+	private Tile[] _tiles; 
+	private BattleUnit _selectedUnit;
+	private Vector<Node> _nodes;
+	private Vector<BattleUnit> _units;
+	private Vector<BattleItem> _items;
+	private Pathfinding _pathfinding;
+	private TerrainModifier _terrainModifier;
+	private MissionType _missionType;
+	private int _globalShade;
+	private UnitFaction _side;
+	private int _turn;
+	private boolean _debugMode;
+
+	//confused about this one
+	String base64_encode(char bytes_to_encode, int in_len);
+
+/**
+ * Initializes a brand new battlescape saved game.
+ */
+public SavedBattleGame()
+{
+	_tiles = null;
+	_nodes = new Vector<Node>();
+	_units = new Vector<BattleUnit>();
+	_side = UnitFaction.FACTION_PLAYER;
+	_turn = 1;
+	_debugMode = false;
+}
+
+/**
+ * Loads the saved battle game from a YAML file.
+ * @param node YAML node.
+ */
+public void load(final YAML.Node node)
+{
+	int size = 0;
+
+	node["width"] >> _width;
+	node["length"] >> _length;
+	node["height"] >> _height;
+
+	size = node["mapdatafiles"].size();
+	for (int i = 0; i < size; i++)
+	{
+		String name;
+		node["mapdatafiles"][i] >> name;
+		// now we have the names of the mapdatafiles, but we need to find the mapadatafile objects themselves...
+		// no idea to do this atm
+		// will figure this out some time
+	}
+
+}
+
+/**
+ * Saves the saved battle game to a YAML file.
+ * @param out YAML emitter.
+ */
+public final void save(YAML.Emitter out)
+{
+/**
+* under construction
+*/
+	out << YAML.BeginMap;
+
+	out << YAML.Key << "width" << YAML.Value << _width;
+	out << YAML.Key << "length" << YAML.Value << _length;
+	out << YAML.Key << "height" << YAML.Value << _height;
+
+	out << YAML.Key << "mapdatafiles" << YAML.Value;
+	out << YAML.BeginSeq;
+	for (MapDataSet i: _mapDataFiles)
+	{
+		out << (i).getName();
+	}
+	out << YAML.EndSeq;
+
+	/* Every tile is 8 bytes, 2 bytes per object(ground,west,north,object) */
+	/* 1 byte for the datafile ID, 1 byte for the relative object ID in that file */
+	/* Value 0xFF means the next two bytes are the number of empty objects */
+	/* The binary data is then base64 encoded to save as a string */
+	/*Uint8 tileData[8];
+	Uint16 empties = 0;
+	String tilesData;
+	for (int i = 0; i < _height * _length * _width; i++)
+	{
+		if (_tiles[i].ispublic void())
+		{
+			empties++;
+		}
+		else
+		{
+			// if we had empty tiles before
+			// write them now
+			if (empties)
+			{
+				tilesData += 0xFF;
+				tilesData += empties;
+				empties = 0;
+			}
+			// now write 4x2 bytes
+			for (int part = 0; part < 4; part++)
+			{
+				MapDataSet *mds = _tiles[i].getMapData(part).getDataset();
+				tilesData += (Uint8)(std.find(_mapDataFiles.begin(), _mapDataFiles.end(), mds) - _mapDataFiles.begin());
+				tilesData += (Uint8)(std.find(mds.getObjects().begin(), mds.getObjects().end(), _tiles[i].getMapData(part)) - mds.getObjects().begin());
+			}
+		}
+	}
+	if (empties)
+	{
+		tilesData += 0xFF;
+		tilesData += empties;
+	}
+	//out << YAML.Key << "tiles" << YAML.WriteBinary(tilesData, tilesData.length());
+	out << YAML.Key << "tiles" << base64_encode((unsigned char*)(tilesData.c_str()), tilesData.length());*/
+
+	out << YAML.Key << "units" << YAML.Value;
+	out << YAML.BeginSeq;
+	for (BattleUnit i: _units)
+	{
+		(i).save(out);
+	}
+	out << YAML.EndSeq;
+
+	out << YAML.Key << "items" << YAML.Value;
+	out << YAML.BeginSeq;
+	for (BattleItem i: _items)
+	{
+		(i).save(out);
+	}
+	out << YAML.EndSeq;
+
+	out << YAML.EndMap;
+}
+
+/**
+ * Gets a pointer to the array of tiles.
+ * @return A pointer to Tile array.
+ */
+public Tile[] getTiles()
+{
+	return _tiles;
+}
+
+/**
+ * Initializes the array of tiles + creates a pathfinding object.
+ * @param width
+ * @param length
+ * @param height
+ */
+public void initMap(int width, int length, int height)
+{
+	_width = width;
+	_length = length;
+	_height = height;
+	_tiles = new Tile[_height * _length * _width];
+}
+
+public void initUtilities(ResourcePack res)
+{
+	_pathfinding = new Pathfinding(this);
+	_terrainModifier = new TerrainModifier(this, res.getVoxelData());
+}
+
+/**
+ * Sets the mission type.
+ * @param missionType
+ */
+public void setMissionType(MissionType missionType)
+{
+	_missionType = missionType;
+}
+
+/**
+ * Gets the mission type.
+ * @return missionType
+ */
+public final MissionType getMissionType()
+{
+	return _missionType;
+}
+
+/**
+ * Sets the global shade.
+ * @param shade
+ */
+public void setGlobalShade(int shade)
+{
+	_globalShade = shade;
+}
+
+/**
+ * Gets the global shade.
+ * @return int
+ */
+public final int getGlobalShade()
+{
+	return _globalShade;
+}
+
+/**
+ * Gets the map width.
+ * @return Width in tiles.
+ */
+public int getWidth()
+{
+	return _width;
+}
+
+/**
+ * Gets the map length.
+ * @return Length in tiles.
+ */
+public int getLength()
+{
+	return _length;
+}
+
+/**
+ * Gets the map height.
+ * @return Height in layers.
+ */
+public int getHeight()
+{
+	return _height;
+}
+
+/**
+ * This method converts coordinates into a unique index.
+ * @param pos position
+ * @return Unique index.
+ */
+public int getTileIndex(final Position pos)
+{
+	return pos.z * _length * _width + pos.y * _width + pos.x;
+}
+
+/**
+ * This method converts an index to coords.
+ * @param index tileindex
+ * @param x pointer to X coordinate.
+ * @param y pointer to Y coordinate.
+ * @param z pointer to Z coordinate.
+ * @return Unique index.
+ */
+public void getTileCoords(int index, int x, int y, int z)
+{
+	z = index / (_length * _width);
+	y = (index % (_length * _width)) / _width;
+	x = (index % (_length * _width)) % _width;
+}
+
+/**
+ * Gets the Tile on a given position on the map.
+ * @param pos position
+ * @return Pointer to tile.
+ */
+public Tile getTile(final Position pos)
+{
+	if (pos.x < 0 || pos.y < 0 || pos.z < 0
+		|| pos.x >= _width || pos.y >= _length || pos.z >= _height)
+		return null;
+
+	return _tiles[getTileIndex(pos)];
+}
+
+/**
+ * Gets the currently selected unit
+ * @return pointer to BattleUnit.
+ */
+public BattleUnit getSelectedUnit()
+{
+	return _selectedUnit;
+}
+
+/**
+ * Sets the currently selected unit.
+ * @param unit pointer to BattleUnit.
+ */
+public void setSelectedUnit(BattleUnit unit)
+{
+	_selectedUnit = unit;
+}
+
+/**
+ * Select the next player unit TODO move this to BattlescapeState ?
+ * @return pointer to BattleUnit.
+ */
+public BattleUnit selectNextPlayerUnit()
+{
+	Vector<BattleUnit>.iterator i = _units.begin();
+	boolean bNext = false;
+	int wraps = 0;
+
+	if (_selectedUnit == 0)
+	{
+		bNext = true;
+	}
+
+	do
+	{
+		if (bNext && (i).getFaction() == _side && !(i).isOut())
+		{
+			break;
+		}
+		if ((i) == _selectedUnit)
+		{
+			bNext = true;
+		}
+		++i;
+		if (i == _units.end())
+		{
+			i = _units.begin();
+			wraps++;
+		}
+		// back to where we started... no more units found
+		if (wraps == 2)
+		{
+			_selectedUnit = null;
+			return _selectedUnit;
+		}
+	}
+	while (true);
+
+	_selectedUnit = (i);
+
+	return _selectedUnit;
+}
+
+/**
+ * Select unit with position on map.
+ * @param pos Position
+ * @return pointer to BattleUnit - 0 when nothing found
+ */
+public BattleUnit selectUnit(final Position pos)
+{
+	BattleUnit bu = null;
+
+	for (BattleUnit i: _units)
+	{
+		if ((i).getPosition() == pos && !(i).isOut())
+		{
+			bu = i;
+			break;
+		}
+	}
+
+	return bu;
+}
+
+/**
+ * Gets the list of nodes.
+ * @return pointer to the list of nodes
+ */
+public Vector<Node> getNodes()
+{
+	return _nodes;
+}
+
+/**
+ * Gets the list of units.
+ * @return pointer to the list of units
+ */
+public  Vector<BattleUnit> getUnits()
+{
+	return _units;
+}
+
+/**
+ * Gets the list of items.
+ * @return pointer to the list of items
+ */
+public Vector<BattleItem> getItems()
+{
+	return _items;
+}
+
+/**
+ * Get the pathfinding object.
+ * @return pointer to the pathfinding object
+ */
+public Pathfinding getPathfinding()
+{
+	return _pathfinding;
+}
+
+/**
+ * Get the terrain modifier object.
+ * @return pointer to the terrain modifier object
+ */
+public TerrainModifier getTerrainModifier()
+{
+	return _terrainModifier;
+}
+
+/**
+* gets a pointer to the array of mapblock
+* @return pointer to the array of mapblocks
+*/
+public  Vector<MapDataSet> getMapDataSets()
+{
+	return _mapDataFiles;
+}
+
+/**
+* get an item from a specific unit and slot
+* @return
+*/
+public BattleItem getItemFromUnit(BattleUnit unit, InventorySlot slot)
+{
+	for (BattleItem i: _items)
+	{
+		if ((i).getOwner() == unit && (i).getSlot() == slot)
+		{
+			return i;
+		}
+	}
+	return null;
+}
+
+public  final UnitFaction getSide()
+{
+	return _side;
+}
+
+public final int getTurn()
+{
+	return _turn;
+}
+
+public void endTurn()
+{
+	if (_side == UnitFaction.FACTION_PLAYER)
+	{
+		_side = UnitFaction.FACTION_HOSTILE;
+	}
+	else if (_side == UnitFaction.FACTION_HOSTILE)
+	{
+		_terrainModifier.prepareNewTurn();
+		_turn++;
+		_side = UnitFaction.FACTION_PLAYER;
+	}
+
+	for (BattleUnit i: _units)
+	{
+		if ((i).getFaction() == _side)
+		{
+			(i).setTimeUnits((i).getUnit().getTimeUnits());
+		}
+	}
+
+	_selectedUnit = null;
+	selectNextPlayerUnit();
+}
+
+public void setDebugMode()
+{
+	for (int i = 0; i < _height * _length * _width; ++i)
+	{
+		_tiles[i].setDiscovered(true);
+	}
+
+	_debugMode = true;
+}
+
+public final boolean getDebugMode()
+{
+	return _debugMode;
+}
+
+
+
+/** under construction
+*
+*/
+static String base64_chars =
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+
+static /*inline*/ boolean is_base64(char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+public String base64_encode(char bytes_to_encode, int in_len) {
+  String ret;
+  int i = 0;
+  int j = 0;
+  char[] char_array_3 = new char[3];
+  char[] char_array_4 = new char[4];
+
+  while (in_len--) {
+    char_array_3[i++] = (bytes_to_encode++);
+    if (i == 3) {
+      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+      char_array_4[3] = char_array_3[2] & 0x3f;
+
+      for(i = 0; (i <4) ; i++)
+        ret += base64_chars[char_array_4[i]];
+      i = 0;
+    }
+  }
+
+  if (i)
+  {
+    for(j = i; j < 3; j++)
+      char_array_3[j] = '\0';
+
+    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+    char_array_4[3] = char_array_3[2] & 0x3f;
+
+    for (j = 0; (j < i + 1); j++)
+      ret += base64_chars[char_array_4[j]];
+
+    while((i++ < 3))
+      ret += '=';
+
+  }
+
+  return ret;
+
+}
+
+String base64_decode(String encoded_string) {
+  int in_len = encoded_string.length();
+  int i = 0;
+  int j = 0;
+  int in_ = 0;
+  char[] char_array_4 = new char[4];
+  char[] char_array_3 = new char[3];
+  String ret;
+
+  while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+    char_array_4[i++] = encoded_string[in_]; in_++;
+    if (i ==4) {
+      for (i = 0; i <4; i++)
+        char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+      char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+      for (i = 0; (i < 3); i++)
+        ret += char_array_3[i];
+      i = 0;
+    }
+  }
+
+  if (i) {
+    for (j = i; j <4; j++)
+      char_array_4[j] = 0;
+
+    for (j = 0; j <4; j++)
+      char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+    for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+  }
+
+  return ret;
+}
+}

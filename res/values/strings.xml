@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Defense!</string>
+    <string name="app_name">openXcom</string>
+<string name="key_scrollX">SCROLL_X</string>
+<string name="key_scrollY">SCROLL_Y</string>
+<string name="key_scale">SCALE</string>
+<string name="key_numObjects">NUM_OBJECTS</string>
+<string name="key_level">LEVEL</string>
+<string name="key_round">ROUND</string>
+<string name="key_resume">RESUME</string>
+<string name="key_groups">GROUP</string>
+
+<string name="DATA_FILE">dataFile</string>
+</resources>
