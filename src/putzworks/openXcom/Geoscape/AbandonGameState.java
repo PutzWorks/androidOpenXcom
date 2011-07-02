@@ -63,18 +63,26 @@ public AbandonGameState(Game game)
 
 	_btnYes.setColor(Palette.blockOffset(15)+2);
 	_btnYes.setText(_game.getLanguage().getString("STR_YES"));
-	_btnYes.onMouseClick((ActionHandler)AbandonGameState.btnYesClick);
+	_btnYes.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnYesClick(action);
+		}
+	});
 
 	_btnNo.setColor(Palette.blockOffset(15)+2);
 	_btnNo.setText(_game.getLanguage().getString("STR_NO"));
-	_btnNo.onMouseClick((ActionHandler)AbandonGameState.btnNoClick);
+	_btnNo.onMouseClick(new ActionHandler() {
+		public void handle(Action action) {
+			btnNoClick(action);
+		}
+	});
 
 	_txtTitle.setColor(Palette.blockOffset(15)-1);
 	_txtTitle.setAlign(TextHAlign.ALIGN_CENTER);
 	_txtTitle.setBig();
-	WStringstream ss;
-	ss << _game.getLanguage().getString("STR_ABANDON_GAME") << "?";
-	_txtTitle.setText(ss.str());
+	StringBuffer ss = new StringBuffer();
+	ss.append(_game.getLanguage().getString("STR_ABANDON_GAME") + "?");
+	_txtTitle.setText(ss.toString());
 }
 
 /**
@@ -84,8 +92,8 @@ public AbandonGameState(Game game)
 public void btnYesClick(Action action)
 {
 	_game.setState(new MainMenuState(_game));
-	_game.setSavedGame(0);
-	_game.setRuleset(0);
+	_game.setSavedGame(null);
+	_game.setRuleset(null);
 }
 
 /**
